@@ -13,20 +13,16 @@ import {
 interface CustomModalProps {
   trigger: React.ReactNode;
   title?: string;
-  cancelText?: string;
   submitText?: string;
   children: React.ReactNode;
-  onCancel?: () => void;
   onSubmit?: () => void;
 }
 
 function CustomModal({
   trigger,
   title = "Filter Options",
-  cancelText = "Cancel",
   submitText = "Submit",
   children,
-  onCancel,
   onSubmit,
 }: CustomModalProps) {
   return (
@@ -41,13 +37,10 @@ function CustomModal({
         <div>{children}</div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" onClick={onCancel}>
-              {cancelText}
+            <Button type="submit" onClick={onSubmit}>
+              {submitText}
             </Button>
           </DialogClose>
-          <Button type="submit" onClick={onSubmit}>
-            {submitText}
-          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -191,3 +191,44 @@ export const creatorDatas  = [
     status: "pending",
   },
 ];
+
+export const singleCreatorDatas = {
+  "id": "1",
+  "image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+  "name": "Shamim Nader",
+  "email": "Nader@gmail.com",
+  "phone_number": "01333327633",
+  "date_of_birth": "01.02.2001",
+  "address": "Germany Land Lond",
+  "language": "English",
+  "gender": "Female",
+  "body_type": "Fit",
+  "ethnicity": "Creator",
+  "job_profession": "Fashion, Beauty, Daily",
+  "skin_type": "White",
+  "hair_type": "Black",
+  "bank_details": {
+    "bank_name": "PayPal",
+    "bank_email": "Nader@gmail.com"
+  },
+  "social_links": {
+    "tik_tok_handle": "Type...",
+    "tik_tok_link": "Jhkdhskjdsd...dsbdsdbdsbdsbdsbsds",
+    "instagram_handle": "Type...",
+    "instagram_link": "Jhkdhskjdsd...dsbdsdbdsbdsbdsbsds",
+    "others_social_link": "Jhkdhskjdsd...dsbdsdbdsbdsbdsbsds",
+    "portfolio_link": "Jhkdhskjdsd...dsbdsdbdsbdsbdsbsds"
+  },
+  "ugc_videos": [
+    "ugc_video_1_link",
+    "ugc_video_2_link",
+    "ugc_video_3_link",
+    "ugc_video_4_link"
+  ],
+  "example_videos": [
+    "example_video_1_link",
+    "example_video_2_link",
+    "example_video_3_link",
+    "example_video_4_link"
+  ]
+};

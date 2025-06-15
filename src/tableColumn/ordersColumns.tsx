@@ -1,9 +1,9 @@
 import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 import { PiEyeBold } from "react-icons/pi";
-import { CreatorDataType } from "@/type/type";
+import { OrdersDataType } from "@/type/type";
 
-export const creatorColumns: ColumnDef<CreatorDataType>[] = [
+export const orderColumns: ColumnDef<OrdersDataType>[] = [
   {
     accessorKey: "id",
     header: () => <div className="text-center">No.</div>,
@@ -12,17 +12,24 @@ export const creatorColumns: ColumnDef<CreatorDataType>[] = [
     ),
   },
   {
-    accessorKey: "name",
-    header: () => <div className="text-center">Name</div>,
+    accessorKey: "brandName",
+    header: () => <div className="text-center">Brand Name</div>,
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("name")}</div>
+      <div className="text-center">{row.getValue("brandName")}</div>
     ),
   },
   {
-    accessorKey: "contactNo",
-    header: () => <div className="text-center">Contact No</div>,
+    accessorKey: "productName",
+    header: () => <div className="text-center">Product Name</div>,
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("contactNo")}</div>
+      <div className="text-center">{row.getValue("productName")}</div>
+    ),
+  },
+  {
+    accessorKey: "accountManager",
+    header: () => <div className="text-center">Account Manager</div>,
+    cell: ({ row }) => (
+      <div className="text-center">{row.getValue("accountManager")}</div>
     ),
   },
   {
@@ -30,22 +37,6 @@ export const creatorColumns: ColumnDef<CreatorDataType>[] = [
     header: () => <div className="text-center">Email</div>,
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("email")}</div>
-    ),
-  },
-  {
-    accessorKey: "country",
-    header: () => <div className="text-center">Country</div>,
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("country")}</div>
-    ),
-  },
-  {
-    accessorKey: "category",
-    header: () => <div className="text-center">Category</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {(row.getValue("category") as string[]).join(", ")}
-      </div>
     ),
   },
   {

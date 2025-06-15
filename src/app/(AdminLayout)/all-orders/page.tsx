@@ -2,36 +2,36 @@
 
 import * as React from "react"
 import CustomTable from '@/components/table/CustomTable'
-import { CreatorDataType, StepDataType } from "@/type/type";
-import { creatorDatas } from "@/data/creatorDatas";
-import { creatorColumns } from "@/tableColumn/creatorsColumns";
+import { OrdersDataType, StepDataType } from "@/type/type";
 import CustomPagination from "@/components/cui/CustomPagination";
 import { CustomSearchBar } from "@/components/cui/CustomSearchBar";
 import CustomModal from "@/components/cui/CustomModal";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import CustomStep from "@/components/cui/CustomStep";
-import CreatorFilter from "@/components/modal/CreatorFilter";
+import { orderDatas } from "@/data/orderDatas";
+import { orderColumns } from "@/tableColumn/ordersColumns";
+import OrderFilter from "@/components/modal/OrderFilter";
 
 
 
 const stepDatas: StepDataType[] = [
   {
     id: 1,
-    title: "All Request Creator",
-    label: "all-request-creator",
+    title: "All Order",
+    label: "all-order",
   },
   {
     id: 2,
-    title: "Approved Creator",
-    label: "approved-creator",
+    title: "Complete Order",
+    label: "complete-order",
   }
 ];
 
 
-const AllCreators = () => {
+const AllOrders = () => {
 
-  const data = creatorDatas.slice(0, 9) as CreatorDataType[];
+  const data = orderDatas.slice(0, 9) as OrdersDataType[];
 
   return (
     <div className="pt-8">
@@ -53,17 +53,17 @@ const AllCreators = () => {
             }
           >
             <div>
-              <CreatorFilter />
+              <OrderFilter />
             </div>
           </CustomModal>
         </div>
       </div>
       <div className="pt-4">
-        <CustomTable<CreatorDataType> columns={creatorColumns} data={data} />
+        <CustomTable<OrdersDataType> columns={orderColumns} data={data} />
       </div>
       <CustomPagination />
     </div>
   )
 }
 
-export default AllCreators
+export default AllOrders

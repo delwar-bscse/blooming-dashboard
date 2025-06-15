@@ -17,8 +17,8 @@ export const adminMenu = [
   {
     id: 3,
     icon: brandsImg,
-    title: "All Brand",
-    label: "/brands",
+    title: "All Orders",
+    label: "/all-orders",
   },
   {
     id: 4,

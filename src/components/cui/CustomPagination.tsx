@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client"
+
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -7,52 +9,74 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+// import { useEffect, useState } from "react";
 
 const MAX_PAGE_WINDOW = 5;
 
 export default function MyPagination() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const TOTAL_PAGES = 7;
 
-  // Calculate window range
+  // Get current page from URL or default to 1
+  const currentPage = parseInt(searchParams.get('page') || '1');
+  // const [internalPage, setInternalPage] = useState(currentPage);
+
+  // Calculate window range (same logic as before)
   const startPage = Math.max(1, currentPage - MAX_PAGE_WINDOW + 1);
-  const endPage = Math.min( TOTAL_PAGES, startPage + MAX_PAGE_WINDOW - 1 );
+  const endPage = Math.min(TOTAL_PAGES, startPage + MAX_PAGE_WINDOW - 1);
 
   const pageNumbers = [];
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i);
   }
 
+  // Update both URL and internal state
+  const handlePageChange = (newPage: number) => {
+    // setInternalPage(newPage);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', newPage.toString());
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  // Sync internal state with URL on mount
+  // useEffect(() => {
+  //   setInternalPage(currentPage);
+  // }, [currentPage]);
+
   return (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            isActive={currentPage === 1} 
-            aria-disabled={currentPage === 1}
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-          />
-        </PaginationItem>
-
-        {pageNumbers.map((page) => (
-          <PaginationItem key={page}>
-            <PaginationLink
-              isActive={currentPage === page}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </PaginationLink>
+    <div className="relative">
+      <p className="absolute top-2 left-2 text-gray-500 font-semibold ">{`Showing ${currentPage} to ${TOTAL_PAGES} pages`}</p>
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              isActive={currentPage === 1}
+              aria-disabled={currentPage === 1}
+              onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            />
           </PaginationItem>
-        ))}
 
-        <PaginationItem>
-          <PaginationNext
-            isActive={currentPage === TOTAL_PAGES}
-            aria-disabled={currentPage === TOTAL_PAGES}
-            onClick={() => setCurrentPage((p) => Math.min(TOTAL_PAGES, p + 1))}
-          />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+          {pageNumbers.map((page) => (
+            <PaginationItem key={page}>
+              <PaginationLink
+                isActive={currentPage === page}
+                onClick={() => handlePageChange(page)}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          <PaginationItem>
+            <PaginationNext
+              isActive={currentPage === TOTAL_PAGES}
+              aria-disabled={currentPage === TOTAL_PAGES}
+              onClick={() => handlePageChange(Math.min(TOTAL_PAGES, currentPage + 1))}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
   );
 }
