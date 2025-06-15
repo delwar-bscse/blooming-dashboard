@@ -1,9 +1,9 @@
 import * as React from "react"
 import {
   MoreHorizontalIcon,
+  ArrowRight,
+  ArrowLeft
 } from "lucide-react"
-import { HiOutlineArrowRight } from "react-icons/hi";
-import { HiOutlineArrowLeft } from "react-icons/hi";
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -55,7 +55,7 @@ function PaginationLink({
       data-active={isActive}
       className={cn(
         buttonVariants({
-          variant: isActive ? "ghost" : "paginationButton",
+          variant: isActive ? "paginationButtonActive" : "paginationButton",
           size,
         }),
         className
@@ -67,32 +67,50 @@ function PaginationLink({
 
 function PaginationPrevious({
   className,
+  isActive,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      size="default"
-      className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
+      aria-current={isActive ? "page" : undefined}
+      data-slot="pagination-link"
+      data-active={isActive}
+      className={cn(
+        buttonVariants({
+          variant: isActive ? "paginationGhostButtonDisable" : "paginationGhostButton",
+          size: "paginationIcon"
+        }),
+        className
+      )}
       {...props}
     >
-      <HiOutlineArrowLeft />
+      <ArrowLeft strokeWidth={3} />
     </PaginationLink>
   )
 }
 
 function PaginationNext({
   className,
+  isActive,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink
       aria-label="Go to next page"
-      size="default"
-      className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
+      aria-current={isActive ? "page" : undefined}
+      data-slot="pagination-link"
+      data-active={isActive}
+      className={cn(
+        buttonVariants({
+          variant: isActive ? "paginationGhostButtonDisable" : "paginationGhostButton",
+          size: "paginationIcon"
+        }),
+        className
+      )}
       {...props}
     >
-      <HiOutlineArrowRight />
+      <ArrowRight strokeWidth={3} />
     </PaginationLink>
   )
 }

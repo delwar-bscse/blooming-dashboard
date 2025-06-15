@@ -39,7 +39,7 @@ function CustomTable<TData>({ data, columns }: CustomTableProps<TData>) {
   })
 
   return (
-    <div className="w-full pt-12">
+    <div className="w-full">
       <div className="rounded-md">
         <Table className="border-separate border-spacing-y-2">
           <TableHeader className="bg-[#DEE5EC]">

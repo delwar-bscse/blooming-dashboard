@@ -17,16 +17,19 @@ const buttonVariants = cva(
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        paginationButton: "bg-gray-400 text-white shadow-xs rounded-full",
+        paginationButton: "bg-[#D9DAD4] hover:bg-[#828D97] text-white shadow-xs rounded-full cursor-pointer",
+        paginationButtonActive: "bg-[#828D97] text-white shadow-xs rounded-full cursor-pointer",
+        paginationGhostButton: "bg-transparent rounded-full hover:text-gray-500 hover:bg-transparent text-gray-700",
+        paginationGhostButtonDisable: "bg-transparent rounded-full text-gray-500 hover:bg-transparent",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         icon: "size-9",
+        paginationIcon: "size-12",
       },
     },
     defaultVariants: {
