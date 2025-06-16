@@ -1,10 +1,10 @@
 import { dashboard, logoutImg } from '@/assets/assets'
-import { adminMenu } from '@/constant/sidebarData'
+import { menuType } from '@/type/type'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-const Sidebar = () => {
+const Sidebar = ({menu}:{menu?:menuType[]}) => {
   return (
     <div className='px-4'>
       <div className='pt-8 pb-8'>
@@ -14,7 +14,7 @@ const Sidebar = () => {
         </div>
       </div>
       <div className='flex flex-col gap-1'>
-        {adminMenu?.map((item) => (
+        {menu?.map((item) => (
           <Link href={item?.label} key={item.id} className='flex gap-2 items-center py-2 px-4 hover:bg-yellow-300 transition-colors duration-300 rounded-md cursor-pointer'>
             <Image src={item.icon} alt={item.title} />
             <span className='text-bold text-lg'>{item.title}</span>

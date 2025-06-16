@@ -1,8 +1,8 @@
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
-import { adminMenu } from "@/constant/sidebarData";
+import { creatorMenu } from "@/constant/sidebarData";
 
-export default function CreatorLayout({
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -14,7 +14,7 @@ export default function CreatorLayout({
       </header>
       <main className="bg-[#F1F1F1] flex" style={{ height: "calc(100vh - 92px)" }}>
         <section className="bg-[#E9EDF2] w-[280px] mx-4">
-          <Sidebar menu={adminMenu}/>
+          <Sidebar menu={creatorMenu}/>
         </section>
         <section className="flex-1 pr-4 overflow-hidden">
           <div className="h-full overflow-y-auto hide-scrollbar">

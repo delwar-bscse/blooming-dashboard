@@ -26,6 +26,8 @@ const buttonVariants = cva(
         outlineRed: "bg-transparent border-2 border-red-800 hover:border-red-600 rounded-md text-red-800 hover:text-red-500 transition-colors duration-300 cursor-pointer",
         btnGreen: "bg-green-800 hover:bg-green-700 rounded-md text-gray-50 hover:text-gray-100 transition-colors duration-300 cursor-pointer",
         customYellow: "bg-[#FFECAC] text-gray-700 hover:text-gray-600 shadow-xs hover:bg-[#FFECAC]/80 text-base cursor-pointer shadow-sm",
+        customWhite: "bg-white text-gray-950 hover:text-gray-700 shadow-xs  text-base cursor-pointer shadow-sm",
+        customOutline: "bg-transparent text-gray-50 hover:text-gray-200 text-base cursor-pointer",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -34,6 +36,8 @@ const buttonVariants = cva(
         lgw: "h-10 rounded-md px-16 has-[>svg]:px-4",
         icon: "size-9",
         paginationIcon: "size-12",
+        llg: "h-11 rounded-md px-6 has-[>svg]:px-4",
+        xl: "h-12 rounded-md px-10 has-[>svg]:px-4",
       },
     },
     defaultVariants: {

@@ -1,7 +1,8 @@
- import { overviewImg, blogPostImg, brandsImg, changePasswordImg, contactSupportImg, creatorsImg, logoutImg, messageImg, packageImg, privacyPolicyImg, profileImg, subscriptionImg, termsConditionImg, uploadImg } from "@/assets/assets";
+ import { overviewImg, blogPostImg, brandsImg, changePasswordImg, contactSupportImg, creatorsImg, messageImg, packageImg, privacyPolicyImg, profileImg, subscriptionImg, termsConditionImg, uploadImg } from "@/assets/assets";
+import { menuType } from "@/type/type";
 
 
-export const adminMenu = [
+export const adminMenu: menuType[] = [
   {
     id: 1,
     icon: overviewImg,
@@ -76,41 +77,41 @@ export const adminMenu = [
   }
 ];
 
-export const creatorMenu = [
+export const creatorMenu: menuType[] = [
   {
     id: 1,
     icon: creatorsImg,
-    title: "Creator",
-    label: "/creator",
+    title: "All Projects",
+    label: "/creator-all-project",
   },
   {
     id: 2,
     icon: profileImg,
     title: "Profile",
-    label: "/profile",
+    label: "/creator-profile",
   },
   {
     id: 3,
     icon: changePasswordImg,
     title: "Change Password",
-    label: "/change-password",
+    label: "/creator-change-password",
   },
   {
     id: 4,
     icon: privacyPolicyImg,
     title: "Privacy Policy",
-    label: "/privacy-policy",
+    label: "/creator-privacy-policy",
   },
   {
     id: 5,
     icon: termsConditionImg,
     title: "Terms & Condition",
-    label: "/terms-and-condition",
+    label: "/creator-terms-condition",
   },
   {
     id: 6,
-    icon: logoutImg,
-    title: "Log Out",
-    label: "/logout",
-  },
+    icon: messageImg,
+    title: "Message",
+    label: "/creator-message",
+  }
 ];

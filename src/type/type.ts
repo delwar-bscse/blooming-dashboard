@@ -1,5 +1,20 @@
 import { StaticImageData } from "next/image"
 
+// Creator All Orders Data type
+export interface creatorOrderDataType {
+  id: string;
+  brandName: string;
+  deadline: string;
+  status: string;
+}
+
+// Menu Data type
+export interface menuType {
+  id: number;
+  icon: StaticImageData;
+  title: string;
+  label: string;
+}
 // Creator Data type
 export type CreatorDataType = {
   id: string
@@ -71,3 +86,18 @@ export type packageDataType = {
   price: number;
   features: string[];
 };
+
+// Subscription Data type
+export interface subDataType {
+  title: string;
+  des: string;
+  features: string[];
+};
+
+// Blog Data type
+export type blogDatasType = {
+  id: number;
+  title: string;
+  des: string;
+  image: StaticImageData;
+}
