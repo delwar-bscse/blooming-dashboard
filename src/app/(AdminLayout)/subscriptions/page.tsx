@@ -3,10 +3,15 @@ import React from 'react'
 import subImage from "@/assets/common/package00.png";
 import { Button } from "@/components/ui/button"
 import { subDatas } from '@/data/subDatas';
+import Link from 'next/link';
 
 const Subscription = () => {
   return (
-    <div className='px-2 flex justify-center items-center'>
+    <div className='px-2 flex flex-col justify-center items-center'>
+      <div className='w-full max-w-[900px] mx-auto flex items-center justify-between py-8'>
+        <h2 className='text-3xl font-bold'>Subscriptions</h2>
+        <Link href={'/subscriptions/subscription'} className='bg-yellow-400 font-semibold px-4 py-2 rounded-lg'>+ Add</Link>
+      </div>
       <div id='subscription' className='flex flex-col md:flex-row border-2 border-gray-400 rounded-md gap-4 p-4 bg-white'>
         <div className='border-2 border-gray-400 rounded-md w-full sm:max-w-80 h-full overflow-hidden'>
           <Image id='subImage' src={subImage} alt="Video Analysis" width={500} height={500} className='object-cover transition-transform duration-500 ease-in-out' />
@@ -22,7 +27,9 @@ const Subscription = () => {
             ))}
           </ul>
           <div className='absolute right-4 bottom-6'>
-            <Button variant="customYellow" className='w-full mt-8 h-12'>Edit Subscription</Button>
+            <Link href={`/subscriptions/subscription?id=1`} className=''>
+              <Button variant="customYellow" className='w-full mt-8 h-12'>Edit Subscription</Button>
+            </Link>
           </div>
         </div>
       </div>

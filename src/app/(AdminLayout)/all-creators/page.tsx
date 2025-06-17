@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import CustomStep from "@/components/cui/CustomStep";
 import CreatorFilter from "@/components/modal/CreatorFilter";
-import { creatorColumns } from "@/tableColumn/CreatorsColumns";
+import { creatorColumns } from "@/tableColumn/creatorsColumns";
 
 
 
