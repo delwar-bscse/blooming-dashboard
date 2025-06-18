@@ -133,3 +133,13 @@
 .table-row-gap:not(:last-child) {
   margin-top: 0.5rem; /* Adjust as needed */
 }
+
+.jodit-wysiwyg ul {
+  list-style-type: disc;
+  padding-left: 40px;
+}
+ 
+.jodit-wysiwyg ol {
+  list-style-type: decimal;
+  padding-left: 40px;
+}

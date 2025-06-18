@@ -5,14 +5,15 @@ import { allMsgs } from '@/data/msgData';
 
 
 
-const CreatorMessage = () => {
+const AdminInbox = () => {
+  
   return (
     <div className='w-full max-w-[1000px]  mx-auto h-full flex flex-col justify-end gap-4 py-8'>
       <div className='flex-1'>
         <div className='h-full flex flex-col justify-end gap-4'>
           {allMsgs?.map((msg) => (
-            <div key={msg.id} className={`${msg.role === "creator" ? "flex-row-reverse" : "flex-row"} flex gap-4`}>
-              <div key={msg.id} className={`${msg.role !== "creator" ? "bg-gray-50" : "bg-white"} p-4 rounded-2xl w-[800px]`}>
+            <div key={msg.id} className={`${msg.role === "admin" ? "flex-row-reverse" : "flex-row"} flex gap-4`}>
+              <div key={msg.id} className={`${msg.role !== "admin" ? "bg-gray-50" : "bg-white"} p-4 rounded-2xl w-[800px]`}>
                 <p className='text-gray-600'>{msg.message}</p>
                 <p className={`${msg.role === "creator" ? "text-right" : "text-left"} text-gray-400 pt-4`}>1:00 PM</p>
               </div>
@@ -30,4 +31,4 @@ const CreatorMessage = () => {
   )
 }
 
-export default CreatorMessage
+export default AdminInbox

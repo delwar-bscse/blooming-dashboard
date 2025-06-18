@@ -1,5 +1,14 @@
 import { StaticImageData } from "next/image"
 
+export type SupportDataType = {
+  id: number
+  name: string
+  number: string
+  email: string
+  message: string
+  status: "Pending" | "Solved"
+}
+
 // Creator All Orders Data type
 export interface creatorOrderDataType {
   id: string;

@@ -37,7 +37,7 @@ function CustomModal({
         <div>{children}</div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="submit" onClick={onSubmit}>
+            <Button type="submit" onClick={onSubmit} className="bd-gray-700">
               {submitText}
             </Button>
           </DialogClose>
