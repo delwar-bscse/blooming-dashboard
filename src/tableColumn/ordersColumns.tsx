@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 import { PiEyeBold } from "react-icons/pi";
 import { OrdersDataType } from "@/type/type";
+import { PiUserCircleLight } from "react-icons/pi";
 
 export const orderColumns: ColumnDef<OrdersDataType>[] = [
   {
@@ -50,9 +51,14 @@ export const orderColumns: ColumnDef<OrdersDataType>[] = [
     id: "action",
     header: () => <div className="text-center">Action</div>,
     cell: ({ row }) => (
-      <Link href={`/all-creators/${row.getValue("id")}`} className="flex items-center justify-center">
-        <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
-      </Link>
+      <div className="flex items-center justify-center gap-2">
+        <Link href={`/all-orders/order-details/${row.getValue("id")}`} className="flex items-center justify-center">
+          <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
+        </Link>
+        <Link href={`/all-orders/order-actions/${row.getValue("id")}`} className="flex items-center justify-center">
+          <PiUserCircleLight className="text-2xl font-bold text-blue-500 hover:text-blue-600 transition-colors duration-300" />
+        </Link>
+      </div>
     ),
   }
 ]

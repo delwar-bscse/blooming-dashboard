@@ -1,5 +1,16 @@
 import { StaticImageData } from "next/image"
 
+// Creator Data type
+export type adminCreatorListDataType = {
+  id: string;
+  name: string;
+  category: string[];
+  email: string;
+  country: string;
+  status:"active";
+}
+
+// Support Data type
 export type SupportDataType = {
   id: number
   name: string

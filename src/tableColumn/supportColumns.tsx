@@ -51,7 +51,7 @@ export const supportColumns: ColumnDef<SupportDataType>[] = [
       return <div className="flex items-center justify-center">
         <div>
           <CustomModal
-            title="Advanced Filters"
+            title="Details"
             submitText="Solved"
             onSubmit={handleSubmit}
             trigger={
