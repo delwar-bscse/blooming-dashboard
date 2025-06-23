@@ -2,7 +2,7 @@ import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 import { adminMenu } from "@/constant/sidebarData";
 
-export default function CreatorLayout({
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

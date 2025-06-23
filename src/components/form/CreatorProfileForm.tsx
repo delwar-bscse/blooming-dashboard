@@ -128,7 +128,7 @@ const CreatorProfileForm = () => {
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+  }, [isMounted]);
 
   function onSubmit(data: ContactUsFormValues) {
     // toast.success("Message send successfully!");
