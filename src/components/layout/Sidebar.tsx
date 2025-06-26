@@ -1,10 +1,29 @@
+"use client"
+
 import { dashboard, logoutImg } from '@/assets/assets'
 import { menuType } from '@/type/type'
+import { deleteCookie } from 'cookies-next/client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
+import { toast } from 'sonner'
 
 const Sidebar = ({menu}:{menu?:menuType[]}) => {
+  const router = useRouter();
+
+
+
+  const handleLogout = () => {
+    toast.loading("Logging out...", {
+          id: "logout",
+        });
+
+    deleteCookie('bloom_accessToken');
+    toast.success('Logged out successfully',{id: 'logout'});
+    router.push('/login');
+  }
+
   return (
     <div className='px-4'>
       <div className='pt-8 pb-8'>
@@ -20,7 +39,7 @@ const Sidebar = ({menu}:{menu?:menuType[]}) => {
             <span className='text-bold text-lg'>{item.title}</span>
           </Link>
         ))}
-        <button className='flex gap-2 items-center py-2 px-4 hover:bg-red-300 transition-colors duration-300 rounded-md cursor-pointer'>
+        <button onClick={handleLogout} className='flex gap-2 items-center py-2 px-4 hover:bg-red-300 transition-colors duration-300 rounded-md cursor-pointer'>
             <Image src={logoutImg} alt="logout button" />
             <span className='text-bold text-lg'>Log Out</span>
           </button>
