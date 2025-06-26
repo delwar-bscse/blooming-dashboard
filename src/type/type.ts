@@ -98,13 +98,17 @@ export interface OrdersDataType {
 
 // Package Data type
 export type packageDataType = {
-  id: number;
+  _id: string;
   title: string;
-  videos: number;
-  des: string;
-  image: StaticImageData;
+  subtitle: string;
+  image: string;
   price: number;
-  features: string[];
+  benefits: string[];
+  type: "one_time" | "monthly";
+  videoCount: number;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 // Subscription Data type

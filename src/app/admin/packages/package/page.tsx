@@ -4,7 +4,7 @@ import React from 'react'
 const AddPackage = () => {
   return (
     <div>
-      <PackageSubscription packageCategory='Onetime'/>
+      <PackageSubscription/>
     </div>
   )
 }

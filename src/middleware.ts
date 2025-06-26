@@ -9,12 +9,20 @@ export async function middleware(req: NextRequest) {
     method: 'GET',
   })
   // console.log("Middleware User :", user);
-  
+
   const role = user?.data?.role;
   // console.log("Middleware User Role:", role);
-  
+
   if (!user?.success || !user?.data) {
     return NextResponse.redirect(new URL('/login', req.url));
+  }
+
+  if (pathname === '/' && role === "admin") {
+    return NextResponse.redirect(new URL('/admin', req.url));
+  }
+
+  if (pathname === '/' && role === "creator") {
+    return NextResponse.redirect(new URL('/creator/all-project', req.url));
   }
 
 
@@ -30,5 +38,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin:path*', '/creator:path*',],
+  matcher: ['/', '/admin:path*', '/creator:path*',],
 };

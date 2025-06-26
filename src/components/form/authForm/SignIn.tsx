@@ -20,7 +20,7 @@ import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { myFetch } from "@/utils/myFetch";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 // Schema
 const contactUsFormSchema = z
@@ -44,7 +44,7 @@ const defaultValues: Partial<ContactUsFormValues> = {
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  const redirect = useSearchParams().get("redirect");
+  // const redirect = useSearchParams().get("redirect");
 
   const form = useForm<ContactUsFormValues>({
     resolver: zodResolver(contactUsFormSchema),
@@ -69,7 +69,7 @@ const SignIn = () => {
         method: "POST",
         body: payload,
       });
-      // console.log("response", res)
+      console.log("response", res)
       
       if (res?.success) {
         // console.log("Login successful:", res);

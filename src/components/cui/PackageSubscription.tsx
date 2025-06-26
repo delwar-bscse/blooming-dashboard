@@ -19,21 +19,22 @@ import Image from "next/image";
 import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
 import { CircleCheck, CircleMinus, Plus } from "lucide-react";
 import { Label } from "@/components/ui/label"
-import { packageDataType } from "@/type/type";
-// import toast, { Toaster } from 'react-hot-toast';
+import { myFetch } from "@/utils/myFetch";
+import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 
 // Schema
 const contactUsFormSchema = z.object({
-  packageImg: z
+  image: z
     .any()
     .refine(
       (file) => file instanceof File && file.type.startsWith("image/"),
       "Please upload a valid image file"
     ),
   title: z.string(),
-  des: z.string(),
-  videos: z.string(),
+  subtitle: z.string(),
+  videoCount: z.string(),
   price: z.string(),
 });
 
@@ -42,15 +43,20 @@ type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
 
 
 {/* ---------------------------- Package Form ---------------------------- */ }
-const PackageSubscription = ({ packageInfo, packageCategory }: { packageInfo?: Partial<packageDataType>, packageCategory: "Onetime" | "Monthly" }) => {
+const PackageSubscription = () => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [benefits, setBenefits] = useState<string[]>([]);
   const [benefitInput, setBenefitInput] = useState<string>('');
 
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
+
+  
+
   const defaultValues: Partial<ContactUsFormValues> = {
-    title: packageInfo?.title || "",
-    des: packageInfo?.des || "",
+    // title: packageInfo?.title || "",
+    // subtitle: packageInfo?.des || "",
   };
 
   const form = useForm<ContactUsFormValues>({
@@ -60,14 +66,52 @@ const PackageSubscription = ({ packageInfo, packageCategory }: { packageInfo?: P
   });
 
   useEffect(() => {
-    console.log("Package Type:", packageCategory);
-    setBenefits(packageInfo?.features || []);
     setIsMounted(true);
-  },[]);
+  }, []);
 
-  function onSubmit(data: ContactUsFormValues) {
+  async function onSubmit(data: ContactUsFormValues) {
     // toast.success("Message send successfully!");
-    console.log("Submitted Data:", data);
+    // console.log("Submitted Data:", data);
+
+    const formData = new FormData();
+    // console.log( type);
+
+    // formData.append("type", type ?? "");
+    formData.append("title", data.title);
+    formData.append("subtitle", data.subtitle);
+    formData.append("videoCount", data.videoCount);
+    formData.append("price", data.price);
+    formData.append("image", data.image);
+
+    if(type === "one_time" || type === "monthly") {
+      // console.log( type);
+      formData.append("type", type );
+    }
+
+    if (benefits.length > 0) {
+      benefits.forEach((benefit) => {
+        formData.append("benefits", benefit);
+      });
+    }
+
+    const res = await myFetch("/package/create-package", {
+      method: "POST",
+      body: formData,
+    });
+    // console.log("package Response:", res);
+
+    if (res?.success) {
+      toast.success("Package created successfully!");
+      // console.log("Package created successfully!");
+      // Optionally, you can reset the form or redirect
+      form.reset();
+      setImgUrl(null);
+      setBenefits([]);
+      setBenefitInput('');
+    }else {
+      toast.error(res?.message || "Failed to create package");
+      // console.error("Failed to create package:", res?.message);
+    }
   }
 
   const handleImgUrl = (file: File | null) => {
@@ -91,7 +135,7 @@ const PackageSubscription = ({ packageInfo, packageCategory }: { packageInfo?: P
             <div className="w-40 h-40 mx-auto rounded-xl overflow-hidden border-3 border-white bg-gray-300">
               {imgUrl ? (
                 <Image
-                  src={imgUrl ?? packageInfo?.image ?? ""}
+                  src={imgUrl ?? ""}
                   alt="content image"
                   className="object-cover w-full"
                   width={200}
@@ -122,7 +166,7 @@ const PackageSubscription = ({ packageInfo, packageCategory }: { packageInfo?: P
             {/* Profile Image */}
             <FormField
               control={form.control}
-              name="packageImg"
+              name="image"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -160,7 +204,7 @@ const PackageSubscription = ({ packageInfo, packageCategory }: { packageInfo?: P
             {/* Package Description */}
             <FormField
               control={form.control}
-              name="des"
+              name="subtitle"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-600 text-lg">Package Description</FormLabel>
@@ -190,7 +234,7 @@ const PackageSubscription = ({ packageInfo, packageCategory }: { packageInfo?: P
             {/* Package Description */}
             <FormField
               control={form.control}
-              name="videos"
+              name="videoCount"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-600 text-lg">Number of Videos</FormLabel>
@@ -211,7 +255,7 @@ const PackageSubscription = ({ packageInfo, packageCategory }: { packageInfo?: P
                   className="border-2 border-gray-400 cursor-pointer p-2.5 rounded-md"
                   onClick={() => {
                     if (benefitInput.trim()) {
-                      console.log(benefitInput);
+                      // console.log(benefitInput);
                       setBenefits([...benefits as string[], benefitInput.trim()]);
                       setBenefitInput('');
                     }
