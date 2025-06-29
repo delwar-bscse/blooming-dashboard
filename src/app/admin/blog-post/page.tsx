@@ -44,21 +44,21 @@ const BlogPost = async() => {
 
   return (
     <div className='pb-20'>
-      <div className='maxWidth flex justify-between items-center py-10 pr-8'>
-        <h1 className='text-3xl md:text-4xl xl:text-5xl font-bold text-font01 lg:leading-16'>Blog Post</h1>
-        <Link href={`/admin/blog-post/add-blog`} className='bg-yellow-400 font-semibold px-4 py-2 rounded-md'>+ Add</Link>
+      <div className='maxWidth flex justify-between items-center py-6 pr-8 pl-2'>
+        <h1 className='text-3xl md:text-4xl xl:text-6xl font-bold text-font01 lg:leading-16 text-gray-700'>Blog Post</h1>
+        <Link href={`/admin/blog-post/add-blog`} className='bg-yellow-400 font-semibold px-8 py-3 rounded-md'>+ Add</Link>
       </div>
-      <div className='maxWidth grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+      <div className='maxWidth grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-2'>
         {blogDatas?.map((data)=>(
-          <div key={data?._id} className='parentDiv rounded-lg shadow-lg p-4 space-y-4'>
-            <div className='rounded-lg overflow-hidden'>
+          <div key={data?._id} className='parentDiv rounded-lg customShadow2 flex flex-col p-4'>
+            <div className='rounded-lg overflow-hidden h-80'>
               <Image src={data?.image} width={500} height={500} alt="content image" className='object-cover w-full childDiv transition-transform duration-500 ease-in-out' />
             </div>
-            <div className='flex flex-col items-center gap-4'>
+            <div className='flex-1 flex flex-col items-center gap-4'>
               <h3 className='text-lg md:text-xl font-bold text-font01'>{data.title}</h3>
-              <p className='text-center'>{data.details}</p>
+              <p className='flex-1 text-justify'>{data.details.slice(0, 300)}...</p>
               <div className='w-full max-w-[200px] mx-auto'>
-                <CustomButton text="Edit Blog" url={`/admin/blog-post/add-blog?id=${data._id}`}/>
+                <CustomButton text="View Details" url={`/admin/blog-post/blog-details?id=${data._id}`}/>
               </div>
             </div>
           </div>

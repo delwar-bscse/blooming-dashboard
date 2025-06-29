@@ -14,13 +14,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
-import { Label } from "@/components/ui/label"
 import { myFetch } from "@/utils/myFetch";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
+import { Textarea } from "../ui/textarea";
 
 
 // Schema
@@ -32,46 +31,7 @@ const contactUsFormSchema = z.object({
       "Please upload a valid image file"
     ),
   title: z.string(),
-  details: z.string(),
-  headline: z.string(),
-  headlineDetails: z.string(),
-  bodyTextDetails: z.string(),
-  bodyImage: z
-    .any()
-    .refine(
-      (file) => file instanceof File && file.type.startsWith("image/"),
-      "Please upload a valid image file"
-    ),
-  benefit: z.string(),
-  disadvantage: z.string(),
-  uploadImg1: z
-    .any()
-    .refine(
-      (file) => file instanceof File && file.type.startsWith("image/"),
-      "Please upload a valid image file"
-    ),
-  uploadImg2: z
-    .any()
-    .refine(
-      (file) => file instanceof File && file.type.startsWith("image/"),
-      "Please upload a valid image file"
-    ),
-  uploadImg3: z
-    .any()
-    .refine(
-      (file) => file instanceof File && file.type.startsWith("image/"),
-      "Please upload a valid image file"
-    ),
-  ugcheadline: z.string(),
-  ugcDetails: z.string(),
-  ugcImage: z
-    .any()
-    .refine(
-      (file) => file instanceof File && file.type.startsWith("image/"),
-      "Please upload a valid image file"
-    ),
-  keyOfFeature: z.string(),
-  price: z.string(),
+  details: z.string()
 
 });
 
@@ -82,7 +42,6 @@ type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
 {/* ---------------------------- Package Form ---------------------------- */ }
 const AddBlogPost = () => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
 
   // const searchParams = useSearchParams();
   // const type = searchParams.get("type");
@@ -99,15 +58,30 @@ const AddBlogPost = () => {
     mode: "onChange",
   });
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   async function onSubmit(data: ContactUsFormValues) {
-    toast.success("Message send successfully!");
+    toast.loading("Uploading blog...", { id: "upload" });
+    // toast.success("Message send successfully!");
     console.log("Submitted Data:", data);
 
-    // const formData = new FormData();
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("details", data.details);
+    formData.append("image", data.image!);
+
+
+    const res = await myFetch("/blog/create-blog", {
+      method: "POST",
+      body: formData,
+    });
+    console.log("Blog Response:", res);
+    if (res.success) {
+      toast.success("Blog uploaded successfully!", { id: "upload" });
+      form.reset();
+    } else {
+      toast.error(res.message || "Upload failed!", { id: "upload" });
+      // console.error("Upload failed:", res.message);
+    }
 
 
   }
@@ -125,19 +99,18 @@ const AddBlogPost = () => {
   };
 
   return (
-    <div className="w-full max-w-[700px] mx-auto flex text-center justify-center py-20 px-2">
+    <div className="w-full max-w-[700px] mx-auto flex text-center justify-center py-10 px-2">
       <div className="bg-white px-2 sm:px-4 md:px-8 py-6 md:py-8 w-full rounded-4xl">
 
-        {isMounted && (
-          <div className="relative inline-block">
-            <div className="w-40 h-40 mx-auto rounded-xl overflow-hidden border-3 border-white bg-gray-300">
+          <div className="relative block">
+            <div className="w-full h-80 mx-auto rounded-xl overflow-hidden border-3 border-white bg-gray-300">
               {imgUrl ? (
                 <Image
                   src={imgUrl ?? ""}
                   alt="content image"
-                  className="object-cover w-full"
-                  width={200}
-                  height={200}
+                  className="object-cover"
+                  width={800}
+                  height={500}
                   unoptimized
                 />
               ) : (
@@ -156,7 +129,6 @@ const AddBlogPost = () => {
               height={32}
             />
           </div>
-        )}
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -190,7 +162,7 @@ const AddBlogPost = () => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-600 text-lg">Name</FormLabel>
+                  <FormLabel className="text-gray-600 text-lg">Title</FormLabel>
                   <FormControl>
                     <Input variant="borderblack" placeholder="Blog Title" {...field} />
                   </FormControl>
@@ -205,82 +177,10 @@ const AddBlogPost = () => {
               name="details"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-600 text-lg">Body Text</FormLabel>
+                  <FormLabel className="text-gray-600 text-lg">Description</FormLabel>
                   <FormControl>
-                    <Input variant="borderblack" placeholder="Body Text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="text-gray-600 text-2xl text-center font-semibold ">Details Type Here</div>
-
-            {/* Package title */}
-            <FormField
-              control={form.control}
-              name="headline"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-600 text-lg">Headline</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/*  */}
-            <FormField
-              control={form.control}
-              name="headlineDetails"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-600 text-lg">Details</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="text-gray-600 text-2xl text-center font-semibold ">What Is Deep Fake content ?</div>
-
-            {/* Package title */}
-            <FormField
-              control={form.control}
-              name="bodyTextDetails"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-600 text-lg">Body Text</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/*  */}
-         {/* Body Image Image */}
-            <FormField
-              control={form.control}
-              name="bodyImage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      id="packageImgCtrl"
-                      type="file"
-                      accept="image/*"
-                      variant="borderblack"
-                      onChange={e => {
-                        field.onChange(e.target.files?.[0]);
-                        handleImgUrl(e.target.files?.[0] ?? null);
-                      }}
-                    />
+                    {/* <Input type="textarea" variant="borderblack" placeholder="Body Text" {...field} className="min-h-[100px]"/> */}
+                    <Textarea variant="blackBorder" placeholder="Body Text" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -288,39 +188,6 @@ const AddBlogPost = () => {
             />
 
             
-            <div className="text-gray-600 text-2xl text-center font-semibold ">Benefit And Disadvantages of AGC</div>
-
-            {/* Package title */}
-            <FormField
-              control={form.control}
-              name="benefit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-600 text-lg">Benefit</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/*  */}
-            <FormField
-              control={form.control}
-              name="disadvantage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-600 text-lg">Disadvantage</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-
 
             {/* Submit */}
             <Button variant="customYellow" type="submit" size="llg" className="w-full">
@@ -328,8 +195,6 @@ const AddBlogPost = () => {
             </Button>
           </form>
         </Form>
-
-        {/* <Toaster  position="top-right" reverseOrder={false}/> */}
 
       </div>
     </div>

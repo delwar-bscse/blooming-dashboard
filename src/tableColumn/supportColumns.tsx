@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { PiEyeBold } from "react-icons/pi";
 import { SupportDataType } from "@/type/type";
-import CustomModal from "@/components/cui/CustomModal";
+import CustomModalView from "@/components/cui/CustomModalView";
 
 
 export const supportColumns: ColumnDef<SupportDataType>[] = [
@@ -50,7 +50,7 @@ export const supportColumns: ColumnDef<SupportDataType>[] = [
       }
       return <div className="flex items-center justify-center">
         <div>
-          <CustomModal
+          <CustomModalView
             title="Details"
             submitText="Solved"
             onSubmit={handleSubmit}
@@ -63,7 +63,7 @@ export const supportColumns: ColumnDef<SupportDataType>[] = [
                 <SubComponent key={key} title={key} des={value} />
               ))}
             </div>
-          </CustomModal>
+          </CustomModalView>
         </div>
       </div>
     },

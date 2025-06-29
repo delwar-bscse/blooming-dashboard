@@ -5,22 +5,32 @@ import { menuType } from '@/type/type'
 import { deleteCookie } from 'cookies-next/client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
 import { toast } from 'sonner'
 
-const Sidebar = ({menu}:{menu?:menuType[]}) => {
+const Sidebar = ({ menu }: { menu?: menuType[] }) => {
   const router = useRouter();
+  const pathname = usePathname();
 
+  // Check if the current pathname matches the menu item or if it belongs to its nested structure
+  // const isActive = (itemPath: string) => {
+  //   return pathname === itemPath || pathname.includes(`${itemPath}`);
+  // }
+
+  const isActive = (url: string) => {
+    if (url === "/admin") return pathname === "/admin";
+    return pathname === url || pathname.startsWith(`${url}/`);
+  };
 
 
   const handleLogout = () => {
     toast.loading("Logging out...", {
-          id: "logout",
-        });
+      id: "logout",
+    });
 
     deleteCookie('bloom_accessToken');
-    toast.success('Logged out successfully',{id: 'logout'});
+    toast.success('Logged out successfully', { id: 'logout' });
     router.push('/login');
   }
 
@@ -33,19 +43,30 @@ const Sidebar = ({menu}:{menu?:menuType[]}) => {
         </div>
       </div>
       <div className='flex flex-col gap-1'>
-        {menu?.map((item) => (
-          <Link href={item?.label} key={item.id} className='flex gap-2 items-center py-2 px-4 hover:bg-yellow-300 transition-colors duration-300 rounded-md cursor-pointer'>
-            <Image src={item.icon} alt={item.title} />
-            <span className='text-bold text-lg'>{item.title}</span>
-          </Link>
-        ))}
-        <button onClick={handleLogout} className='flex gap-2 items-center py-2 px-4 hover:bg-red-300 transition-colors duration-300 rounded-md cursor-pointer'>
-            <Image src={logoutImg} alt="logout button" />
-            <span className='text-bold text-lg'>Log Out</span>
-          </button>
+        {menu?.map((item) => {
+          const isItemActive = isActive(item?.label); // Check if the menu item is active (or part of a nested route)
+
+          return (
+            <Link
+              href={item?.label}
+              key={item.id}
+              className={`flex gap-2 items-center py-2 px-4 transition-colors duration-300 rounded-md cursor-pointer ${isItemActive ? 'bg-yellow-500 text-white' : 'hover:bg-yellow-300'}`}
+            >
+              <Image src={item.icon} alt={item.title} />
+              <span className='text-bold text-lg'>{item.title}</span>
+            </Link>
+          );
+        })}
+        <button
+          onClick={handleLogout}
+          className='flex gap-2 items-center py-2 px-4 hover:bg-red-300 transition-colors duration-300 rounded-md cursor-pointer'
+        >
+          <Image src={logoutImg} alt="logout button" />
+          <span className='text-bold text-lg'>Log Out</span>
+        </button>
       </div>
     </div>
   )
 }
 
-export default Sidebar
+export default Sidebar;

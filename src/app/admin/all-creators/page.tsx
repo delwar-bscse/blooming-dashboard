@@ -1,37 +1,64 @@
 "use client"
 
-import * as React from "react"
+
 import CustomTable from '@/components/table/CustomTable'
 import { CreatorDataType, StepDataType } from "@/type/type";
-import { creatorDatas } from "@/data/creatorDatas";
+// import { creatorDatas } from "@/data/creatorDatas";
 import CustomPagination from "@/components/cui/CustomPagination";
 import { CustomSearchBar } from "@/components/cui/CustomSearchBar";
-import CustomModal from "@/components/cui/CustomModal";
-import { Button } from "@/components/ui/button";
-import { SlidersHorizontal } from "lucide-react";
+// import CustomModal from "@/components/cui/CustomModal";
+// import { Button } from "@/components/ui/button";
+// import { SlidersHorizontal } from "lucide-react";
 import CustomStep from "@/components/cui/CustomStep";
-import CreatorFilter from "@/components/modal/CreatorFilter";
+// import CreatorFilter from "@/components/modal/CreatorFilter";
 import { creatorColumns } from "@/tableColumn/creatorsColumns";
+import { myFetch } from "@/utils/myFetch";
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { useSearchParams } from 'next/navigation';
 
 
 
 const stepDatas: StepDataType[] = [
   {
     id: 1,
-    title: "All Request Creator",
-    label: "all-request-creator",
+    title: "Pending Creator",
+    label: "pending",
   },
   {
     id: 2,
     title: "Approved Creator",
-    label: "approved-creator",
+    label: "approved",
   }
 ];
 
 
 const AllCreators = () => {
+  const [allCreatorsData, setAllCreatorsData] = useState<CreatorDataType[]>([]);
+  const searchParams = useSearchParams();
+  const step = searchParams.get("step");
 
-  const data = creatorDatas.slice(0, 9) as CreatorDataType[];
+  // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
+  const getAllCreators = async() => {
+    toast.loading("Fetching creators...", {id: "fetch"});
+    const res  = await myFetch(`/creator?status=${step}`,{
+      method: "GET",
+    });
+    console.log(res?.data);
+    if(res?.data){
+      toast.success("All creators fetched successfully!", {id: "fetch"});
+      setAllCreatorsData(res?.data);
+    }else {
+      toast.error(res?.message || "Fetching failed!", {id: "fetch"});
+    }
+  }
+
+  useEffect(() => {
+    getAllCreators();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step])
+
+
 
   return (
     <div className="pt-8">
@@ -42,7 +69,7 @@ const AllCreators = () => {
         <div className="w-full max-w-[600px]">
           <CustomSearchBar />
         </div>
-        <div>
+        {/* <div>
           <CustomModal
             title="Advanced Filters"
             submitText="Apply"
@@ -56,10 +83,10 @@ const AllCreators = () => {
               <CreatorFilter />
             </div>
           </CustomModal>
-        </div>
+        </div> */}
       </div>
       <div className="pt-4">
-        <CustomTable<CreatorDataType> columns={creatorColumns} data={data} />
+        <CustomTable<CreatorDataType> columns={creatorColumns} data={allCreatorsData} />
       </div>
       <CustomPagination />
     </div>

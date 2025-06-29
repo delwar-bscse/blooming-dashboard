@@ -64,18 +64,25 @@ const AdminVideoUpload = () => {
 
 
   const getAwsVideosUrls = async () => {
+    toast.loading("Fetching uploaded videos...", { id: "fetch" });
     const res = await myFetch(`/upload-video?category=${category}`, {
       method: 'GET',
     }
     );
     console.log("Fetch Uploaded Videos Response:", res);
-    setAwsVideoUrls(res?.data?.videos);
+    if (res.success) {
+      toast.success("Videos fetched successfully!", { id: "fetch" });
+      setAwsVideoUrls(res?.data?.videos);
+    } else {
+      toast.error(res.message || "Fetching failed!", { id: "fetch" });
+      // console.error("Fetching failed:", res.message);
+    }
   };
 
   useEffect(() => {
-    if(!category) return;
+    if (!category) return;
     getAwsVideosUrls();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
   const deleteVideo = async (url: string) => {
@@ -101,7 +108,7 @@ const AdminVideoUpload = () => {
   async function onSubmit(data: VideoUploadFormValues) {
     toast.loading("Uploading videos...", { id: "upload" });
     // console.log("Submitted Data:", data);
-    if(!category) {
+    if (!category) {
       toast.error("Please select a category!", { id: "upload" });
       return;
     }
@@ -186,16 +193,18 @@ const AdminVideoUpload = () => {
               <MdDeleteForever className='text-red-500 cursor-pointer text-xl group-hover:text-red-700 transition-colors duration-300' />
             </div>
 
-            <video width="480" height="320" controls>
-              <source src={singleVideo?.url} type="video/mp4" />
-              <track
-                src="/path/to/captions.vtt"
-                kind="subtitles"
-                srcLang="en"
-                label="English"
-              />
-              Your browser does not support the video tag.
-            </video>
+            <div className='w-full h-[200px]'>
+              <video width="480" height="320" controls className='h-full'>
+                <source src={singleVideo?.url} type="video/mp4" />
+                <track
+                  src="/path/to/captions.vtt"
+                  kind="subtitles"
+                  srcLang="en"
+                  label="English"
+                />
+                Your browser does not support the video tag.
+              </video>
+            </div>
             <p>ID: {singleVideo?.key}</p>
 
           </div>

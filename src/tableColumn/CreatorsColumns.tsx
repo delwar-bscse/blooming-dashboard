@@ -5,24 +5,24 @@ import { CreatorDataType } from "@/type/type";
 
 export const creatorColumns: ColumnDef<CreatorDataType>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "_id",
     header: () => <div className="text-center">No.</div>,
     cell: ({ row }) => (
-      <div className="capitalize text-center">{row.getValue("id")}</div>
+      <div className="capitalize text-center">{row.getValue("_id")}</div>
     ),
   },
   {
-    accessorKey: "name",
+    accessorKey: "accountHolderName",
     header: () => <div className="text-center">Name</div>,
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("name")}</div>
+      <div className="text-center">{row.getValue("accountHolderName")}</div>
     ),
   },
   {
-    accessorKey: "contactNo",
+    accessorKey: "phone",
     header: () => <div className="text-center">Contact No</div>,
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("contactNo")}</div>
+      <div className="text-center">{row.getValue("phone")}</div>
     ),
   },
   {
@@ -39,15 +39,15 @@ export const creatorColumns: ColumnDef<CreatorDataType>[] = [
       <div className="text-center">{row.getValue("country")}</div>
     ),
   },
-  {
-    accessorKey: "category",
-    header: () => <div className="text-center">Category</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {(row.getValue("category") as string[]).join(", ")}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "category",
+  //   header: () => <div className="text-center">Category</div>,
+  //   cell: ({ row }) => (
+  //     <div className="text-center">
+  //       {(row.getValue("category") as string[]).join(", ")}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "status",
     header: () => <div className="text-center">Status</div>,
@@ -59,7 +59,7 @@ export const creatorColumns: ColumnDef<CreatorDataType>[] = [
     id: "action",
     header: () => <div className="text-center">Action</div>,
     cell: ({ row }) => (
-      <Link href={`/all-creators/${row.getValue("id")}`} className="flex items-center justify-center">
+      <Link href={`/admin/all-creators/${row.getValue("_id")}`} className="flex items-center justify-center">
         <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
       </Link>
     ),
