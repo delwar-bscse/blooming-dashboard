@@ -2,19 +2,13 @@ import { TSingleCreator } from "@/type/creatorDataTypes";
 
 // All Creator Datas
 export const creatorDatas: Partial<TSingleCreator>[] = [
-  // {
-  //   _id: "1",
-  //   name: "John Doe",
-  //   contactNo: "1234567890",
-  //   email: "7mH2I@example.com",
-  //   country: "United States",
-  //   category: ["Category 1", "Category 2"],
-  //   status: "pending",
-  // },
   {
     _id: "685ff424638eee9e5568b80f",
     accountHolderName: "Md. Delwar Hossain",
-    userId: "685ff424638eee9e5568b80d",
+    userId: {
+    _id: "6861fb8ab974cb1274840637",
+    profile: "http://10.0.70.163:5002/uploads\\profile\\Media-1751251828059-255743057.jpeg"
+  },
     phone: "01998847528",
     email: "wetelrdyep@xkxkud.com",
     country: "Bangladesh",
@@ -24,9 +18,13 @@ export const creatorDatas: Partial<TSingleCreator>[] = [
 
 
 
+
 export const singleCreatorDatas: TSingleCreator = {
   _id: "685ff424638eee9e5568b80f",
-  userId: "685ff424638eee9e5568b80d",
+  userId: {
+    _id: "6861fb8ab974cb1274840637",
+    profile: "http://10.0.70.163:5002/uploads\\profile\\Media-1751251828059-255743057.jpeg"
+  },
   phone: "01998847528",
   email: "wetelrdyep@xkxkud.com",
   dateOfBirth: "01.02.1997",

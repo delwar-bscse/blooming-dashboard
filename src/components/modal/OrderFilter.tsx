@@ -8,7 +8,13 @@ import {
 } from "@/components/ui/radio-group"
 import { useSearchParams, useRouter } from 'next/navigation'
 
-const OrderFilter = () => {
+type Props = {
+  value: string
+  label: string
+}
+
+
+const OrderFilter = ({ dynamicFilterValue }: { dynamicFilterValue: Props[] }) => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -27,26 +33,12 @@ const OrderFilter = () => {
         value={filterValue}
         onValueChange={handleValueChange}
       >
-        <div className="flex items-center gap-3">
-          <RadioGroupItem value="all" id="r1" />
-          <Label htmlFor="r1">All Orders</Label>
-        </div>
-        <div className="flex items-center gap-3">
-          <RadioGroupItem value="pending" id="r2" />
-          <Label htmlFor="r2">Pending Orders</Label>
-        </div>
-        <div className="flex items-center gap-3">
-          <RadioGroupItem value="completed" id="r3" />
-          <Label htmlFor="r3">Completed</Label>
-        </div>
-        <div className="flex items-center gap-3">
-          <RadioGroupItem value="shipped" id="r4" />
-          <Label htmlFor="r4">Shipped</Label>
-        </div>
-        <div className="flex items-center gap-3">
-          <RadioGroupItem value="delevered" id="r5" />
-          <Label htmlFor="r5">Delevered</Label>
-        </div>
+        {dynamicFilterValue.map((item) => (
+          <div className="flex items-center gap-3 py-1" key={item.value}>
+            <RadioGroupItem value={item.value} id={item.value} />
+            <Label htmlFor={item.value}>{item.label}</Label>
+          </div>
+        ))}
       </RadioGroup>
     </div>
   )

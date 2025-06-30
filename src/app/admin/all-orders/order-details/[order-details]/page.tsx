@@ -9,7 +9,6 @@ import { useSearchParams } from 'next/navigation';
 import CreatorVideoGuidelines from '@/components/section/CreatorVideoGuidelines';
 import CreatorVideoUpload from '@/components/section/CreatorVideoUpload';
 import CreatorScript from '@/components/section/CreatorScript';
-import { Button } from '@/components/ui/button';
 
 const stepDatas: StepDataType[] = [
   {
@@ -33,6 +32,9 @@ const OrderDetails = () => {
   const searchParams = useSearchParams();
   const step = searchParams.get("step");
 
+
+
+
   return (
     <div>
       <div className="py-4">
@@ -48,10 +50,6 @@ const OrderDetails = () => {
             transition={{ duration: 0.3 }}
           >
             <CreatorProjectDetails />
-            <div className='flex justify-center items-center gap-4 pb-16'>
-              <Button size={"llg"} variant={"customOutlineRed"} className="w-40">Cancel</Button>
-              <Button size={"llg"} variant={"customGreen"} className="w-40">Approved</Button>
-            </div>
           </motion.div>
         )}
         {step === "video-guidelines" && (

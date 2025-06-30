@@ -42,7 +42,7 @@ const CreatorDetailsPage: React.FC = () => {
   const handleApprove = async () => {
     toast.loading("Updating creator status...", { id: "approved" });
 
-    const res = await myFetch(`$/creator/approved-cancel/${id}?status=approved`, {
+    const res = await myFetch(`/creator/approved-cancel/${id}?status=approved`, {
       method: "PATCH",
     });
     // console.log(res);
@@ -80,7 +80,7 @@ const CreatorDetailsPage: React.FC = () => {
       </div>
       <div className="flex flex-col md:flex-row gap-11 mb-8">
         <div className='w-[290px] h-[290px] rounded-lg overflow-hidden'>
-          <Image src={""} alt="Creator" width={100} height={100} className="w-full h-auto rounded-lg" />
+          {creator?.userId?.profile && <Image src={creator?.userId?.profile} alt="Creator" width={100} height={100} className="w-full h-auto rounded-lg" />}
         </div>
         <div className="">
           {/* <h2 className="text-xl font-semibold text-gray-700 mb-4">Personal Information</h2> */}
@@ -138,18 +138,14 @@ const CreatorDetailsPage: React.FC = () => {
       {/* Introduction Example Videos */}
       <div>
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Introduction Example Videos</h2>
-        <VideoViewCard videoUrl={creator?.introductionvideo ?? ""} />
+        {creator?.introductionvideo && <VideoViewCard videoUrl={creator?.introductionvideo} />}
       </div>
 
       <div className='py-10'>
-        {creator?.status === "pending" ?
+        {creator?.status === "pending" &&
           <div className="flex items-center justify-center gap-8">
             <Button onClick={handleDecline} size={"lgw"} variant={"outlineRed"} className="mt-4">Decline</Button>
             <Button onClick={handleApprove} size={"lgw"} variant={"btnGreen"} className="mt-4">Approve</Button>
-          </div> :
-          <div className="flex items-center justify-center gap-8">
-            <Button size={"lgw"} variant={"outlineRed"} className="mt-4">Delete</Button>
-            <Button size={"lgw"} variant={"btnGreen"} className="mt-4">Block</Button>
           </div>
         }
       </div>
@@ -177,6 +173,12 @@ const SocialLinkItem: React.FC<{ label: string; value: string; isLink?: boolean 
     )}
   </div>
 );
+
+
+{/* <div className="flex items-center justify-center gap-8">
+  <Button size={"lgw"} variant={"outlineRed"} className="mt-4">Delete</Button>
+  <Button size={"lgw"} variant={"btnGreen"} className="mt-4">Block</Button>
+</div> */}
 
 
 

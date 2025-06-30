@@ -1,111 +1,131 @@
 import Image from 'next/image';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import StarEmogi from "@/assets/common/star.png"
 import LoveEmogi from "@/assets/common/loveEmoji.png"
+import { toast } from 'sonner';
+import { myFetch } from '@/utils/myFetch';
+import { useParams, useRouter } from 'next/navigation';
+import { TOrdersData } from '@/type/orderDataTypes';
+import { Button } from '../ui/button';
 
-type ProjectDetailsType = {
-  projectInfo: {
-    videos: { title: string; content: number };
-    brandName: { title: string; content: string };
-    productName: { title: string; content: string };
-    productType: { title: string; content: string };
-    productLink: { title: string; content: string };
-  };
-  brandSocial: {
-    tiktokLink: { title: string; content: string };
-    instagramLink: { title: string; content: string };
-    websiteUrl: { title: string; content: string };
-  };
-  containInfo: {
-    videoFormat: { title: string; content: string };
-    videoDuration: { title: string; content: string };
-    platform: { title: string; content: string };
-    adHookOrCtaRequest: { title: string; content: string };
-    exampleVideoLinks: { title: string; content: string };
-    locationBasedCreatorRequirement: { title: string; content: string };
-  };
-  doAndDonts: {
-    anyWordsNotToBeUsed: { title: string; content: string };
-    anySpecificWordToUse: { title: string; content: string };
-    howToPronounceYourBrandName: { title: string; content: string };
-    anySpecialRequest: { title: string; content: string };
-  };
-};
-
-type SubComponentProps<T> = {
-  title: string;
-  list: T;
-};
-
-const combinedProjectDetails: ProjectDetailsType = {
-  projectInfo: {
-    videos: { title: "Number of Videos", content: 2 },
-    brandName: { title: "Brand Name", content: "Shamim" },
-    productName: { title: "Product Name", content: "Fashion, Beauty, Daily Vlogs, Routines." },
-    productType: { title: "Product Type", content: "Fashion, Beauty, Daily Vlogs, Routines." },
-    productLink: { title: "Product Link", content: "Fashion, Beauty, Daily Vlogs, Routines." }
-  },
-  brandSocial: {
-    tiktokLink: { title: "TikTok Link", content: "Fashion, Beauty, Daily Vlogs, Routines." },
-    instagramLink: { title: "Instagram Link", content: "Fashion, Beauty, Daily Vlogs, Routines." },
-    websiteUrl: { title: "Website URL", content: "Fashion, Beauty, Daily Vlogs, Routines." }
-  },
-  containInfo: {
-    videoFormat: { title: "Video Format", content: "Fashion, Beauty, Daily Vlogs, Routines." },
-    videoDuration: { title: "Video Duration", content: "15s, 20s, 30s" },
-    platform: { title: "Platform", content: "15s, 20s, 30s" },
-    adHookOrCtaRequest: { title: "Ad Hook Or CTA Request", content: "15s, 20s, 30s" },
-    exampleVideoLinks: { title: "Example Video Links", content: "15s, 20s, 30s" },
-    locationBasedCreatorRequirement: { title: "Location Based Creator Requirement", content: "Male" }
-  },
-  doAndDonts: {
-    anyWordsNotToBeUsed: { title: "Any Words Not To Be Used", content: "Anything" },
-    anySpecificWordToUse: { title: "Any Specific Word To Use", content: "Yes" },
-    howToPronounceYourBrandName: { title: "How To Pronounce Your Brand Name", content: "Blooming Brand" },
-    anySpecialRequest: { title: "Any Special Request", content: "Yes" }
-  }
-};
 
 
 
 const CreatorProjectDetails = () => {
+  const router = useRouter();
+  const [orderDetails, setOrderDetails] = useState<TOrdersData>({} as TOrdersData);
+  const params = useParams();
+  const id = params["order-details"];
+
+
+  const getOrderDetails = async () => {
+    console.log(id);
+
+    toast.loading("Order Details Fetching...", { id: "fetch" });
+    const res = await myFetch(`/hire-creator/${id}`, {
+      method: "GET",
+    });
+    console.log(res?.data);
+
+    if (res?.data) {
+      toast.success("Order Details fetched successfully!", { id: "fetch" });
+      setOrderDetails(res?.data);
+    } else {
+      toast.error(res?.message || "Order Details Fetching failed!", { id: "fetch" });
+    }
+  }
+
+  useEffect(() => {
+    getOrderDetails();
+    console.log(orderDetails)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleDelete = async () => {
+    console.log(id);
+
+    toast.loading("Deleting...", { id: "delete" });
+    const res = await myFetch(`/hire-creator/cancel/${id}`, {
+      method: "PATCH",
+    });
+    console.log(res?.data);
+
+    if (res?.data) {
+      toast.success("Deleted successfully!", { id: "delete" });
+      router.push("/admin/creator/all-project");
+    } else {
+      toast.error(res?.message || "Failed to delete!", { id: "delete" });
+    }
+  }
+
+  const handleApprove = async () => {
+    console.log(id);
+
+    toast.loading("Approving...", { id: "approve" });
+    const res = await myFetch(`/hire-creator/approved/${id}`, {
+      method: "PATCH",
+    });
+    console.log(res?.data);
+
+    if (res?.data) {
+      toast.success("Approved successfully!", { id: "approve" });
+      getOrderDetails();
+    } else {
+      toast.error(res?.message || "Failed to approve!", { id: "approve" });
+    }
+  }
+
   return (
-    <div className='space-y-5 pb-16'>
+    <div className='max-w-[900px] mx-auto space-y-5 pb-16'>
       <div className='bg-white rounded-2xl p-8'>
         <div className='flex items-center justify-center rounded-sm bg-[#FFF0BE] shadow gap-2 w-72 py-2.5 mb-6'>
           <Image src={StarEmogi} alt="package" width={30} height={30} />
           <p className='text-xl font-semibold text-gray-700'>Price $200</p>
           <Image src={LoveEmogi} alt="package" width={30} height={30} />
         </div>
-        <SubComponent title="Project Info" list={combinedProjectDetails.projectInfo} />
+        {orderDetails?.brandInfo && <SubComponent title="Project Info" list={orderDetails.brandInfo} />}
       </div>
       <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Brand Social" list={combinedProjectDetails.brandSocial} />
+        <SubComponent title="Brand Social" list={orderDetails.brandSocial} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Contain Info" list={combinedProjectDetails.containInfo} />
+        <SubComponent title="Contain Info" list={orderDetails.contentInfo} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Do & Don'ts" list={combinedProjectDetails.doAndDonts} />
+        <SubComponent title="Do & Don'ts" list={orderDetails.doAndDonts} />
       </div>
+      <div className='bg-white rounded-2xl p-8'>
+        <SubComponent title="Characteristics Of The Creator" list={orderDetails.characteristicInfo} />
+      </div>
+
+      {orderDetails.status === "pending" && <div className='flex items-center justify-end space-x-4'>
+        <Button onClick={handleApprove}>Approve</Button>
+        <Button onClick={handleDelete}>Delete</Button>
+      </div>}
     </div>
   )
 }
 
-const SubComponent = <T,>({ title, list }: SubComponentProps<T>) => {
+const SubComponent = ({ title, list }: { title: string; list: any }) => {
+  if (!list || typeof list !== "object") {
+    return null; // or render a fallback UI
+  }
+
   return (
-    <>
+    <div>
       <h2 className='text-2xl font-bold mb-4'>{title}</h2>
       <ul className='space-y-1.5'>
-        {Object.values(list as Record<string, { title: string; content: string | number }>).map((item, index) => (
-          <li key={index} className='list-disc list-inside pl-4 text-gray-600'>
-            <span className='font-semibold text-gray-700 text-lg'>{item.title}</span><br />
-            <span className='pl-6'>{item.content}</span>
+        {Object.entries(list).map(([key, value], index) => {
+          if (key === "_id") return null;
+          return <li key={index} className="list-disc list-inside pl-4 text-gray-600">
+            <span className="font-semibold text-gray-700 text-lg capitalize">{key ?? ""}:</span><br />
+            <span className="pl-6">{value}</span>
           </li>
-        ))}
+        })}
       </ul>
-    </>
+    </div>
   );
 };
+
 
 export default CreatorProjectDetails

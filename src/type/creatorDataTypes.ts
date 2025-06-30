@@ -3,10 +3,14 @@ interface UGCExampleVideo {
   url: string;
   _id: string;
 }
+interface TUserId {
+  _id: string,
+  profile: string
+}
 
 export interface TSingleCreator {
   _id: string;
-  userId: string;
+  userId: TUserId;
   phone: string;
   email: string;
   dateOfBirth: string;
@@ -43,3 +47,5 @@ export interface TSingleCreator {
   createdAt: string;  // ISO Date String
   updatedAt: string;  // ISO Date String
 }
+
+export type PartialExceptId<T extends { _id: string }> = { _id: string } & Partial<Omit<T, "_id">>;

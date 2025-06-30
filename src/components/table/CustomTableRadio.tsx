@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import * as React from "react"
 import {
   ColumnDef,
@@ -18,8 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { toast } from "sonner";
-import { myFetch } from "@/utils/myFetch";
 
 
 
@@ -32,37 +30,10 @@ interface CustomTableProps<TData extends RowWithId> {
   columns: ColumnDef<TData>[];
 }
 
-function CustomTableSelection<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
+function CustomTableRadio<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();
-  const params = useParams();
-  const hireCreatorId = params["id"];
-  const step = searchParams.get("step");
-
-  const sendRequestToUser = async (selectedIds: (string | number)[]) => {
-
-    const payload = {
-      creatorsIds: selectedIds,
-      hireCreatorId: hireCreatorId,
-      price: 200
-    }
-
-    console.log(payload);
-
-    toast.loading("Request Send to Creators...", { id: "requestSend" });
-    const res = await myFetch(`/assign-task-creator/create-assign-task-creator`, {
-      method: "POST",
-      body: payload,
-    });
-
-    console.log(res?.data);
-
-    if (res?.data) {
-      toast.success("All creators fetched successfully!", { id: "requestSend" });
-    } else {
-      toast.error(res?.message || "Request send failed!", { id: "requestSend" });
-    }
-  }
+const step = searchParams.get("step"); // "creator-list"
 
   const table = useReactTable({
     data,
@@ -141,9 +112,9 @@ function CustomTableSelection<TData extends RowWithId>({ data, columns }: Custom
         </Table>
       </div>
       <div className="flex items-center justify-end gap-2 py-4">
-        {(step === "creator-list" || step === "agreed-creators") && <button
+        {(step === "creator-list" || step === "agreed-creators") &&<button
           className="mb-4 px-4 py-2 bg-green-700 text-white rounded"
-          onClick={() => sendRequestToUser(selectedIds)}
+          onClick={() => console.log("Selected IDs: " + selectedIds.join(", "))}
         >
           {step === "creator-list" && "Select Creator"}
           {step === "agreed-creators" && "Approve Creator"}
@@ -153,4 +124,4 @@ function CustomTableSelection<TData extends RowWithId>({ data, columns }: Custom
   )
 }
 
-export default CustomTableSelection
+export default CustomTableRadio

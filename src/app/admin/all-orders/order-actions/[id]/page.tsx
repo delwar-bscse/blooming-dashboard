@@ -4,42 +4,63 @@ import CustomModal from '@/components/cui/CustomModal';
 import { CustomSearchBar } from '@/components/cui/CustomSearchBar';
 import CustomStep from '@/components/cui/CustomStep';
 import AdminCreatorListFilter from '@/components/modal/AdminCreatorListFilter';
-import CustomTable from '@/components/table/CustomTable';
 import CustomTableSelection from '@/components/table/CustomTableSelection';
 import { Button } from '@/components/ui/button';
-import { adminCreatorListDatas } from '@/data/adminCreatorListDatas';
-import { creatorDatas } from '@/data/creatorDatas';
 import { adminCreatorListColumns } from '@/tableColumn/adminCreatorsListColumns';
-import { creatorColumns } from '@/tableColumn/creatorsColumns';
-import { adminCreatorListDataType, CreatorDataType, StepDataType } from '@/type/type';
+import { StepDataType } from '@/type/type';
 import { SlidersHorizontal } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
+import { myFetch } from '@/utils/myFetch';
+import { toast } from 'sonner';
+import { PartialExceptId, TSingleCreator } from '@/type/creatorDataTypes';
+import CustomTableRadio from '@/components/table/CustomTableRadio';
+
+const stepDatas: StepDataType[] = [
+  {
+    id: 1,
+    title: "Creator List",
+    label: "creator-list",
+  },
+  {
+    id: 2,
+    title: "Agreed Creators",
+    label: "agreed-creators",
+  },
+  {
+    id: 3,
+    title: "Approved Creators",
+    label: "approved-creators",
+  }
+];
+
+
 
 const OrderActions = () => {
+  const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const searchParams = useSearchParams();
   const step = searchParams.get("step");
 
-  const data = creatorDatas.slice(0, 9) as CreatorDataType[];
+  // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
 
-  const stepDatas: StepDataType[] = [
-    {
-      id: 1,
-      title: "Creator List",
-      label: "creator-list",
-    },
-    {
-      id: 2,
-      title: "Agreed Creators",
-      label: "agreed-creators",
-    },
-    {
-      id: 3,
-      title: "Approved Creators",
-      label: "approved-creators",
+  const getCreators = async () => {
+    toast.loading("Fetching Creators...", { id: "fetch" });
+    const res = await myFetch(`/creator?status=approved`);
+    console.log(res?.data);
+    if (res?.data) {
+      setCreatorsDatas(res?.data);
+      toast.success("All creators fetched successfully!", { id: "fetch" });
+    } else {
+      toast.error(res?.message || "Creators Fetching failed!", { id: "fetch" });
     }
-  ];
+  }
+
+  useEffect(() => {
+    getCreators();
+  }, [])
+
+
   return (
     <div>
       <div className="py-4">
@@ -74,7 +95,7 @@ const OrderActions = () => {
                 </CustomModal>
               </div>
             </div>
-            <CustomTableSelection data={adminCreatorListDatas as adminCreatorListDataType[]} columns={adminCreatorListColumns} />
+            {creatorsDatas && <CustomTableSelection<PartialExceptId<TSingleCreator>> data={creatorsDatas} columns={adminCreatorListColumns} />}
           </motion.div>
         )}
         {step === "agreed-creators" && (
@@ -85,7 +106,7 @@ const OrderActions = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CustomTableSelection data={adminCreatorListDatas as adminCreatorListDataType[]} columns={adminCreatorListColumns} />
+            {creatorsDatas && <CustomTableRadio<PartialExceptId<TSingleCreator>> data={creatorsDatas} columns={adminCreatorListColumns} />}
           </motion.div>
         )}
         {step === "approved-creators" && (
@@ -96,7 +117,7 @@ const OrderActions = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CustomTable<CreatorDataType> columns={creatorColumns} data={data} />
+            {/* <CustomTable<CreatorDataType> columns={creatorColumns} data={creatorDatas} /> */}
           </motion.div>
         )}
       </AnimatePresence>
