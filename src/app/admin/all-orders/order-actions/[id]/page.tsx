@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import CustomModal from '@/components/cui/CustomModal';
@@ -39,6 +40,7 @@ const stepDatas: StepDataType[] = [
 
 const OrderActions = () => {
   const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
+  const [agreedCreatorsDatas, setAgreedCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const searchParams = useSearchParams();
   const step = searchParams.get("step");
 
@@ -47,7 +49,7 @@ const OrderActions = () => {
   const getCreators = async () => {
     toast.loading("Fetching Creators...", { id: "fetch" });
     const res = await myFetch(`/creator?status=approved`);
-    console.log(res?.data);
+    // console.log(res?.data);
     if (res?.data) {
       setCreatorsDatas(res?.data);
       toast.success("All creators fetched successfully!", { id: "fetch" });
@@ -56,8 +58,29 @@ const OrderActions = () => {
     }
   }
 
+  const getAgreedCreators = async () => {
+    toast.loading("Fetching AgreedCreators...", { id: "fetchAgreedCreators" });
+    const res = await myFetch(`/assign-task-creator?status=request_approved`);
+    if (res?.data) {
+      console.log(res?.data);
+      // const creatorIds = res?.data.map((item: any) => {
+      //   {
+      //     _id: item?._id
+
+      //   }
+      // });
+      setAgreedCreatorsDatas(res?.data);
+      toast.success("All agreed creators fetched successfully!", { id: "fetchAgreedCreators" });
+    } else {
+      toast.error(res?.message || "Agreed Creators Fetching failed!", { id: "fetchAgreedCreators" });
+    }
+  }
+
+
+
   useEffect(() => {
     getCreators();
+    getAgreedCreators();
   }, [])
 
 
@@ -106,7 +129,7 @@ const OrderActions = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {creatorsDatas && <CustomTableRadio<PartialExceptId<TSingleCreator>> data={creatorsDatas} columns={adminCreatorListColumns} />}
+            {agreedCreatorsDatas && <CustomTableRadio<PartialExceptId<TSingleCreator>> data={agreedCreatorsDatas} columns={adminCreatorListColumns} />}
           </motion.div>
         )}
         {step === "approved-creators" && (
