@@ -2,6 +2,8 @@ import CustomJodit from '@/components/cui/CustomJodit'
 import React from 'react'
 
 const TermsCondition = () => {
+
+
   return (
     <div className="py-1 px-4">
       <div className="p-2 rounded">

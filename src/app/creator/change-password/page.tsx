@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { myFetch } from "@/utils/myFetch";
 
 // Schema
 const contactUsFormSchema = z
@@ -24,14 +26,14 @@ const contactUsFormSchema = z
     oldPassword: z.string().min(6, {
       message: "Password must be at least 6 characters.",
     }),
-    password: z.string().min(6, {
+    newPassword: z.string().min(6, {
       message: "Password must be at least 6 characters.",
     }),
     confirmPassword: z.string().min(6, {
       message: "Password must be at least 6 characters.",
     }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match.",
     path: ["confirmPassword"],
   });
@@ -41,7 +43,7 @@ type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
 
 const defaultValues: Partial<ContactUsFormValues> = {
   oldPassword: "",
-  password: "",
+  newPassword: "",
   confirmPassword: "",
 };
 
@@ -56,9 +58,24 @@ function CreatorChangePassword() {
     mode: "onChange",
   });
 
-  function onSubmit(data: ContactUsFormValues) {
+    async function onSubmit(data: ContactUsFormValues) {
+    toast.loading("Changing Password...", { id: "changePassword" });
     console.log("Submitted Data:", data);
-    router.push("/login");
+    const payload = {
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword
+    }
+    const res = await myFetch(`/auth/change-password`, {
+      method: "PATCH",
+      body: payload,
+    })
+    console.log(res);
+    if(res?.success) {
+      toast.success("Password changed successfully!", { id: "changePassword" });
+      router.push("/login");
+    }else {
+      toast.error(res?.message || "Password change failed!", { id: "changePassword" });
+    }
   }
 
   return (
@@ -99,7 +116,7 @@ function CreatorChangePassword() {
             {/* Password */}
             <FormField
               control={form.control}
-              name="password"
+              name="newPassword"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-600 text-lg">New Password</FormLabel>

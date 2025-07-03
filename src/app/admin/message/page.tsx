@@ -38,7 +38,7 @@ const Message = () => {
       </div>
       <div className='space-y-4'>
         {adminMessage?.map((msg) => (
-          <div onClick={() => router.push(`/message/${msg.id}`)} key={msg.id} className='bg-white flex items-center gap-4 py-3 px-4 rounded-md hover:bg-yellow-50 transition-colors duration-300 cursor-pointer'>
+          <div onClick={() => router.push(`/admin/message/${msg.id}`)} key={msg.id} className='bg-white flex items-center gap-4 py-3 px-4 rounded-md hover:bg-yellow-50 transition-colors duration-300 cursor-pointer'>
             <div className='w-12 h-12 rounded-full overflow-hidden'>
               <Image src={ProfileImg} alt="profile" width={50} height={50} />
             </div>

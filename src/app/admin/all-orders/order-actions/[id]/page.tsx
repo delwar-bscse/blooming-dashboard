@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client"
 
 import CustomModal from '@/components/cui/CustomModal';
@@ -129,6 +129,7 @@ const OrderActions = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
+            {/* {creatorsDatas && <CustomTableRadio<PartialExceptId<TSingleCreator>> data={creatorsDatas} columns={adminCreatorListColumns} />} */}
             {agreedCreatorsDatas && <CustomTableRadio<PartialExceptId<TSingleCreator>> data={agreedCreatorsDatas} columns={adminCreatorListColumns} />}
           </motion.div>
         )}

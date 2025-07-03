@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { myFetch } from "@/utils/myFetch";
+import { toast } from "sonner";
 
 // Schema
 const contactUsFormSchema = z
@@ -24,14 +26,14 @@ const contactUsFormSchema = z
     oldPassword: z.string().min(6, {
       message: "Password must be at least 6 characters.",
     }),
-    password: z.string().min(6, {
+    newPassword: z.string().min(6, {
       message: "Password must be at least 6 characters.",
     }),
     confirmPassword: z.string().min(6, {
       message: "Password must be at least 6 characters.",
     }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match.",
     path: ["confirmPassword"],
   });
@@ -41,7 +43,7 @@ type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
 
 const defaultValues: Partial<ContactUsFormValues> = {
   oldPassword: "",
-  password: "",
+  newPassword: "",
   confirmPassword: "",
 };
 
@@ -56,9 +58,24 @@ function ChangePassword() {
     mode: "onChange",
   });
 
-  function onSubmit(data: ContactUsFormValues) {
+  async function onSubmit(data: ContactUsFormValues) {
+    toast.loading("Changing Password...", { id: "changePassword" });
     console.log("Submitted Data:", data);
-    router.push("/login");
+    const payload = {
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword
+    }
+    const res = await myFetch(`/auth/change-password`, {
+      method: "PATCH",
+      body: payload,
+    })
+    console.log(res);
+    if(res?.success) {
+      toast.success("Password changed successfully!", { id: "changePassword" });
+      router.push("/login");
+    }else {
+      toast.error(res?.message || "Password change failed!", { id: "changePassword" });
+    }
   }
 
   return (
@@ -88,7 +105,7 @@ function ChangePassword() {
                         className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-100 hover:text-gray-200 z-10"
                         onClick={() => setShowPassword(prev => !prev)}
                       >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        {showPassword ? <EyeOff size={20} className="text-gray-400"/> : <Eye size={20} className="text-gray-400"/>}
                       </div>
                     </div>
                   </FormControl>
@@ -99,7 +116,7 @@ function ChangePassword() {
             {/* Password */}
             <FormField
               control={form.control}
-              name="password"
+              name="newPassword"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-600 text-lg">New Password</FormLabel>
@@ -116,7 +133,7 @@ function ChangePassword() {
                         className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-100 hover:text-gray-200 z-10"
                         onClick={() => setShowPassword(prev => !prev)}
                       >
-                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        {showPassword ? <EyeOff size={20} className="text-gray-400"/> : <Eye size={20} className="text-gray-400"/>}
                       </div>
                     </div>
                   </FormControl>
@@ -145,7 +162,7 @@ function ChangePassword() {
                         className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-100 hover:text-gray-200 z-10"
                         onClick={() => setShowConfirmPassword(prev => !prev)}
                       >
-                        {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        {showConfirmPassword ? <EyeOff size={20} className="text-gray-400"/> : <Eye size={20} className="text-gray-400"/>}
                       </div>
                     </div>
                   </FormControl>

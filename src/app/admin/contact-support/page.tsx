@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select"
 import { supportDatas } from "@/data/supportDatas";
 import { supportColumns } from "@/tableColumn/supportColumns";
+import { Toaster } from "sonner";
 
 
 
@@ -44,6 +45,7 @@ const ContactSupport = () => {
         <CustomTable<SupportDataType> columns={supportColumns} data={data} />
       </div>
       <CustomPagination />
+      <Toaster />
     </div>
   )
 }

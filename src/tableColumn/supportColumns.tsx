@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColumnDef } from "@tanstack/react-table"
 import { PiEyeBold } from "react-icons/pi";
 import { SupportDataType } from "@/type/type";
 import CustomModalView from "@/components/cui/CustomModalView";
+import { toast } from "sonner";
+
+const handleStatus = (value: any) => {
+  toast.success(JSON.stringify(value));
+  console.log(value);
+}
 
 
 export const supportColumns: ColumnDef<SupportDataType>[] = [
@@ -37,7 +44,7 @@ export const supportColumns: ColumnDef<SupportDataType>[] = [
     accessorKey: "status",
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => (
-      <div className={`capitalize text-center border ${row.getValue("status") === "Solved" ? "text-green-500 border-green-500" : "text-red-500 border-red-500"} capitalize text-center text-semibold py-1 rounded-md`}>{row.getValue("status")}</div>
+      <div onClick={() => handleStatus(row.original)} className={`capitalize text-center border ${row.getValue("status") === "Solved" ? "text-green-500 border-green-500 hover:text-green-600 hover:border-green-600" : "text-red-500 border-red-500 hover:text-red-600 hover:border-red-600"} hover:font-semibold capitalize text-center text-semibold py-1 rounded-md cursor-pointer transition-all duration-300`}>{row.getValue("status")}</div>
     ),
   },
   {
