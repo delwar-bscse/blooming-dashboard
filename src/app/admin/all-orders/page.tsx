@@ -16,6 +16,7 @@ import { myFetch } from "@/utils/myFetch";
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import CustomModalFilter from '@/components/cui/CustomModalFilter';
+import { dynamicFilterValue } from '@/constant/filterValue';
 
 
 
@@ -32,36 +33,7 @@ import CustomModalFilter from '@/components/cui/CustomModalFilter';
 //   }
 // ];
 
-const dynamicFilterValue = [
-  // {
-  //   value: 'all',
-  //   label: 'All Orders',
-  // },
-  {
-    value: 'pending',
-    label: 'Pending Orders',
-  },
-  {
-    value: 'approved',
-    label: 'Approved Orders',
-  },
-  {
-    value: 'ongoing',
-    label: 'Ongoing Orders',
-  },
-  {
-    value: 'delivered',
-    label: 'Delivered Orders',
-  },
-  {
-    value: 'revision',
-    label: 'Revision Orders',
-  },
-  {
-    value: 'completed',
-    label: 'Completed Orders',
-  },
-]
+
 
 
 const AllOrders = () => {

@@ -17,13 +17,19 @@ type TSelectOptions = {
 }
 
 
-const CustomSelectOption = ({selectOptions, placeHolderValue, queryKey}: {selectOptions: TSelectOptions[], placeHolderValue: string, queryKey: string}) => {
+const CustomSelectOption = ({ selectOptions, placeHolderValue, queryKey }: { selectOptions: TSelectOptions[], placeHolderValue: string, queryKey: string }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedValue = searchParams.get(queryKey);
 
   return (
-    <Select onValueChange={value => router.push(`?${queryKey}=${value}`)}>
+    <Select
+      onValueChange={value => {
+        const params = new URLSearchParams(Array.from(searchParams.entries()));
+        params.set(queryKey, value);
+        router.push(`?${params.toString()}`);
+      }}
+    >
       <SelectTrigger className="cursor-pointer">
         <SelectValue placeholder={selectedValue || placeHolderValue} />
       </SelectTrigger>

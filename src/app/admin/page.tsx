@@ -6,8 +6,8 @@ import TotalRevenue from "@/components/section/TotalRevenue";
 export default function Home() {
 
   return (
-    <div>
-      <div className="pt-4">
+    <div className="py-8 px-4">
+      <div className="">
         <GeneralStateSection />
       </div>
       <div className="md:flex w-full items-center gap-6 mt-6 pb-4">

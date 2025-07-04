@@ -12,6 +12,7 @@ import CustomStep from "@/components/cui/CustomStep";
 import OrderFilter from "@/components/modal/OrderFilter";
 import { creatorOrderColumns } from "@/tableColumn/creatorOrdersColumns";
 import { creatorOrderDatas } from "@/data/creatorOrderDatas";
+import { dynamicFilterValue } from "@/constant/filterValue";
 
 
 
@@ -53,7 +54,7 @@ const AllOrders = () => {
             }
           >
             <div>
-              <OrderFilter />
+              <OrderFilter  dynamicFilterValue={dynamicFilterValue}/>
             </div>
           </CustomModal>
         </div>

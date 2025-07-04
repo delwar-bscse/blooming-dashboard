@@ -9,75 +9,42 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import CustomSelectOption from "../cui/CustomSelectOption";
+import { selectOptionsRevenue } from "@/constant/videoSelectDatasts";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { myFetch } from "@/utils/myFetch";
 
-const data = [
-  {
-    name: "Jan",
-    Sales: 4000,
-    Revenue: 400,
-  },
-  {
-    name: "Feb",
-    Sales: 3000,
-    Revenue: 1398,
-  },
-  {
-    name: "Mar",
-    Sales: 6800,
-    Revenue: 3200,
-  },
-  {
-    name: "Apr",
-    Sales: 4780,
-    Revenue: 1908,
-  },
-  {
-    name: "May",
-    Sales: 4890,
-    Revenue: 2800,
-  },
-  {
-    name: "Jun",
-    Sales: 3390,
-    Revenue: 2800,
-  },
-  {
-    name: "Jul",
-    Sales: 3490,
-    Revenue: 1300,
-  },
-  {
-    name: "Aug",
-    Sales: 4000,
-    Revenue: 2400,
-  },
-  {
-    name: "Sep",
-    Sales: 3000,
-    Revenue: 1398,
-  },
-  {
-    name: "Oct",
-    Sales: 6800,
-    Revenue: 3200,
-  },
-  {
-    name: "Nov",
-    Sales: 4780,
-    Revenue: 1908,
-  },
-  {
-    name: "Dec",
-    Sales: 4890,
-    Revenue: 2800,
-  }
-];
+const monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 
 const SalesTrackingChart = () => {
+  const [data, setData] = useState([]);
+  const searchParams = useSearchParams();
+  const revenueDuration = searchParams.get("revenueDuration") ?? "2025";
+
+  useEffect(() => {
+    const getGraphDate = async () => {
+      const res = await myFetch(`/payment/all-income-rasio?year=${revenueDuration}`);
+      // console.log(res?.data);
+      if (res?.success) {
+        const formatData = res?.data?.map((item: { month: number; totalIncome: number }) => ({
+          month: monthArray[item.month - 1],
+          totalIncome: item.totalIncome
+        }))
+        setData(formatData);
+      }
+    };
+    getGraphDate();
+  }, [revenueDuration]);
+
   return (
     <>
-      <p className="text-base font-semibold px-4 py-1">total revenue</p>
-      <ResponsiveContainer width="90%" height={310}>
+      <div className="flex items-center justify-between mb-4 px-6 py-4">
+        <h2 className="text-4xl font-bold text-gray-700">Total Subscription</h2>
+        <CustomSelectOption selectOptions={selectOptionsRevenue} placeHolderValue="Select Year" queryKey="revenueDuration" />
+      </div>
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart
           data={data}
           margin={{
@@ -89,13 +56,13 @@ const SalesTrackingChart = () => {
           barCategoryGap="30%" // Adjust gap between bars
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" tickLine={false} axisLine={false} />
+          <XAxis dataKey="month" tickLine={false} axisLine={false} />
           <YAxis tickLine={false} axisLine={false} tickMargin={20} />
           <Tooltip />
           {/* <Legend /> */}
           {/* Thinner bars */}
           <Bar
-            dataKey="Revenue"
+            dataKey="totalIncome"
             stackId="a"
             fill="#828D97"
             background={{ fill: '#DEE5EC' }}

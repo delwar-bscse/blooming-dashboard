@@ -1,16 +1,40 @@
-import React from 'react'
+"use client";
+
+import { myFetch } from '@/utils/myFetch';
+import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
+import CustomSelectOption from '../cui/CustomSelectOption';
+import { selectOptionsSubscription } from '@/constant/videoSelectDatasts';
 
 const TotalRevenue = () => {
+  const [data, setData] = useState<string>("");
+  const searchParams = useSearchParams();
+  const brandEngagementDuration = searchParams.get("brandEngagementDuration") ?? "7day";
+
+  useEffect(() => {
+    const getGraphDate = async () => {
+      const res = await myFetch(`/payment/brand-engagement?days=${brandEngagementDuration}`);
+      console.log("Active Users: ", res?.data);
+      if (res?.success) {
+        setData(res?.data);
+      }
+    };
+    getGraphDate();
+  }, [brandEngagementDuration]);
+
   const orderSummary = {
     doneByProfessionals: 65,
     doneByFreelancers: 35,
   };
 
   return (
-    <div className=" border rounded-2xl bg-white p-4 flex flex-col items-center">
-      <h1 className="text-lg font-semibold mb-4">brand engagement</h1>
+    <div className="border rounded-2xl bg-white p-4 flex flex-col items-center">
+      <div className="w-full flex items-center justify-between mb-12 ">
+        <h2 className="text-2xl font-bold text-gray-700">Brand Engagement</h2>
+        <CustomSelectOption selectOptions={selectOptionsSubscription} placeHolderValue="Weekly" queryKey="brandEngagementDuration"/>
+      </div>
 
-      <div className="relative w-60 h-60 mb-6">
+      <div className="relative w-80 h-88 mb-6">
         <svg
           className="absolute inset-0 transform -rotate-90"
           viewBox="0 0 36 36"

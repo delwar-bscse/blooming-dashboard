@@ -1,5 +1,8 @@
 "use client"
 
+import { myFetch } from '@/utils/myFetch';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import {
   XAxis,
   YAxis,
@@ -9,69 +12,64 @@ import {
   Area,
   ResponsiveContainer,
 } from "recharts";
-  import type { TooltipProps } from "recharts";
+import type { TooltipProps } from "recharts";
+import { selectOptionsSubscription } from '@/constant/videoSelectDatasts';
+import CustomSelectOption from '../cui/CustomSelectOption';
+import { useSearchParams } from 'next/navigation';
+
+interface TData {
+  dateHour: string;
+  totalUsers: number;
+}
 
 
-const SubscriptionGraph = () => {
-  const subscriptionData = {
-    data: [
-      {
-        weekMontYear: "Jan",
-        subscriber: 4000,
-      },
-      {
-        weekMontYear: "Feb",
-        subscriber: 3000,
-      },
-      {
-        weekMontYear: "Mar",
-        subscriber: 5000,
-      },
-      {
-        weekMontYear: "Apr",
-        subscriber: 4780,
-      },
-      {
-        weekMontYear: "May",
-        subscriber: 5890,
-      },
-      {
-        weekMontYear: "Jun",
-        subscriber: 3490,
-      },
-      {
-        weekMontYear: "Jul",
-        subscriber: 3490,
-      },
-      {
-        weekMontYear: "Aug",
-        subscriber: 2000,
-      },
-      {
-        weekMontYear: "Sep",
-        subscriber: 6490,
-      },
-      {
-        weekMontYear: "Oct",
-        subscriber: 3000,
-      },
-      {
-        weekMontYear: "Nov",
-        subscriber: 3490,
-      },
-      {
-        weekMontYear: "Dec",
-        subscriber: 2500,
-      },
+export function formatDay(dateStr: string) {
+  const day = dayjs(dateStr).format('dddd');
 
-    ]
-  }
+  return day;
+}
+
+export function formatHour(datetimeStr: string) {
+  const hour = dayjs(datetimeStr).format('HH');
+
+  return hour;
+}
+
+
+function SubscriptionGraph() {
+  const [data, setData] = useState([]);
+  const searchParams = useSearchParams();
+  const subscriptionDuration = searchParams.get("subscriptionDuration") ?? "7day";
+
+  useEffect(() => {
+    const getGraphDate = async () => {
+      const res = await myFetch(`/payment/all-subsription-users-rasio?days=${subscriptionDuration}`);
+      // console.log(res?.data);
+      if (res?.success) {
+        if(subscriptionDuration === "7day") {
+          const formatedData = res?.data?.map((item:TData) => ({
+            dateHour: formatDay(item.dateHour),
+            totalUsers: item.totalUsers
+          }));
+          setData(formatedData);
+        }
+        if(subscriptionDuration === "24hour") {
+          const formatedData = res?.data?.map((item:TData) => ({
+            dateHour: formatHour(item.dateHour),
+            totalUsers: item.totalUsers
+          }));
+          setData(formatedData);
+        }
+      }
+    };
+    getGraphDate();
+  }, [subscriptionDuration]);
+
 
   // Custom Tooltip Function
-
   const renderCustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
-      const { weekMontYear, subscriber } = payload[0].payload; // Access the specific data point
+      const { dateHour, totalUsers } = payload[0].payload; // Access the specific data point
       return (
         <div
           style={{
@@ -84,8 +82,8 @@ const SubscriptionGraph = () => {
             boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Optional: Adds a subtle shadow
           }}
         >
-          <p><strong>{subscriber}</strong> Subscribers</p>
-          <p><strong>{weekMontYear}, 2025</strong></p>
+          <p><strong>{totalUsers}</strong> Subscribers</p>
+          <p><strong>{dateHour}, 2025</strong></p>
         </div>
       );
     }
@@ -93,11 +91,14 @@ const SubscriptionGraph = () => {
   };
 
   return (
-    <div className="w-full border-gray-300 rounded-2xl p-3 bg-white">
-      <h4 className="text-2xl font-semibold text-gray-800 py-4 pl-6 capitalize">total subscription weekly</h4>
+    <div className="w-full border-gray-300 rounded-2xl p-3 bg-white py-10">
+      <div className="flex items-center justify-between mb-4 px-10 pb-8">
+        <h2 className="text-4xl font-bold text-gray-700">Total Subscription</h2>
+        <CustomSelectOption selectOptions={selectOptionsSubscription} placeHolderValue="Weekly" queryKey="subscriptionDuration"/>
+      </div>
       <ResponsiveContainer width="100%" height={500}>
         <AreaChart
-          data={subscriptionData?.data}
+          data={data}
           syncId="anyId"
           margin={{
             top: 20,
@@ -107,7 +108,7 @@ const SubscriptionGraph = () => {
           }}
         >
           <CartesianGrid strokeDasharray="0 4" />
-          <XAxis dataKey="weekMontYear" tick={{ fontSize: 14 }} tickLine={false} axisLine={false} tickMargin={20} />
+          <XAxis dataKey="dateHour" tick={{ fontSize: 14 }} tickLine={false} axisLine={false} tickMargin={20} />
           <YAxis tickLine={false} axisLine={false} tickMargin={20} />
           <Tooltip content={renderCustomTooltip} />
 
@@ -122,7 +123,7 @@ const SubscriptionGraph = () => {
           {/* Area with gradient fill */}
           <Area
             type="monotone"
-            dataKey="subscriber"
+            dataKey="totalUsers"
             stroke="#6D715F"
             strokeWidth={6}
             fill="url(#gradientColor)" // Apply gradient by referencing its ID
@@ -137,6 +138,6 @@ const SubscriptionGraph = () => {
       </ResponsiveContainer>
     </div>
   );
-};
+}
 
 export default SubscriptionGraph;
