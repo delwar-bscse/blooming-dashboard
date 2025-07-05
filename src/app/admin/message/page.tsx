@@ -1,12 +1,13 @@
 "use client";
 
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { LuSquareArrowOutUpRight } from "react-icons/lu";
 import { TbChecks } from "react-icons/tb";
 import ProfileImg from "@/assets/common/profileImage02.png"
 import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input"
+import { io } from "socket.io-client";
 
 
 const adminMessage = [
@@ -28,6 +29,28 @@ const adminMessage = [
 
 const Message = () => {
   const router = useRouter();
+
+    // handle live chatting
+  const socket = useMemo(() => io("http://localhost:3000"), []);
+  // socket.on("connect", () => {
+  //   console.log("Connected to socket");
+  // });
+ 
+  useEffect(() => {
+    const handleGetMessage = () => {
+      console.log("Get Message");
+      // revalidateTags(["chats"]);
+      // setRefetch((prev) => !prev);
+    };
+ 
+    // const eventName = `getMessages::${profileData?._id}`;
+    const eventName = `sdjflsjad`;
+ 
+    socket.on(eventName, handleGetMessage);
+    return () => {
+      socket.off(eventName, handleGetMessage);
+    };
+  }, [socket]);
 
   
 

@@ -3,12 +3,12 @@
 import CustomStep from '@/components/cui/CustomStep';
 import CreatorProjectDetails from '@/components/section/CreatorProjectDetails';
 import CreatorScript from '@/components/section/CreatorScript';
-import CreatorVideoUpload from '@/components/section/CreatorVideoUpload';
 import { StepDataType } from '@/type/type';
 import { useSearchParams } from 'next/navigation';
 import React from 'react'
 import { AnimatePresence, motion } from "framer-motion";
 import CreatorVideoGuidelines from '@/components/section/CreatorVideoGuidelines';
+import CreatorVideoUpload from '@/components/cui/CreatorVideoUpload';
 
 
 const CreatorProjectDetailsPage = () => {

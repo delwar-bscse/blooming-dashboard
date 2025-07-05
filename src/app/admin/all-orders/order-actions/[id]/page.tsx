@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client"
 
@@ -10,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { adminCreatorListColumns } from '@/tableColumn/adminCreatorsListColumns';
 import { StepDataType } from '@/type/type';
 import { SlidersHorizontal } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
 import { myFetch } from '@/utils/myFetch';
@@ -42,7 +43,9 @@ const OrderActions = () => {
   const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const [agreedCreatorsDatas, setAgreedCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const searchParams = useSearchParams();
+  const params = useParams();
   const step = searchParams.get("step");
+  const creatorId = params["id"];
 
   // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
 
@@ -60,16 +63,21 @@ const OrderActions = () => {
 
   const getAgreedCreators = async () => {
     toast.loading("Fetching AgreedCreators...", { id: "fetchAgreedCreators" });
-    const res = await myFetch(`/assign-task-creator?status=request_approved`);
+    const res = await myFetch(`/assign-task-creator?status=request_approved&hireCreatorId=${creatorId}`);
     if (res?.data) {
       console.log(res?.data);
-      // const creatorIds = res?.data.map((item: any) => {
-      //   {
-      //     _id: item?._id
-
-      //   }
-      // });
-      setAgreedCreatorsDatas(res?.data);
+      const modifyDatas = res?.data?.map((item: any) => {
+        return {
+          _id: item?._id,
+          accountHolderName: item?.hireCreatorUserId?.fullName,
+          email: item?.hireCreatorUserId?.email,
+          phone: item?.hireCreatorUserId?.phone,
+          country: item?.hireCreatorUserId?.address,
+          status: item?.status
+        }
+      });
+      console.log(modifyDatas);
+      setAgreedCreatorsDatas(modifyDatas);
       toast.success("All agreed creators fetched successfully!", { id: "fetchAgreedCreators" });
     } else {
       toast.error(res?.message || "Agreed Creators Fetching failed!", { id: "fetchAgreedCreators" });

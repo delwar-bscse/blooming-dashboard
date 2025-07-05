@@ -17,6 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { toast } from "sonner"
+import { myFetch } from "@/utils/myFetch"
 
 interface RowWithId {
   _id: string | number;
@@ -49,6 +51,19 @@ function CustomTableRadio<TData extends RowWithId>({ data, columns }: CustomTabl
   //   };
   //   return [radioCol, ...columns];
   // }, [columns]);
+  const handleApprove = async (hiredCreatorId: string) => {
+    toast.loading("Approving...", { id: "approved" });
+    console.log("Approved: ", hiredCreatorId);
+    const res = await myFetch(`/assign-task-creator/approved/${hiredCreatorId}`, {
+      method: "PATCH",
+    })
+    console.log(res?.data);
+    if (res?.data) {
+      toast.success("Approved successfully!", { id: "approved" });
+    } else {
+      toast.error(res?.message || "Updating failed!", { id: "approved" });
+    }
+  }
 
   const table = useReactTable({
     data,
@@ -86,9 +101,9 @@ function CustomTableRadio<TData extends RowWithId>({ data, columns }: CustomTabl
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -126,9 +141,7 @@ function CustomTableRadio<TData extends RowWithId>({ data, columns }: CustomTabl
         <div className="flex items-center justify-end gap-2 py-4">
           <button
             className="mb-4 px-4 py-2 bg-green-700 text-white rounded"
-            onClick={() =>
-              console.log("Selected ID: " + selectedIds.join(", "))
-            }
+            onClick={() => handleApprove(selectedIds.join(", "))}
           >
             {step === "creator-list" && "Select Creator"}
             {step === "agreed-creators" && "Approve Creator"}
