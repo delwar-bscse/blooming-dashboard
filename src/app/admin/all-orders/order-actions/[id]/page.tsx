@@ -18,6 +18,7 @@ import { myFetch } from '@/utils/myFetch';
 import { toast } from 'sonner';
 import { PartialExceptId, TSingleCreator } from '@/type/creatorDataTypes';
 import CustomTableRadio from '@/components/table/CustomTableRadio';
+import CreatorDetails from '@/components/cui/CreatorDetails';
 
 const stepDatas: StepDataType[] = [
   {
@@ -32,8 +33,8 @@ const stepDatas: StepDataType[] = [
   },
   {
     id: 3,
-    title: "Approved Creators",
-    label: "approved-creators",
+    title: "Approved Creator",
+    label: "approved-creator",
   }
 ];
 
@@ -41,11 +42,12 @@ const stepDatas: StepDataType[] = [
 
 const OrderActions = () => {
   const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
+  const [creator, setCreator] = useState<PartialExceptId<TSingleCreator>>({} as PartialExceptId<TSingleCreator>);
   const [agreedCreatorsDatas, setAgreedCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const searchParams = useSearchParams();
   const params = useParams();
   const step = searchParams.get("step");
-  const creatorId = params["id"];
+  const hireCreatorId = params["id"];
 
   // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
 
@@ -61,9 +63,21 @@ const OrderActions = () => {
     }
   }
 
+   const getApprovedCreator = async () => {
+    toast.loading("Fetching Approved Creator...", { id: "fetchCreator" });
+    const res = await myFetch(`/hire-creator/${hireCreatorId}`);
+    console.log(res?.data?.creatorId);
+    if (res?.data?.creatorId) {
+      setCreator(res?.data?.creatorId);
+      toast.success("Approved creator fetched successfully!", { id: "fetchCreator" });
+    } else {
+      toast.error(res?.message || "Approved Creator Fetching failed!", { id: "fetchCreator" });
+    }
+  }
+
   const getAgreedCreators = async () => {
     toast.loading("Fetching AgreedCreators...", { id: "fetchAgreedCreators" });
-    const res = await myFetch(`/assign-task-creator?status=request_approved&hireCreatorId=${creatorId}`);
+    const res = await myFetch(`/assign-task-creator?status=request_approved&hireCreatorId=${hireCreatorId}`);
     if (res?.data) {
       console.log(res?.data);
       const modifyDatas = res?.data?.map((item: any) => {
@@ -87,9 +101,16 @@ const OrderActions = () => {
 
 
   useEffect(() => {
-    getCreators();
-    getAgreedCreators();
-  }, [])
+    if(step === "creator-list") {
+      getCreators();
+    } 
+    if (step === "agreed-creators") {
+      getAgreedCreators();
+    } 
+    if (step === "approved-creator") {
+      getApprovedCreator();
+    }
+  }, [step])
 
 
   return (
@@ -141,7 +162,7 @@ const OrderActions = () => {
             {agreedCreatorsDatas && <CustomTableRadio<PartialExceptId<TSingleCreator>> data={agreedCreatorsDatas} columns={adminCreatorListColumns} />}
           </motion.div>
         )}
-        {step === "approved-creators" && (
+        {step === "approved-creator" && (
           <motion.div
             key="video-upload"
             initial={{ opacity: 0 }}
@@ -149,7 +170,7 @@ const OrderActions = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {/* <CustomTable<CreatorDataType> columns={creatorColumns} data={creatorDatas} /> */}
+            <CreatorDetails creator={creator} />
           </motion.div>
         )}
       </AnimatePresence>

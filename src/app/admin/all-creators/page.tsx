@@ -11,11 +11,11 @@ import { CustomSearchBar } from "@/components/cui/CustomSearchBar";
 // import { SlidersHorizontal } from "lucide-react";
 import CustomStep from "@/components/cui/CustomStep";
 // import CreatorFilter from "@/components/modal/CreatorFilter";
-import { creatorColumns } from "@/tableColumn/creatorsColumns";
 import { myFetch } from "@/utils/myFetch";
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useSearchParams } from 'next/navigation';
+import { creatorColumns } from '@/tableColumn/CreatorsColumns';
 
 
 
