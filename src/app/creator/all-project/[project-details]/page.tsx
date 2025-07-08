@@ -30,14 +30,14 @@ const CreatorProjectDetailsPage = () => {
     },
     {
       id: 3,
-      title: "Video upload",
-      label: "video-upload",
+      title: "Script",
+      label: "script",
     },
     {
       id: 4,
-      title: "Script",
-      label: "script",
-    }
+      title: "Video upload",
+      label: "video-upload",
+    },
   ];
 
   return (

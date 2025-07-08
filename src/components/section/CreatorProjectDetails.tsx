@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import StarEmogi from "@/assets/common/star.png"
@@ -15,7 +16,7 @@ const CreatorProjectDetails = () => {
   const router = useRouter();
   const [orderDetails, setOrderDetails] = useState<TOrdersData>({} as TOrdersData);
   const params = useParams();
-  const id = params["order-details"];
+  const id = params["project-details"];
 
 
   const getOrderDetails = async () => {
@@ -115,11 +116,11 @@ const SubComponent = ({ title, list }: { title: string; list: any }) => {
     <div>
       <h2 className='text-2xl font-bold mb-4'>{title}</h2>
       <ul className='space-y-1.5'>
-        {Object.entries(list).map(([key, value], index) => {
+        {Object.entries(list)?.map(([key, value], index) => {
           if (key === "_id") return null;
           return <li key={index} className="list-disc list-inside pl-4 text-gray-600">
             <span className="font-semibold text-gray-700 text-lg capitalize">{key ?? ""}:</span><br />
-            <span className="pl-6">{value}</span>
+            <span className="pl-6">{String(value)}</span>
           </li>
         })}
       </ul>

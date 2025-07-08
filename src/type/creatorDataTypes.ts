@@ -1,3 +1,5 @@
+export type  TSelectionOptions = { value: string; label: string }
+
 interface UGCExampleVideo {
   key: string;
   url: string;

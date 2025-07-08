@@ -24,7 +24,8 @@ import { BsUpload } from "react-icons/bs";
 import { myFetch } from '@/utils/myFetch';
 // import { LuUpload } from "react-icons/lu";
 import { toast } from 'sonner';
-import { useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
+// import { TOrdersData } from '@/type/orderDataTypes';
 
 
 
@@ -52,8 +53,9 @@ const defaultValues: Partial<VideoUploadFormValues> = {
 
 
 const CreatorVideoUpload = () => {
-  const searchParams = useSearchParams();
-  const category = searchParams.get('category');
+  // const [orderDetails, setOrderDetails] = useState<TOrdersData>({} as TOrdersData);
+  const params = useParams();
+    const hireCreatorId = params["project-details"];
 
   const [awsVideoUrls, setAwsVideoUrls] = useState<string[]>([]);
   const form = useForm<VideoUploadFormValues>({
@@ -62,17 +64,40 @@ const CreatorVideoUpload = () => {
     mode: "onChange",
   });
 
+    // const getOrderDetails = async () => {
+    //   console.log(hireCreatorId);
+  
+    //   toast.loading("Order Details Fetching...", { id: "fetch" });
+    //   const res = await myFetch(`/hire-creator/${hireCreatorId}`, {
+    //     method: "GET",
+    //   });
+    //   console.log(res?.data);
+  
+    //   if (res?.data) {
+    //     toast.success("Order Details fetched successfully!", { id: "fetch" });
+    //     setOrderDetails(res?.data);
+    //   } else {
+    //     toast.error(res?.message || "Order Details Fetching failed!", { id: "fetch" });
+    //   }
+    // }
+  
+    // useEffect(() => {
+    //   getOrderDetails();
+    //   console.log(orderDetails)
+    //   // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [])
+
 
   const getAwsVideosUrls = async () => {
     toast.loading("Fetching uploaded videos...", { id: "fetch" });
-    const res = await myFetch(`/upload-video?category=${category}`, {
+    const res = await myFetch(`/hire-creator/${hireCreatorId}`, {
       method: 'GET',
     }
     );
     console.log("Fetch Uploaded Videos Response:", res);
     if (res.success) {
       toast.success("Videos fetched successfully!", { id: "fetch" });
-      setAwsVideoUrls(res?.data?.videos);
+      setAwsVideoUrls(res?.data?.uploadedFiles);
     } else {
       toast.error(res.message || "Fetching failed!", { id: "fetch" });
       // console.error("Fetching failed:", res.message);
@@ -80,14 +105,13 @@ const CreatorVideoUpload = () => {
   };
 
   useEffect(() => {
-    if (!category) return;
     getAwsVideosUrls();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  }, []);
 
   const deleteVideo = async (url: string) => {
     toast.loading("Deleting video...", { id: "delete" });
-    const res = await myFetch('/upload-video', {
+    const res = await myFetch(`/hire-creator/delete-video/${hireCreatorId}`, {
       method: 'DELETE',
       body: {
         videourl: url
@@ -108,19 +132,13 @@ const CreatorVideoUpload = () => {
   async function onSubmit(data: VideoUploadFormValues) {
     toast.loading("Uploading videos...", { id: "upload" });
     // console.log("Submitted Data:", data);
-    if (!category) {
-      toast.error("Please select a category!", { id: "upload" });
-      return;
-    }
-    console.log(category);
     const formData = new FormData();
-    formData.append("category", category);
     data.uploadVideos.forEach((file: File) => {
-      formData.append("videos", file);
+      formData.append("uploadVideos", file);
     });
 
-    const res = await myFetch('/upload-video/create', {
-      method: 'POST',
+    const res = await myFetch(`/hire-creator/uploadVideos/${hireCreatorId}`, {
+      method: 'PATCH',
       body: formData,
     }
     );

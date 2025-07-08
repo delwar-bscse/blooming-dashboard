@@ -16,10 +16,8 @@ export default function CreatorLayout({
         <section className="bg-[#E9EDF2] w-[280px] mx-4">
           <Sidebar menu={creatorMenu}/>
         </section>
-        <section className="flex-1 pr-4 overflow-hidden">
-          <div className="h-full overflow-y-auto hide-scrollbar">
+        <section className="flex-1 pr-4 overflow-y-auto">
             {children}
-          </div>
         </section>
       </main>
     </div>

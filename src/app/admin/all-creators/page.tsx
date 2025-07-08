@@ -40,16 +40,16 @@ const AllCreators = () => {
 
   // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
   const getAllCreators = async() => {
-    toast.loading("Fetching creators...", {id: "fetch"});
+    toast.loading("Fetching creators...", {id: "fetchAllCreators"});
     const res  = await myFetch(`/creator?status=${step}`,{
       method: "GET",
     });
     console.log(res?.data);
     if(res?.data){
-      toast.success("All creators fetched successfully!", {id: "fetch"});
+      toast.success("All creators fetched successfully!", {id: "fetchAllCreators"});
       setAllCreatorsData(res?.data);
     }else {
-      toast.error(res?.message || "Fetching failed!", {id: "fetch"});
+      toast.error(res?.message || "Fetching failed!", {id: "fetchAllCreators"});
     }
   }
 

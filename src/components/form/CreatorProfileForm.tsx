@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Control } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -24,115 +26,90 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
-// import toast, { Toaster } from 'react-hot-toast';
+import { bodyTypeSelectOptions, ethnicitySelectOptions, genderSelectOptions, hairTypeSelectOptions, nicheSelectOptions, skinTypeSelectOptions } from "@/constant/creatorFormDatas";
+import { TSelectionOptions } from "@/type/creatorDataTypes";
+import { contactUsFormSchema } from "@/schemas/profileSchema";
+import VideoViewCard from "../cui/VideoViewCard";
+import { myFetch } from "@/utils/myFetch";
 
 // Schema
-const contactUsFormSchema = z.object({
-  profileImg: z
-    .any()
-    .refine(
-      (file) => file instanceof File && file.type.startsWith("image/"),
-      "Please upload a valid image file"
-    ),
-  fullName: z.string(),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  //-----------------------------//
-  phoneNumber: z.string(),
-  dob: z.string(),
-  country: z.string(),
-  state: z.string(),
-  city: z.string(),
-  postalCode: z.string(),
-  street: z.string(),
-  houseNo: z.string(),
-  //----------------------------//
-  niche: z.string(),
-  Languages: z.string(),
-  profession: z.string(),
-  //--------------------------//
-  gender: z.string(),
-  ethnicity: z.string(),
-  bodyType: z.string(),
-  hairType: z.string(),
-  skinType: z.string(),
-  //--------------------------//
-  tiktokHandle: z.string(),
-  tiktokLink: z.string(),
-  instagramHandle: z.string(),
-  instagramLink: z.string(),
-  otherSocials: z.string(),
-  portfolioLink: z.string(),
-  //--------------------------//
-  ugcExampleVideos: z
-    .any()
-    .refine(
-      (files) =>
-        Array.isArray(files) &&
-        files.length > 0 &&
-        files.length <= 6 &&
-        files.every((file) => file instanceof File && file.type.startsWith("video/")),
-      "Please upload up to 6 valid video files"
-    ),
-  introVideo: z
-    .any()
-    .refine(
-      (file) =>
-        file instanceof File && file.type.startsWith("video/"),
-      "Please upload a valid video file"
-    ),
-});
+
 
 // Type
 type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
 
-const defaultValues: Partial<ContactUsFormValues> = {
-  fullName: "",
-  email: "",
-  phoneNumber: "",
-  dob: "",
-  country: "",
-  state: "",
-  city: "",
-  postalCode: "",
-  street: "",
-  houseNo: "",
-  niche: "",
-  Languages: "",
-  profession: "",
-  gender: "",
-  ethnicity: "",
-  bodyType: "",
-  hairType: "",
-  skinType: "",
-  tiktokHandle: "",
-  tiktokLink: "",
-  instagramHandle: "",
-  instagramLink: "",
-  otherSocials: "",
-  portfolioLink: "",
-  introVideo: [],
-  ugcExampleVideos: [],
-};
+// const defaultValues: Partial<ContactUsFormValues> = {
+//   accountHolderName: "",
+//   email: "",
+//   phone: "",
+//   dateOfBirth: "",
+//   country: "",
+//   state: "",
+//   city: "",
+//   postalCode: "",
+//   street: "",
+//   houseBuildingNo: "",
+//   niche: "",
+//   language: "",
+//   profession: "",
+//   gender: "",
+//   ethnicity: "",
+//   bodyType: "",
+//   hairType: "",
+//   skinType: "",
+//   tiktokHandle: "",
+//   tiktokLink: "",
+//   instragramHandle: "",
+//   instragramLink: "",
+//   othersSocialLink: "",
+//   portfolioLink: "",
+//   introVideo: [],
+//   ugcExampleVideos: [],
+// };
+
 {/* ---------------------------- Sign Up Form ---------------------------- */ }
-const CreatorProfileForm = () => {
+const CreatorProfileForm = ({ myProfile }: { myProfile: any }) => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   const form = useForm<ContactUsFormValues>({
     resolver: zodResolver(contactUsFormSchema),
-    defaultValues,
+    defaultValues: myProfile,
     mode: "onChange",
   });
+
+
 
   useEffect(() => {
     setIsMounted(true);
   }, [isMounted]);
 
-  function onSubmit(data: ContactUsFormValues) {
+  async function onSubmit(data: ContactUsFormValues) {
     // toast.success("Message send successfully!");
     console.log("Submitted Data:", data);
+    const {ugcExampleVideos, introVideo, ...restData} = data
+
+    const formData = new FormData();
+    Object.entries(restData).forEach(([key, value]) => {
+      formData.append(key, value);
+    })
+
+    if (introVideo) {
+      formData.append("introVideo", introVideo[0]);
+    }
+
+    if (ugcExampleVideos?.length > 0) {
+      ugcExampleVideos.forEach((file: File) => {
+        formData.append("ugcExampleVideos", file);
+      });
+    }
+    
+
+    const res = await myFetch(`/creator/update-creator`, {
+      method: "PATCH",
+      body: formData,
+    })
+    console.log(res);
   }
 
   const handleImgUrl = (file: File | null) => {
@@ -146,6 +123,7 @@ const CreatorProfileForm = () => {
       setImgUrl(null);
     }
   };
+
 
   return (
     <div className="w-full max-w-[700px] mx-auto flex text-center justify-center py-20 px-2">
@@ -182,7 +160,7 @@ const CreatorProfileForm = () => {
           </div>
         )}
 
-        <Form {...form}>
+        {myProfile && <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
             {/* Profile Image */}
@@ -209,479 +187,92 @@ const CreatorProfileForm = () => {
             />
 
             {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Full Name</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter full name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <TextInputField control={form.control} name="accountHolderName" label="Full Name" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Email</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Email */}
+            <TextInputField control={form.control} name="email" label="Email" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Phone Number</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter phone number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Phone */}
+            <TextInputField control={form.control} name="phone" label="Phone Number" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="dob"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Date of Birth</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="01.01.2001" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand DOB */}
+            <TextInputField control={form.control} name="dateOfBirth" label="Date of Birth" />
 
             {/*--------------------------------------------------------------*/}
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Country</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter country name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Country */}
+            <TextInputField control={form.control} name="country" label="Country" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="state"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">State</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter state name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand State */}
+            <TextInputField control={form.control} name="state" label="State" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="postalCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Postal Code</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter postal code" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Postal Code */}
+            <TextInputField control={form.control} name="postalCode" label="Postal Code" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">City</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter city name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand City */}
+            <TextInputField control={form.control} name="city" label="City" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">City</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter city name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Street */}
+            <TextInputField control={form.control} name="street" label="Street" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="street"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Street</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter street name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand House No */}
+            <TextInputField control={form.control} name="houseBuildingNo" label="House, Building No" />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="houseNo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">House, Building No</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter house, building no" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             {/*------------------------------------------------------------ */}
-            <FormField
-              control={form.control}
-              name="niche"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Niche (E.G. Beauty, Lifestyle, Fitness)</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange} >
-                    <FormControl>
-                      <SelectTrigger variant="borderblack" className="w-full">
-                        <SelectValue placeholder="Select Niche" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Fitness">Fitness & Health</SelectItem>
-                      <SelectItem value="Beauty & Skin Care">Beauty & Skin Care</SelectItem>
-                      <SelectItem value="Fashion">Fashion</SelectItem>
-                      <SelectItem value="Home Decor">Home Decor</SelectItem>
-                      <SelectItem value="Gardening">Gardening</SelectItem>
-                      <SelectItem value="Food & Drink">Food & Drink</SelectItem>
-                      <SelectItem value="Travel">Travel</SelectItem>
-                      <SelectItem value="Family & Parenting">Family & Parenting</SelectItem>
-                      <SelectItem value="Gaming">Gaming</SelectItem>
-                      <SelectItem value="Pets & Animals">Pets & Animals</SelectItem>
-                      <SelectItem value="Tech & Gadgets">Tech & Gadgets</SelectItem>
-                      <SelectItem value="Business Money">Business Money</SelectItem>
-                      <SelectItem value="Digital Products">Digital Products</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="Languages"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Languages Spoken</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="profession"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Job/Profession</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Niche */}
+            <SelectInputField control={form.control} name="niche" label="Select Niche" options={nicheSelectOptions} />
+
+            {/* Brand Languages */}
+            <TextInputField control={form.control} name="language" label="Languages Spoken" />
+
+            {/* Brand Profession */}
+            <TextInputField control={form.control} name="profession" label="Profession" />
+
 
             {/* -------------------------------------------------------------- */}
-             {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Gender</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange} >
-                    <FormControl>
-                      <SelectTrigger variant="borderblack" className="w-full">
-                        <SelectValue placeholder="Select Gender" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Male">Male</SelectItem>
-                      <SelectItem value="Female">Female</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Gender */}
+            <SelectInputField control={form.control} name="gender" label="Gender" options={genderSelectOptions} />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="ethnicity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Ethnicity</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange} >
-                    <FormControl>
-                      <SelectTrigger variant="borderblack" className="w-full">
-                        <SelectValue placeholder="Select Ethnicity" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="White & European">White & European</SelectItem>
-                      <SelectItem value="African">African</SelectItem>
-                      <SelectItem value="Middle Eastern">Middle Eastern</SelectItem>
-                      <SelectItem value="Asian">Asian</SelectItem>
-                      <SelectItem value="Hispanic">Hispanic</SelectItem>
-                      <SelectItem value="Latino">Latino</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Ethnicity */}
+            <SelectInputField control={form.control} name="ethnicity" label="Ethnicity" options={ethnicitySelectOptions} />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="bodyType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Body Type</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange} >
-                    <FormControl>
-                      <SelectTrigger variant="borderblack" className="w-full">
-                        <SelectValue placeholder="Select Body Type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Slim">Slim</SelectItem>
-                      <SelectItem value="Fit">Fit</SelectItem>
-                      <SelectItem value="Plus Size">Plus Size</SelectItem>
-                      <SelectItem value="Athletic">Athletic</SelectItem>
-                      <SelectItem value="Curvy">Curvy</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand Body Type */}
+            <SelectInputField control={form.control} name="bodyType" label="Body Type" options={bodyTypeSelectOptions} />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="hairType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Hair Type</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange} >
-                    <FormControl>
-                      <SelectTrigger variant="borderblack" className="w-full">
-                        <SelectValue placeholder="Select Hair Type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Straight">Straight</SelectItem>
-                      <SelectItem value="Curly">Curly</SelectItem>
-                      <SelectItem value="Long">Long</SelectItem>
-                      <SelectItem value="Short">Short</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand  Hair Type */}
+            <SelectInputField control={form.control} name="hairType" label="Hair Type" options={hairTypeSelectOptions} />
 
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="skinType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Skin Type</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange} >
-                    <FormControl>
-                      <SelectTrigger variant="borderblack" className="w-full">
-                        <SelectValue placeholder="Select Skin Type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Oily">Oily</SelectItem>
-                      <SelectItem value="Dry">Dry</SelectItem>
-                      <SelectItem value="Acne Prone">Acne Prone</SelectItem>
-                      <SelectItem value="Combination">Combination</SelectItem>
-                      <SelectItem value="Sensitive">Sensitive</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Brand Name
-            <FormField
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Gender</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange} >
-                    <FormControl>
-                      <SelectTrigger variant="borderblack" className="w-full">
-                        <SelectValue placeholder="Select Gender" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Male">Male</SelectItem>
-                      <SelectItem value="Female">Female</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
+            {/* Brand Skin Type */}
+            <SelectInputField control={form.control} name="skinType" label="Skin Type" options={skinTypeSelectOptions} />
 
             {/* ------------------------------------------------------------------ */}
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="tiktokHandle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">TikTok Handle</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="tiktokLink"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">TikTok Link</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="instagramHandle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Instagram Handle</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="instagramLink"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Instagram Link</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="otherSocials"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Other Socials (YouTube, Threads, Etc.)</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Type/paste..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Brand Name */}
-            <FormField
-              control={form.control}
-              name="portfolioLink"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Portfolio Link</FormLabel>
-                  <FormControl>
-                    <Input variant="borderblack" placeholder="Enter your portfolio link" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Brand tiktok handle */}
+            <TextInputField control={form.control} name="tiktokHandle" label="TikTok Handle" />
+
+
+            {/* Brand tiktok link */}
+            <TextInputField control={form.control} name="tiktokLink" label="TikTok Link" />
+
+
+
+            {/* Brand Instagram Handle */}
+            <TextInputField control={form.control} name="instragramHandle" label="Instagram Handle" />
+
+
+            {/* Brand Instagram Link */}
+            <TextInputField control={form.control} name="instragramLink" label="Instagram Link" />
+
+
+            {/* Brand Other Socials */}
+            <TextInputField control={form.control} name="othersSocialLink" label="Other Socials" />
+
+
+            {/* Brand Portfolio Link */}
+            <TextInputField control={form.control} name="portfolioLink" label="Portfolio Link" />
+
 
             {/* ------------------------------------------------------------------ */}
-             {/* Brand Name */}
+            {/* Brand UGC Example Videos */}
             <FormField
               control={form.control}
               name="ugcExampleVideos"
@@ -689,23 +280,29 @@ const CreatorProfileForm = () => {
                 <FormItem>
                   <FormLabel className="text-lg">UGC Example Videos (Upload Only 6 videos)</FormLabel>
                   <FormControl>
-                      <Input
-                        variant="borderwhiteVideo"
-                        type="file"
-                        accept="video/*"
-                        multiple
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files ?? []);
-                          field.onChange(files);
-                        }}
-                      />
+                    <Input
+                      variant="borderwhiteVideo"
+                      type="file"
+                      accept="video/*"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files ?? []);
+                        field.onChange(files);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-2 gap-4">
+              {myProfile?.ugcExampleVideo?.map((item:any) => (
+                <VideoViewCard key={item?.key} videoUrl={item?.url} />
+              ))
+              }
+            </div>
 
-            {/* Brand Name */}
+            {/* Brand Intro Video */}
             <FormField
               control={form.control}
               name="introVideo"
@@ -713,29 +310,103 @@ const CreatorProfileForm = () => {
                 <FormItem>
                   <FormLabel className="text-lg">Introduction Video (Upload Only 1 video 30 seconds)</FormLabel>
                   <FormControl>
-                      <Input
-                        variant="borderwhiteVideo"
-                        type="file"
-                        accept="video/*"
-                        onChange={(e) => field.onChange(e.target.files?.[0])}
-                      />
+                    <Input
+                      variant="borderwhiteVideo"
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => field.onChange(e.target.files?.[0])}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            <div className="grid grid-cols-2 gap-4">
+              <VideoViewCard videoUrl={myProfile?.introductionvideo} />
+            </div>
+
             {/* Submit */}
             <Button variant="customYellow" type="submit" size="llg" className="w-full">
               Save & Change
             </Button>
           </form>
-        </Form>
+        </Form>}
 
         {/* <Toaster  position="top-right" reverseOrder={false}/> */}
 
       </div>
     </div>
+  );
+};
+
+
+
+// Input Fields Components //
+const TextInputField = ({
+  control,
+  name,
+  label,
+}: {
+  control: Control<ContactUsFormValues>;
+  name: keyof ContactUsFormValues;
+  label: string;
+}) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="text-lg">{label}</FormLabel>
+          <FormControl>
+            <Input variant="borderblack" placeholder="Enter full name" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+
+// Select Fields Components //
+const SelectInputField = ({
+  control,
+  name,
+  label,
+  options
+}: {
+  control: Control<ContactUsFormValues>;
+  name: keyof ContactUsFormValues;
+  label: string;
+  options: TSelectionOptions[]
+}) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="text-lg">{label}</FormLabel>
+          <Select value={field.value} onValueChange={field.onChange} >
+            <FormControl>
+              <SelectTrigger variant="borderblack" className="w-full">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {options?.map((option: any) => (
+                <SelectItem key={option?.value} value={option?.value} className='cursor-pointer'>
+                  {option?.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 };
 
