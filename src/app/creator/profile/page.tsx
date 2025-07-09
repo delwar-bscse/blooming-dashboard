@@ -9,10 +9,13 @@ import { toast } from 'sonner';
 const CreatorProfile = () => {
   const [myProfile, setMyProfile] = useState<any>(null);
 
+
   const getMe = async () => {
       toast.loading("Fetching My Profile...", { id: "fetchProfile" });
-      const res = await myFetch(`/creator/me`);
-      // console.log(res?.data);
+      const res = await myFetch(`/creator/me`,{
+        tags: ["creatorProfile"]
+      });
+      console.log("Creator Profile: ", res?.data);
       if (res?.success) {
         toast.success("Profile fetched successfully!", { id: "fetchProfile" });
         setMyProfile(res?.data);
@@ -28,7 +31,7 @@ const CreatorProfile = () => {
 
   return (
     <div>
-      {myProfile && <CreatorProfileForm myProfile={myProfile}/>}
+      {myProfile && <CreatorProfileForm myProfile={myProfile} getMe={getMe}/>}
     </div>
   )
 }

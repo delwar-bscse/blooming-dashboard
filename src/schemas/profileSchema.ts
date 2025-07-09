@@ -1,10 +1,12 @@
 import * as z from "zod";
 
-export const contactUsFormSchema = z.object({
-  profileImg: z
+export const creatorProfileFormSchema = z.object({
+  profile: z
     .any()
+    .optional()
     .refine(
-      (file) => file instanceof File && file.type.startsWith("image/"),
+      (file) =>
+        !file || (file instanceof File && file.type.startsWith("image/")),
       "Please upload a valid image file"
     ),
   accountHolderName: z.string(),
@@ -38,21 +40,23 @@ export const contactUsFormSchema = z.object({
   othersSocialLink: z.string(),
   portfolioLink: z.string(),
   //--------------------------//
-  ugcExampleVideos: z
+  ugcExampleVideo: z
     .any()
+    .optional()
     .refine(
       (files) =>
-        Array.isArray(files) &&
-        files.length > 0 &&
-        files.length <= 6 &&
-        files.every((file) => file instanceof File && file.type.startsWith("video/")),
+        !files ||
+        (Array.isArray(files) &&
+          files.length <= 6 &&
+          files.every((file) => file instanceof File && file.type.startsWith("video/"))),
       "Please upload up to 6 valid video files"
     ),
-  introVideo: z
+  introductionvideo: z
     .any()
+    .optional()
     .refine(
       (file) =>
-        file instanceof File && file.type.startsWith("video/"),
+        !file || (file instanceof File && file.type.startsWith("video/")),
       "Please upload a valid video file"
     ),
 });

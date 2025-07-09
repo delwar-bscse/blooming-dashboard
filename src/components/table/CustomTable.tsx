@@ -31,11 +31,11 @@ function CustomTable<TData>({ data, columns }: CustomTableProps<TData>) {
     columns,
     getCoreRowModel: getCoreRowModel(),
     state: {
-    pagination: {
-      pageIndex: 0,
-      pageSize: data?.length,
+      pagination: {
+        pageIndex: 0,
+        pageSize: data?.length,
+      },
     },
-  },
   })
 
   return (

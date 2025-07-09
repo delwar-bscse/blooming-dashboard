@@ -7,74 +7,33 @@ import { Control } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
 import { bodyTypeSelectOptions, ethnicitySelectOptions, genderSelectOptions, hairTypeSelectOptions, nicheSelectOptions, skinTypeSelectOptions } from "@/constant/creatorFormDatas";
 import { TSelectionOptions } from "@/type/creatorDataTypes";
-import { contactUsFormSchema } from "@/schemas/profileSchema";
+import { creatorProfileFormSchema } from "@/schemas/profileSchema";
 import VideoViewCard from "../cui/VideoViewCard";
 import { myFetch } from "@/utils/myFetch";
+import { toast } from "sonner";
 
 // Schema
 
 
 // Type
-type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
-
-// const defaultValues: Partial<ContactUsFormValues> = {
-//   accountHolderName: "",
-//   email: "",
-//   phone: "",
-//   dateOfBirth: "",
-//   country: "",
-//   state: "",
-//   city: "",
-//   postalCode: "",
-//   street: "",
-//   houseBuildingNo: "",
-//   niche: "",
-//   language: "",
-//   profession: "",
-//   gender: "",
-//   ethnicity: "",
-//   bodyType: "",
-//   hairType: "",
-//   skinType: "",
-//   tiktokHandle: "",
-//   tiktokLink: "",
-//   instragramHandle: "",
-//   instragramLink: "",
-//   othersSocialLink: "",
-//   portfolioLink: "",
-//   introVideo: [],
-//   ugcExampleVideos: [],
-// };
+type creatorProfileFormValues = z.infer<typeof creatorProfileFormSchema>;
 
 {/* ---------------------------- Sign Up Form ---------------------------- */ }
-const CreatorProfileForm = ({ myProfile }: { myProfile: any }) => {
+const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }) => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  const form = useForm<ContactUsFormValues>({
-    resolver: zodResolver(contactUsFormSchema),
-    defaultValues: myProfile,
+  const form = useForm<creatorProfileFormValues>({
+    resolver: zodResolver(creatorProfileFormSchema),
+    defaultValues: {...myProfile, introductionvideo: null, ugcExampleVideo: [], profile: null},
     mode: "onChange",
   });
 
@@ -84,32 +43,48 @@ const CreatorProfileForm = ({ myProfile }: { myProfile: any }) => {
     setIsMounted(true);
   }, [isMounted]);
 
-  async function onSubmit(data: ContactUsFormValues) {
-    // toast.success("Message send successfully!");
+  async function onSubmit(data: creatorProfileFormValues) {
+    toast.loading("Updating Profile...", { id: "updateProfile" });
     console.log("Submitted Data:", data);
-    const {ugcExampleVideos, introVideo, ...restData} = data
+    const { profile, ugcExampleVideo, introductionvideo, ...restData } = data
+    // console.log("Submitted Data:", restData);
+    console.log("Submitted Data:", profile, ugcExampleVideo, introductionvideo);
 
     const formData = new FormData();
     Object.entries(restData).forEach(([key, value]) => {
       formData.append(key, value);
     })
+    // console.log("Submitted Form Data:", JSON.stringify(formData));
 
-    if (introVideo) {
-      formData.append("introVideo", introVideo[0]);
+
+
+    if (profile) {
+      formData.append("profile", profile);
     }
 
-    if (ugcExampleVideos?.length > 0) {
-      ugcExampleVideos.forEach((file: File) => {
-        formData.append("ugcExampleVideos", file);
+    if (introductionvideo) {
+      formData.append("introductionvideo", introductionvideo[0]);
+    }
+
+    if (ugcExampleVideo?.length > 0) {
+      ugcExampleVideo.forEach((file: File) => {
+        formData.append("ugcExampleVideo", file);
       });
     }
-    
+
 
     const res = await myFetch(`/creator/update-creator`, {
       method: "PATCH",
       body: formData,
+      tags: ["creatorProfile"]
     })
-    console.log(res);
+    console.log("Creator Update Response: ", res);
+    if (res.success) {
+      toast.success("Profile updated successfully!", { id: "updateProfile" });
+      getMe();
+    } else {
+      toast.error(res.message || "Profile Update failed!", { id: "updateProfile" });
+    }
   }
 
   const handleImgUrl = (file: File | null) => {
@@ -133,20 +108,14 @@ const CreatorProfileForm = ({ myProfile }: { myProfile: any }) => {
         {isMounted && (
           <div className="relative inline-block">
             <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-3 border-white bg-gray-300">
-              {imgUrl ? (
-                <Image
-                  src={imgUrl}
-                  alt="content image"
-                  className="object-cover w-full"
-                  width={128}
-                  height={128}
-                  unoptimized
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-500">
-                  No Image
-                </div>
-              )}
+              <Image
+                src={imgUrl || myProfile?.userId?.profile}
+                alt="content image"
+                className="object-cover w-full"
+                width={128}
+                height={128}
+                unoptimized
+              />
             </div>
 
             <Image
@@ -166,7 +135,7 @@ const CreatorProfileForm = ({ myProfile }: { myProfile: any }) => {
             {/* Profile Image */}
             <FormField
               control={form.control}
-              name="profileImg"
+              name="profile"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -275,7 +244,7 @@ const CreatorProfileForm = ({ myProfile }: { myProfile: any }) => {
             {/* Brand UGC Example Videos */}
             <FormField
               control={form.control}
-              name="ugcExampleVideos"
+              name="ugcExampleVideo"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-lg">UGC Example Videos (Upload Only 6 videos)</FormLabel>
@@ -296,7 +265,7 @@ const CreatorProfileForm = ({ myProfile }: { myProfile: any }) => {
               )}
             />
             <div className="grid grid-cols-2 gap-4">
-              {myProfile?.ugcExampleVideo?.map((item:any) => (
+              {myProfile?.ugcExampleVideo?.map((item: any) => (
                 <VideoViewCard key={item?.key} videoUrl={item?.url} />
               ))
               }
@@ -305,7 +274,7 @@ const CreatorProfileForm = ({ myProfile }: { myProfile: any }) => {
             {/* Brand Intro Video */}
             <FormField
               control={form.control}
-              name="introVideo"
+              name="introductionvideo"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-lg">Introduction Video (Upload Only 1 video 30 seconds)</FormLabel>
@@ -348,8 +317,8 @@ const TextInputField = ({
   name,
   label,
 }: {
-  control: Control<ContactUsFormValues>;
-  name: keyof ContactUsFormValues;
+  control: Control<creatorProfileFormValues>;
+  name: keyof creatorProfileFormValues;
   label: string;
 }) => {
   return (
@@ -377,8 +346,8 @@ const SelectInputField = ({
   label,
   options
 }: {
-  control: Control<ContactUsFormValues>;
-  name: keyof ContactUsFormValues;
+  control: Control<creatorProfileFormValues>;
+  name: keyof creatorProfileFormValues;
   label: string;
   options: TSelectionOptions[]
 }) => {
