@@ -1,5 +1,19 @@
 import { StaticImageData } from "next/image"
 
+
+export type TMessage = {
+  _id: string;
+  text: string;
+  image: string | null;
+  seen: boolean;
+  sender: string;
+  receiver: string;
+  chatId: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
 // Creator Data type
 export type adminCreatorListDataType = {
   id: string;
@@ -12,13 +26,16 @@ export type adminCreatorListDataType = {
 
 // Support Data type
 export type SupportDataType = {
-  id: number
-  name: string
-  number: string
-  email: string
-  message: string
-  status: "Pending" | "Solved"
+  _id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  message: string;
+  status: "pending" | "solved"; // assuming limited status values
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
+
 
 // Creator All Orders Data type
 export interface creatorOrderDataType {
