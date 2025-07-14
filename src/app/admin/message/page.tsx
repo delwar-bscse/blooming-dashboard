@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { io } from "socket.io-client";
 import { myFetch } from '@/utils/myFetch';
 import dayjs from 'dayjs';
+import { TMessage } from '@/type/type';
 
 
 const adminMessagedata = [
@@ -30,7 +31,7 @@ const adminMessagedata = [
 ]
 
 const Message = () => {
-  const [adminMessage, setAdminMessage] = React.useState();
+  const [adminMessage, setAdminMessage] = React.useState([]);
   const router = useRouter();
 
   const allMessages = async () => {
