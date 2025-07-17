@@ -72,9 +72,14 @@ const AdminVideoUpload = () => {
     console.log("Fetch Uploaded Videos Response:", res);
     if (res.success) {
       toast.success("Videos fetched successfully!", { id: "fetch" });
-      setAwsVideoUrls(res?.data?.videos);
+      if (res?.data?.videos?.length > 0) {
+        setAwsVideoUrls(res?.data?.videos);
+      } else {
+        setAwsVideoUrls([]);
+      }
     } else {
       toast.error(res.message || "Fetching failed!", { id: "fetch" });
+      setAwsVideoUrls([]);
       // console.error("Fetching failed:", res.message);
     }
   };
@@ -187,7 +192,7 @@ const AdminVideoUpload = () => {
         </form>
       </Form>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 py-16">
-        {awsVideoUrls?.map((singleVideo: any) => (
+        {awsVideoUrls?.length > 0 ? awsVideoUrls?.map((singleVideo: any) => (
           <div key={singleVideo?._id} className='relative'>
             <div onClick={() => deleteVideo(singleVideo.url)} className='flex items-center justify-center bg-white p-1 rounded-full shadow w-8 h-8 hover:bg-gray-100 transition-colors duration-300 cursor-pointer group absolute z-10 top-2 right-2'>
               <MdDeleteForever className='text-red-500 cursor-pointer text-xl group-hover:text-red-700 transition-colors duration-300' />
@@ -208,7 +213,9 @@ const AdminVideoUpload = () => {
             <p>ID: {singleVideo?.key}</p>
 
           </div>
-        ))}
+        )) : <div className='col-span-3 flex items-center justify-center'>
+          <p className=' text-gray-500 text-3xl font-semibold'>No videos uploaded yet.</p>
+        </div>}
       </div>
     </div>
   )
