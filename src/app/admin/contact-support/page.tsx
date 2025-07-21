@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 
@@ -9,20 +10,22 @@ import { toast, Toaster } from "sonner";
 import { myFetch } from "@/utils/myFetch";
 import { useEffect, useState } from 'react';
 import CustomSelectOption from '@/components/cui/CustomSelectOption';
+import { useSearchParams } from 'next/navigation';
 
 const selectOptions = [
-  { value: "All", label: "All" },
-  { value: "Pending", label: "Pending" },
-  { value: "Solved", label: "Solved" },
+  { value: "pending", label: "Pending" },
+  { value: "solved", label: "Solved" },
 ]
 
 
 const ContactSupport = () => {
   const [data, setData] = useState<SupportDataType[]>([]);
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category") || "pending";
 
   const getContactSupport = async () => {
     toast.loading("Fetching...", { id: "fetchSupport" });
-    const res = await myFetch("/contact-us", {
+    const res = await myFetch(`/contact-us?status=${category}`, {
       method: "GET",
     })
     console.log(res?.data);
@@ -37,7 +40,7 @@ const ContactSupport = () => {
 
   useEffect(() => {
     getContactSupport();
-  }, [])
+  }, [category])
 
   return (
     <div className="pt-8">

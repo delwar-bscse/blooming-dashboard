@@ -12,15 +12,15 @@ export const dynamicFilterValue = [
     label: 'Ongoing Orders',
   },
   {
-    value: 'delivered',
-    label: 'Delivered Orders',
+    value: 'completed',
+    label: 'Completed Orders',
   },
   {
     value: 'revision',
     label: 'Revision Orders',
   },
   {
-    value: 'completed',
-    label: 'Completed Orders',
+    value: 'delivered',
+    label: 'Delivered Orders',
   },
 ]

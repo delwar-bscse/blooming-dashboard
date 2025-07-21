@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table"
 import { toast } from "sonner";
 import { myFetch } from "@/utils/myFetch";
+import { usePrice } from "@/contexts/PriceContext";
 
 
 
@@ -33,6 +34,7 @@ interface CustomTableProps<TData extends RowWithId> {
 }
 
 function CustomTableSelection<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
+  const { price } = usePrice();
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();
   const params = useParams();
@@ -44,7 +46,7 @@ function CustomTableSelection<TData extends RowWithId>({ data, columns }: Custom
     const payload = {
       creatorsIds: selectedIds,
       hireCreatorId: hireCreatorId,
-      price: 200
+      price
     }
 
     console.log(payload);

@@ -19,6 +19,8 @@ import { toast } from 'sonner';
 import { PartialExceptId, TSingleCreator } from '@/type/creatorDataTypes';
 import CustomTableRadio from '@/components/table/CustomTableRadio';
 import CreatorDetails from '@/components/cui/CreatorDetails';
+import { Input } from '@/components/ui/input';
+import { usePrice } from '@/contexts/PriceContext';
 
 const stepDatas: StepDataType[] = [
   {
@@ -41,6 +43,7 @@ const stepDatas: StepDataType[] = [
 
 
 const OrderActions = () => {
+  const { price, setPrice } = usePrice();
   const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const [creator, setCreator] = useState<PartialExceptId<TSingleCreator>>({} as PartialExceptId<TSingleCreator>);
   const [agreedCreatorsDatas, setAgreedCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
@@ -63,7 +66,7 @@ const OrderActions = () => {
     }
   }
 
-   const getApprovedCreator = async () => {
+  const getApprovedCreator = async () => {
     toast.loading("Fetching Approved Creator...", { id: "fetchCreator" });
     const res = await myFetch(`/hire-creator/${hireCreatorId}`);
     console.log(res?.data?.creatorId);
@@ -83,10 +86,10 @@ const OrderActions = () => {
       const modifyDatas = res?.data?.map((item: any) => {
         return {
           _id: item?._id,
-          accountHolderName: item?.hireCreatorUserId?.fullName,
-          email: item?.hireCreatorUserId?.email,
-          phone: item?.hireCreatorUserId?.phone,
-          country: item?.hireCreatorUserId?.address,
+          accountHolderName: item?.creatorUserId?.fullName,
+          email: item?.creatorUserId?.email,
+          phone: item?.creatorUserId?.phone,
+          country: item?.creatorUserId?.address,
           status: item?.status
         }
       });
@@ -101,12 +104,12 @@ const OrderActions = () => {
 
 
   useEffect(() => {
-    if(step === "creator-list") {
+    if (step === "creator-list") {
       getCreators();
-    } 
+    }
     if (step === "agreed-creators") {
       getAgreedCreators();
-    } 
+    }
     if (step === "approved-creator") {
       getApprovedCreator();
     }
@@ -114,7 +117,7 @@ const OrderActions = () => {
 
 
   return (
-    <div>
+    <>
       <div className="py-4">
         <CustomStep stepDatas={stepDatas} />
       </div>
@@ -128,23 +131,29 @@ const OrderActions = () => {
             transition={{ duration: 0.3 }}
           >
             <div className="flex items-center gap-2">
-              <div className="w-full max-w-[600px]">
-                <CustomSearchBar />
+              <div className='flex-1 flex items-center gap-4'>
+                <div className="w-full max-w-[600px]">
+                  <CustomSearchBar />
+                </div>
+                <div>
+                  <CustomModal
+                    title="Advanced Filters"
+                    submitText="Apply"
+                    trigger={
+                      <Button variant="ghost" size="lg" className="rounded-full border flex items-center justify-center h-12 w-12 bg-white">
+                        <SlidersHorizontal className="h-4 w-4" />
+                      </Button>
+                    }
+                  >
+                    <div>
+                      <AdminCreatorListFilter />
+                    </div>
+                  </CustomModal>
+                </div>
               </div>
-              <div>
-                <CustomModal
-                  title="Advanced Filters"
-                  submitText="Apply"
-                  trigger={
-                    <Button variant="ghost" size="lg" className="rounded-full border flex items-center justify-center h-12 w-12 bg-white">
-                      <SlidersHorizontal className="h-4 w-4" />
-                    </Button>
-                  }
-                >
-                  <div>
-                    <AdminCreatorListFilter />
-                  </div>
-                </CustomModal>
+              <div className='flex items-center gap-2'>
+                <p className='text-gray-800 font-semibold'>Price: </p>
+                <Input onChange={(e) => { setPrice(Number(e.target.value))}} value={price} type="number" />
               </div>
             </div>
             {creatorsDatas && <CustomTableSelection<PartialExceptId<TSingleCreator>> data={creatorsDatas} columns={adminCreatorListColumns} />}
@@ -174,7 +183,7 @@ const OrderActions = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   )
 }
 
