@@ -1,13 +1,14 @@
 import Image from 'next/image'
-import React from 'react'
+import React, {Suspense} from 'react'
 import subImage from "@/assets/common/package00.png";
 import { Button } from "@/components/ui/button"
 // import { subDatas } from '@/data/subDatas';
 import Link from 'next/link';
 import { myFetch } from '@/utils/myFetch';
 import { packageDataType } from '@/type/type';
+// import {Suspense} from 'react';
 
-const Subscription = async () => {
+const SubscriptionComponent = async () => {
 
   const res = await myFetch("/package/subscription-packages", {
     method: "GET",
@@ -49,4 +50,10 @@ const Subscription = async () => {
   )
 }
 
-export default Subscription
+export default function Subscription() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SubscriptionComponent />
+    </Suspense>
+  );
+}

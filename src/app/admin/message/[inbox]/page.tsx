@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -11,7 +12,7 @@ import { TMessage } from "@/type/type";
 import { debounce } from "lodash";
 
 const AdminInbox = () => {
-  const [msg, setMsg] = useState<TMessage[]>([] as TMessage[]); 
+  const [msgs, setMsgs] = useState<TMessage[]>([] as TMessage[]); 
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +30,7 @@ const AdminInbox = () => {
     const res = await myFetch(`/message/my-messages/${msgId}?page=${pageNumber}&limit=20`);
     console.log("Fetched Messages: ", res?.data);
     if (res?.data?.result) {
-      setMsg((prevMsgs) => {
+      setMsgs((prevMsgs) => {
         if (pageNumber > 1) {
           return [...prevMsgs, ...res?.data?.result]; // Append new messages at the bottom
         }
@@ -73,7 +74,7 @@ const AdminInbox = () => {
 
   // Handle scroll event
   const handleScroll = debounce(() => {
-    if (messageContainerRef.current && !loading && msg.length > 0) {
+    if (messageContainerRef.current && !loading && msgs.length > 0) {
       const scrollTop = messageContainerRef.current.scrollTop;
       const scrollHeight = messageContainerRef.current.scrollHeight;
       const clientHeight = messageContainerRef.current.clientHeight;
@@ -121,13 +122,13 @@ const AdminInbox = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [msg]);
+  }, [msgs]);
 
   return (
     <div className="w-full max-w-[1000px] mx-auto h-[90vh] flex flex-col justify-between py-8">
       <div ref={messageContainerRef} className="flex-1 overflow-y-auto hide-scrollbar" onScroll={handleScroll}>
         <div className="flex flex-col-reverse justify-end gap-4">
-          {msg?.map((msg) => (
+          {msgs?.map((msg: TMessage) => (
             <div key={msg?._id} className={`${msg?.sender?.role === "admin" ? "flex-row-reverse" : "flex-row"} flex gap-4 group`}>
               <div className={`${msg?.sender?.role !== "admin" ? "bg-gray-50" : "bg-white"} p-4 rounded-2xl w-[800px]`}>
                 <p className="text-gray-600">{msg?.text}</p>

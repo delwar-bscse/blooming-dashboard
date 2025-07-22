@@ -1,18 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client"
 
-import CustomModal from '@/components/cui/CustomModal';
+// import CustomModal from '@/components/cui/CustomModal';
 import { CustomSearchBar } from '@/components/cui/CustomSearchBar';
 import CustomStep from '@/components/cui/CustomStep';
-import AdminCreatorListFilter from '@/components/modal/AdminCreatorListFilter';
+// import AdminCreatorListFilter from '@/components/modal/AdminCreatorListFilter';
 import CustomTableSelection from '@/components/table/CustomTableSelection';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import { adminCreatorListColumns } from '@/tableColumn/adminCreatorsListColumns';
 import { StepDataType } from '@/type/type';
-import { SlidersHorizontal } from 'lucide-react';
+// import { SlidersHorizontal } from 'lucide-react';
 import { useParams, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
 import { myFetch } from '@/utils/myFetch';
 import { toast } from 'sonner';
@@ -42,7 +43,7 @@ const stepDatas: StepDataType[] = [
 
 
 
-const OrderActions = () => {
+const OrderActionsSuspense = () => {
   const { price, setPrice } = usePrice();
   const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const [creator, setCreator] = useState<PartialExceptId<TSingleCreator>>({} as PartialExceptId<TSingleCreator>);
@@ -135,7 +136,7 @@ const OrderActions = () => {
                 <div className="w-full max-w-[600px]">
                   <CustomSearchBar />
                 </div>
-                <div>
+                {/* <div>
                   <CustomModal
                     title="Advanced Filters"
                     submitText="Apply"
@@ -149,7 +150,7 @@ const OrderActions = () => {
                       <AdminCreatorListFilter />
                     </div>
                   </CustomModal>
-                </div>
+                </div> */}
               </div>
               <div className='flex items-center gap-2'>
                 <p className='text-gray-800 font-semibold'>Price: </p>
@@ -187,4 +188,10 @@ const OrderActions = () => {
   )
 }
 
-export default OrderActions
+export default function OrderActions() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <OrderActionsSuspense />
+    </Suspense>
+  )
+}

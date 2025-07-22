@@ -1,5 +1,11 @@
-import CustomJodit from '@/components/cui/CustomJodit'
-import React from 'react'
+'use client'; // optional, ensures client-side rendering
+
+import React from 'react';
+import dynamic from 'next/dynamic';
+
+const CustomJodit = dynamic(() => import('@/components/cui/CustomJodit'), {
+  ssr: false,
+});
 
 const PrivacyPolicy = () => {
   return (
@@ -8,12 +14,11 @@ const PrivacyPolicy = () => {
         <h1 className="text-4xl font-bold py-4 text-gray-700">
           Privacy Policy
         </h1>
-        
+
         <CustomJodit />
-        
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PrivacyPolicy
+export default PrivacyPolicy;

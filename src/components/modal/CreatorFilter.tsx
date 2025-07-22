@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Label } from "@/components/ui/label"
 import {
   RadioGroup,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/radio-group"
 import { useSearchParams, useRouter } from 'next/navigation'
 
-const CreatorFilter = () => {
+const CreatorFilterSuspense = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -44,4 +44,10 @@ const CreatorFilter = () => {
   )
 }
 
-export default CreatorFilter
+export default function CreatorFilter() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <CreatorFilterSuspense />
+    </Suspense>
+  )
+}

@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import {
   Select,
   SelectContent,
@@ -17,7 +17,7 @@ type TSelectOptions = {
 }
 
 
-const CustomSelectOption = ({ selectOptions, placeHolderValue, queryKey }: { selectOptions: TSelectOptions[], placeHolderValue: string, queryKey: string }) => {
+const CustomSelectOptionSuspense = ({ selectOptions, placeHolderValue, queryKey }: { selectOptions: TSelectOptions[], placeHolderValue: string, queryKey: string }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedValue = searchParams.get(queryKey);
@@ -46,4 +46,10 @@ const CustomSelectOption = ({ selectOptions, placeHolderValue, queryKey }: { sel
   )
 }
 
-export default CustomSelectOption
+export default function CustomSelectOption({ selectOptions, placeHolderValue, queryKey }: { selectOptions: TSelectOptions[], placeHolderValue: string, queryKey: string }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <CustomSelectOptionSuspense selectOptions={selectOptions} placeHolderValue={placeHolderValue} queryKey={queryKey} />
+    </Suspense>
+  )
+}

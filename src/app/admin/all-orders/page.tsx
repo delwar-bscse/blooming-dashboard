@@ -13,7 +13,7 @@ import OrderFilter from "@/components/modal/OrderFilter";
 import { TOrdersData } from "@/type/orderDataTypes";
 import { toast } from "sonner";
 import { myFetch } from "@/utils/myFetch";
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import CustomModalFilter from '@/components/cui/CustomModalFilter';
 import { dynamicFilterValue } from '@/constant/filterValue';
@@ -36,22 +36,25 @@ import { dynamicFilterValue } from '@/constant/filterValue';
 
 
 
-const AllOrders = () => {
+const AllOrdersSuspense = () => {
+  const [totalPage, setTotalPage] = useState(1);
   const [allCreatorsData, setAllCreatorsData] = useState<TOrdersData[]>([]);
   const searchParams = useSearchParams();
   const filterType = searchParams.get("filter") ?? "pending";
+  const page = searchParams.get("page") || "1";
 
   // const data = orderDatas.slice(0, 9) as TOrdersData[];
 
   const getAllOrders = async() => {
     toast.loading("Fetching Orders...", {id: "fetch"});
-    const res  = await myFetch(`/hire-creator?status=${filterType}`,{
+    const res  = await myFetch(`/hire-creator?status=${filterType}&page=${page}`,{
       method: "GET",
     });
     console.log(res?.data);
     if(res?.data){
       toast.success("All Orders fetched successfully!", {id: "fetch"});
       setAllCreatorsData(res?.data);
+      setTotalPage(res?.pagination?.totalPage || 1);
     }else {
       toast.error(res?.message || "Orders Fetching failed!", {id: "fetch"});
     }
@@ -89,9 +92,15 @@ const AllOrders = () => {
       <div className="pt-4">
         <CustomTable<TOrdersData> columns={orderColumns} data={allCreatorsData} />
       </div>
-      <CustomPagination />
+      <CustomPagination TOTAL_PAGES={totalPage}/>
     </div>
   )
 }
 
-export default AllOrders
+export default function AllOrders() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AllOrdersSuspense />
+    </Suspense>
+  );
+}

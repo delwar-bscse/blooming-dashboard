@@ -11,14 +11,14 @@ import {
 } from "recharts";
 import CustomSelectOption from "../cui/CustomSelectOption";
 import { selectOptionsRevenue } from "@/constant/videoSelectDatasts";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 
 const monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 
-const SalesTrackingChart = () => {
+const SalesTrackingChartSuspense = () => {
   const [data, setData] = useState([]);
   const searchParams = useSearchParams();
   const revenueDuration = searchParams.get("revenueDuration") ?? "2025";
@@ -75,4 +75,10 @@ const SalesTrackingChart = () => {
   );
 };
 
-export default SalesTrackingChart;
+export default function SalesTrackingChart() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <SalesTrackingChartSuspense />
+    </Suspense>
+  )
+}

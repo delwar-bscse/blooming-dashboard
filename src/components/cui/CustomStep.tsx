@@ -2,9 +2,9 @@
 
 import { StepDataType } from '@/type/type';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 
-const CustomStep = ({ stepDatas }: { stepDatas: StepDataType[] }) => {
+const CustomStepSuspense = ({ stepDatas }: { stepDatas: StepDataType[] }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentStep = searchParams.get('step') || stepDatas[0]?.label;
@@ -50,4 +50,10 @@ const CustomStep = ({ stepDatas }: { stepDatas: StepDataType[] }) => {
   )
 }
 
-export default CustomStep
+export default function CustomStep({ stepDatas }: { stepDatas: StepDataType[] }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CustomStepSuspense stepDatas={stepDatas} />
+    </Suspense>
+  );
+}

@@ -9,14 +9,14 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+import { Suspense } from "react";
 // import { useEffect, useState } from "react";
 
 const MAX_PAGE_WINDOW = 5;
 
-export default function MyPagination() {
+function MyPaginationSuspense({TOTAL_PAGES=5}: {TOTAL_PAGES?: number}) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const TOTAL_PAGES = 7;
 
   // Get current page from URL or default to 1
   const currentPage = parseInt(searchParams.get('page') || '1');
@@ -78,5 +78,13 @@ export default function MyPagination() {
         </PaginationContent>
       </Pagination>
     </div>
+  );
+}
+
+export default function CustomPagination({TOTAL_PAGES}: {TOTAL_PAGES?: number}) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MyPaginationSuspense TOTAL_PAGES={TOTAL_PAGES} />
+    </Suspense>
   );
 }

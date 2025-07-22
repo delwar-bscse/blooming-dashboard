@@ -2,7 +2,7 @@
 
 import { myFetch } from '@/utils/myFetch';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import {
   XAxis,
   YAxis,
@@ -36,7 +36,7 @@ export function formatHour(datetimeStr: string) {
 }
 
 
-function SubscriptionGraph() {
+function SubscriptionGraphSuspense() {
   const [data, setData] = useState([]);
   const searchParams = useSearchParams();
   const subscriptionDuration = searchParams.get("subscriptionDuration") ?? "7day";
@@ -140,4 +140,10 @@ function SubscriptionGraph() {
   );
 }
 
-export default SubscriptionGraph;
+export default function SubscriptionGraph() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <SubscriptionGraphSuspense />
+    </Suspense>
+  )
+}

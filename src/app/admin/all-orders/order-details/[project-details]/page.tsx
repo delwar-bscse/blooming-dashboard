@@ -3,7 +3,7 @@
 import CustomStep from '@/components/cui/CustomStep'
 import CreatorProjectDetails from '@/components/section/CreatorProjectDetails'
 import { StepDataType } from '@/type/type';
-import React from 'react'
+import React, { Suspense } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
 import { useSearchParams } from 'next/navigation';
 import CreatorVideoGuidelines from '@/components/section/CreatorVideoGuidelines';
@@ -28,7 +28,7 @@ const stepDatas: StepDataType[] = [
   },
 ];
 
-const OrderDetails = () => {
+const OrderDetailsSuspense = () => {
   const searchParams = useSearchParams();
   const step = searchParams.get("step");
 
@@ -90,4 +90,10 @@ const OrderDetails = () => {
   )
 }
 
-export default OrderDetails
+export default function OrderDetails() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <OrderDetailsSuspense />
+    </Suspense>
+  )
+}

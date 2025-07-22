@@ -33,7 +33,7 @@ interface CustomTableProps<TData extends RowWithId> {
   columns: ColumnDef<TData>[];
 }
 
-function CustomTableSelection<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
+function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
   const { price } = usePrice();
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();
@@ -155,4 +155,10 @@ function CustomTableSelection<TData extends RowWithId>({ data, columns }: Custom
   )
 }
 
-export default CustomTableSelection
+export default function CustomTableSelection<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>} >
+      <CustomTableSelectionSuspense data={data} columns={columns} />
+    </React.Suspense>
+  )
+}

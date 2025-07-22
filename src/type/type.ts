@@ -2,17 +2,33 @@ import { StaticImageData } from "next/image"
 
 
 export type TMessage = {
+  role: string; // or boolean if "true" should be boolean
   _id: string;
   text: string;
   image: string | null;
   seen: boolean;
-  sender: string;
+  sender: {
+    _id: string;
+    fullName: string;
+    role: string;
+  };
   receiver: string;
   chatId: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
+  createdAt: string; // or Date if you'll parse it
+  updatedAt: string; // or Date if you'll parse it
+}
+// export type TMessage = {
+//   _id: string;
+//   text: string;
+//   image: string | null;
+//   seen: boolean;
+//   sender: string;
+//   receiver: string;
+//   chatId: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   __v: number;
+// };
 
 // Creator Data type
 export type adminCreatorListDataType = {

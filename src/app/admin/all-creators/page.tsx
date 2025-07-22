@@ -12,7 +12,7 @@ import { CustomSearchBar } from "@/components/cui/CustomSearchBar";
 import CustomStep from "@/components/cui/CustomStep";
 // import CreatorFilter from "@/components/modal/CreatorFilter";
 import { myFetch } from "@/utils/myFetch";
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useSearchParams } from 'next/navigation';
 import { creatorColumns } from '@/tableColumn/CreatorsColumns';
@@ -33,21 +33,24 @@ const stepDatas: StepDataType[] = [
 ];
 
 
-const AllCreators = () => {
+const AllCreatorsSuspense = () => {
+  const [totalPage, setTotalPage] = useState(1);
   const [allCreatorsData, setAllCreatorsData] = useState<CreatorDataType[]>([]);
   const searchParams = useSearchParams();
   const step = searchParams.get("step");
+  const page = searchParams.get("page") || "1";
 
   // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
   const getAllCreators = async() => {
     toast.loading("Fetching creators...", {id: "fetchAllCreators"});
-    const res  = await myFetch(`/creator?status=${step}`,{
+    const res  = await myFetch(`/creator?status=${step}&page=${page}`,{
       method: "GET",
     });
     console.log(res?.data);
     if(res?.data){
       toast.success("All creators fetched successfully!", {id: "fetchAllCreators"});
       setAllCreatorsData(res?.data);
+      setTotalPage(res?.pagination?.totalPage || 1);
     }else {
       toast.error(res?.message || "Fetching failed!", {id: "fetchAllCreators"});
     }
@@ -88,9 +91,15 @@ const AllCreators = () => {
       <div className="pt-4">
         <CustomTable<CreatorDataType> columns={creatorColumns} data={allCreatorsData} />
       </div>
-      <CustomPagination />
+      <CustomPagination TOTAL_PAGES={totalPage}/>
     </div>
   )
 }
 
-export default AllCreators
+export default function AllCreators() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <AllCreatorsSuspense />
+    </Suspense>
+  )
+}

@@ -29,7 +29,7 @@ interface CustomTableProps<TData extends RowWithId> {
   columns: ColumnDef<TData>[];
 }
 
-function CustomTableRadio<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
+function CustomTableRadioSuspense<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
   const [selectedRowId, setSelectedRowId] = React.useState<string | number | null>(null);
   const searchParams = useSearchParams();
   const step = searchParams.get("step"); // e.g., "creator-list"
@@ -152,4 +152,10 @@ function CustomTableRadio<TData extends RowWithId>({ data, columns }: CustomTabl
   );
 }
 
-export default CustomTableRadio;
+export default function CustomTableRadio<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>} >
+      <CustomTableRadioSuspense data={data} columns={columns}/>
+    </React.Suspense>
+  )
+}

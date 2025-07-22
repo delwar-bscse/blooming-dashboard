@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -51,7 +51,7 @@ const defaultValues: Partial<VideoUploadFormValues> = {
 
 
 
-const AdminVideoUpload = () => {
+const AdminVideoUploadSuspense = () => {
   const searchParams = useSearchParams();
   const category = searchParams.get('category');
 
@@ -221,4 +221,10 @@ const AdminVideoUpload = () => {
   )
 }
 
-export default AdminVideoUpload
+export default function AdminVideoUpload() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <AdminVideoUploadSuspense />
+    </Suspense>
+  )
+}

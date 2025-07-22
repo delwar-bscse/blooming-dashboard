@@ -38,7 +38,7 @@ export const myFetch = async (
     tags,
     token,
     headers = {},
-    cache = "no-store",
+    cache = "no-cache",
   }: FetchOptions = {}
 ): Promise<FetchResponse> => {
   const accessToken = token || (await getToken());
@@ -69,7 +69,7 @@ export const myFetch = async (
         success: data?.success ?? true,
         message: data?.message,
         data: data?.data,
-        pagination: data?.pagination,
+        pagination: data?.meta,
         error: null,
       };
     }

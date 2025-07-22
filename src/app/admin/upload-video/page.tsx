@@ -1,14 +1,14 @@
 import AdminVideoUpload from '@/components/cui/AdminVideoUpload'
 import CustomSelectOption from '@/components/cui/CustomSelectOption'
 import { selectOptions } from '@/constant/videoSelectDatasts'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 
 
 
 
 
-const UploadVideo = () => {
+const UploadVideoSuspense = () => {
   return (
     <div className='px-2 max-w-[1200px] mx-auto py-8'>
       <div className="flex items-center justify-between mb-4">
@@ -20,4 +20,10 @@ const UploadVideo = () => {
   )
 }
 
-export default UploadVideo
+export default function UploadVideo() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <UploadVideoSuspense />
+    </Suspense>
+  )
+}

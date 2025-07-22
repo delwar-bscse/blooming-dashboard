@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import CustomButton from '@/components/cui/CustomButtom';
 import { myFetch } from '@/utils/myFetch';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner';
 
 interface TBlogPost {
@@ -15,11 +16,8 @@ interface TBlogPost {
   updatedAt: string;
   __v: number;
 }
-
-
-
-const BlogDetails = () => {
-  const [blogData, setBlogData] = React.useState<TBlogPost | null>(null);
+function BlogDetailsSuspense() {
+  const [blogData, setBlogData] = useState<TBlogPost | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
@@ -28,7 +26,6 @@ const BlogDetails = () => {
     const response = await myFetch(`/blog/${id}`, {
       method: "GET",
     });
-    console.log(response?.data);
     if (response?.data) {
       setBlogData(response?.data);
       toast.success("Blog details fetched successfully!");
@@ -39,15 +36,12 @@ const BlogDetails = () => {
 
   useEffect(() => {
     getBlogDetails();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
-
+  }, [id]);
 
   const handleDelete = async () => {
     const response = await myFetch(`/blog/${id}`, {
       method: "DELETE",
     });
-    console.log(response?.data);
     if (response?.success) {
       toast.success("Blog deleted successfully!");
       router.push("/admin/blog-post");
@@ -61,7 +55,13 @@ const BlogDetails = () => {
       <div className='bg-white rounded-xl p-8 flex flex-col w-full customShadow'>
         <div className='flex justify-between'>
           <div className='rounded-lg overflow-hidden h-80 w-140 border-2 border-gray-300'>
-            <Image src={blogData?.image || ""} width={500} height={500} alt="content image" className='object-cover w-full childDiv transition-transform duration-500 ease-in-out' />
+            <Image 
+              src={blogData?.image || ""} 
+              width={500} 
+              height={500} 
+              alt="content image" 
+              className='object-cover w-full childDiv transition-transform duration-500 ease-in-out' 
+            />
           </div>
           <div onClick={handleDelete} className='w-40'>
             <CustomButton text="Delete Blog" />
@@ -73,7 +73,13 @@ const BlogDetails = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default BlogDetails
+export default function BlogDetails() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BlogDetailsSuspense />
+    </Suspense>
+  );
+}

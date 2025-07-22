@@ -8,7 +8,7 @@ import CustomPagination from "@/components/cui/CustomPagination";
 import { supportColumns } from "@/tableColumn/supportColumns";
 import { toast, Toaster } from "sonner";
 import { myFetch } from "@/utils/myFetch";
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import CustomSelectOption from '@/components/cui/CustomSelectOption';
 import { useSearchParams } from 'next/navigation';
 
@@ -18,20 +18,23 @@ const selectOptions = [
 ]
 
 
-const ContactSupport = () => {
+const ContactSupportSuspense = () => {
+  const [totalPage, setTotalPage] = useState(1);
   const [data, setData] = useState<SupportDataType[]>([]);
   const searchParams = useSearchParams();
   const category = searchParams.get("category") || "pending";
+  const page = searchParams.get("page") || "1";
 
   const getContactSupport = async () => {
     toast.loading("Fetching...", { id: "fetchSupport" });
-    const res = await myFetch(`/contact-us?status=${category}`, {
+    const res = await myFetch(`/contact-us?status=${category}&page=${page}`, {
       method: "GET",
     })
-    console.log(res?.data);
+    console.log("Contact Support Response:", res);
     if (res?.success) {
       toast.success("Fetched successfully!", { id: "fetchSupport" });
       setData(res?.data);
+      setTotalPage(res?.pagination?.totalPage || 1);
     }else {
       toast.error(res?.message || "Failed to fetch!", { id: "fetchSupport" });
       setData([]);
@@ -40,7 +43,7 @@ const ContactSupport = () => {
 
   useEffect(() => {
     getContactSupport();
-  }, [category])
+  }, [category, page])
 
   return (
     <div className="pt-8">
@@ -53,10 +56,16 @@ const ContactSupport = () => {
       <div className="pt-4">
         <CustomTable<SupportDataType> columns={supportColumns} data={data} />
       </div>
-      <CustomPagination />
+      <CustomPagination TOTAL_PAGES={totalPage} />
       <Toaster />
     </div>
   )
 }
 
-export default ContactSupport
+export default function ContactSupport() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <ContactSupportSuspense />
+    </Suspense>
+  )
+}

@@ -2,7 +2,7 @@
 "use client"
 
 import CreatorProjectDetails from '@/components/section/CreatorProjectDetails';
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
@@ -10,7 +10,7 @@ import { myFetch } from '@/utils/myFetch';
 import { Button } from '@/components/ui/button';
 
 
-const CreatorProjectDetailsPage = () => {
+const CreatorProjectDetailsPageSuspense = () => {
   const router = useRouter();
 
   const [orderDetails, setOrderDetails] = React.useState<any>(null);
@@ -95,4 +95,10 @@ const CreatorProjectDetailsPage = () => {
   )
 }
 
-export default CreatorProjectDetailsPage
+export default function CreatorProjectDetailsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <CreatorProjectDetailsPageSuspense />
+    </Suspense>
+  )
+}

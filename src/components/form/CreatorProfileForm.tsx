@@ -40,8 +40,9 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
 
 
   useEffect(() => {
+    // console.log(myProfile)
     setIsMounted(true);
-  }, [isMounted]);
+  }, []);
 
   async function onSubmit(data: creatorProfileFormValues) {
     toast.loading("Updating Profile...", { id: "updateProfile" });

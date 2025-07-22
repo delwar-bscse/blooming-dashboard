@@ -44,7 +44,6 @@ const defaultValues: Partial<ContactUsFormValues> = {
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  // const redirect = useSearchParams().get("redirect");
 
   const form = useForm<ContactUsFormValues>({
     resolver: zodResolver(contactUsFormSchema),

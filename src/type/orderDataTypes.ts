@@ -101,6 +101,7 @@ export interface TOrdersData {
   doAndDonts: TDoAndDonts;
   lastContentInfo: TLastContentInfo;
   status: string;
+  creatorPrice?: string;
   paymentStatus: string;
   takeVideoCount: number;
   createdAt: string; // ISO Date String

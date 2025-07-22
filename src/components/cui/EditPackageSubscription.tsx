@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
 import { CircleCheck, CircleMinus, Plus } from "lucide-react";
@@ -44,7 +44,7 @@ type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
 
 
 {/* ---------------------------- Package Form ---------------------------- */ }
-const EditPackageSubscription = () => {
+const EditPackageSubscriptionSuspense = () => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [benefits, setBenefits] = useState<string[]>([]);
@@ -319,4 +319,10 @@ const EditPackageSubscription = () => {
   );
 };
 
-export default EditPackageSubscription;
+export default function EditPackageSubscription() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <EditPackageSubscriptionSuspense />
+    </Suspense>
+  )
+}

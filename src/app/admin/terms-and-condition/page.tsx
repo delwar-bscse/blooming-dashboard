@@ -1,5 +1,10 @@
-import CustomJodit from '@/components/cui/CustomJodit'
+"use client"
+
 import React from 'react'
+import dynamic from 'next/dynamic';
+const CustomJodit = dynamic(() => import('@/components/cui/CustomJodit'), {
+  ssr: false,
+});
 
 const TermsCondition = () => {
 

@@ -15,8 +15,9 @@ import { myFetch } from "@/utils/myFetch";
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import CustomModalFilter from '@/components/cui/CustomModalFilter';
-import { dynamicFilterValue } from '@/constant/filterValue';
+import { dynamicFilterValueCreator } from '@/constant/filterValue';
 import { orderColumnsForCreator } from '@/tableColumn/ordersColumnsForCreator';
+import {Suspense} from 'react';
 
 
 
@@ -36,25 +37,28 @@ import { orderColumnsForCreator } from '@/tableColumn/ordersColumnsForCreator';
 
 
 
-const AllOrders = () => {
+const AllOrdersSuspense = () => {
+  const [totalPage, setTotalPage] = useState(1);
   const [allCreatorsData, setAllCreatorsData] = useState<TOrdersData[]>([]);
   const searchParams = useSearchParams();
   const filterType = searchParams.get("filter");
+  const page = searchParams.get("page") || "1";
 
   // const data = orderDatas.slice(0, 9) as TOrdersData[];
 
   const getAllOrders = async() => {
     toast.loading("Fetching Orders...", {id: "fetch"});
     const res  = await myFetch(
-      `/hire-creator/creator-all-orders${filterType ? `?status=${filterType}` : ""}`,
+      `/hire-creator/creator-all-orders?page=${page}${filterType ? `&status=${filterType}` : ""}`,
       {
         method: "GET",
       }
     );
-    console.log(res?.data);
+    // console.log(res?.data);
     if(res?.data){
       toast.success("All Orders fetched successfully!", {id: "fetch"});
       setAllCreatorsData(res?.data);
+      setTotalPage(res?.pagination?.totalPage || 1);
     }else {
       toast.error(res?.message || "Orders Fetching failed!", {id: "fetch"});
     }
@@ -63,7 +67,7 @@ const AllOrders = () => {
   useEffect(() => {
     getAllOrders();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterType])
+  }, [filterType, page])
 
   return (
     <div className="pt-8">
@@ -84,7 +88,7 @@ const AllOrders = () => {
             }
           >
             <div>
-              <OrderFilter dynamicFilterValue={dynamicFilterValue}/>
+              <OrderFilter dynamicFilterValue={dynamicFilterValueCreator}/>
             </div>
           </CustomModalFilter>
         </div>
@@ -92,9 +96,15 @@ const AllOrders = () => {
       <div className="pt-4">
         <CustomTable<TOrdersData> columns={orderColumnsForCreator} data={allCreatorsData} />
       </div>
-      <CustomPagination />
+      <CustomPagination TOTAL_PAGES={totalPage}/>
     </div>
   )
 }
 
-export default AllOrders
+export default function AllOrders() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AllOrdersSuspense />
+    </Suspense>
+  );
+}

@@ -82,7 +82,7 @@ const CreatorProjectDetails = () => {
       <div className='bg-white rounded-2xl p-8'>
         <div className='flex items-center justify-center rounded-sm bg-[#FFF0BE] shadow gap-2 w-72 py-2.5 mb-6'>
           <Image src={StarEmogi} alt="package" width={30} height={30} />
-          <p className='text-xl font-semibold text-gray-700'>Price $200</p>
+          <p className='text-xl font-semibold text-gray-700'>Price ${orderDetails?.creatorPrice}</p>
           <Image src={LoveEmogi} alt="package" width={30} height={30} />
         </div>
         {orderDetails?.brandInfo && <SubComponent title="Project Info" list={orderDetails.brandInfo} />}

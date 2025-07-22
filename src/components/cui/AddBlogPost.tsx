@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
 import { myFetch } from "@/utils/myFetch";
@@ -40,7 +40,7 @@ type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
 
 
 {/* ---------------------------- Package Form ---------------------------- */ }
-const AddBlogPost = () => {
+const AddBlogPostSuspense = () => {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
 
   // const searchParams = useSearchParams();
@@ -201,4 +201,10 @@ const AddBlogPost = () => {
   );
 };
 
-export default AddBlogPost;
+export default function AddBlogPost() {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <AddBlogPostSuspense />
+    </Suspense>
+  )
+}

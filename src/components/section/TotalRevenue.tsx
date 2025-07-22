@@ -2,12 +2,12 @@
 
 import { myFetch } from '@/utils/myFetch';
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import CustomSelectOption from '../cui/CustomSelectOption';
 import { selectOptionsSubscription } from '@/constant/videoSelectDatasts';
 
 const TotalRevenue = () => {
-  const [data, setData] = useState<string>("");
+  // const [data, setData] = useState<string>("");
   const searchParams = useSearchParams();
   const brandEngagementDuration = searchParams.get("brandEngagementDuration") ?? "7day";
 
@@ -16,7 +16,7 @@ const TotalRevenue = () => {
       const res = await myFetch(`/payment/brand-engagement?days=${brandEngagementDuration}`);
       console.log("Active Users: ", res?.data);
       if (res?.success) {
-        setData(res?.data);
+        // setData(res?.data);
       }
     };
     getGraphDate();

@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Label } from "@/components/ui/label"
 import {
   RadioGroup,
@@ -14,7 +14,7 @@ type Props = {
 }
 
 
-const OrderFilter = ({ dynamicFilterValue }: { dynamicFilterValue: Props[] }) => {
+const OrderFilterSuspense = ({ dynamicFilterValue }: { dynamicFilterValue: Props[] }) => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -44,4 +44,10 @@ const OrderFilter = ({ dynamicFilterValue }: { dynamicFilterValue: Props[] }) =>
   )
 }
 
-export default OrderFilter
+export default function OrderFilter({ dynamicFilterValue }: { dynamicFilterValue: Props[] }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>} >
+      <OrderFilterSuspense dynamicFilterValue={dynamicFilterValue}/>
+    </Suspense>
+  )
+}

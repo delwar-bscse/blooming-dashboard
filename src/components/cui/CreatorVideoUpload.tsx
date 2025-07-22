@@ -53,6 +53,7 @@ const defaultValues: Partial<VideoUploadFormValues> = {
 
 
 const CreatorVideoUpload = () => {
+  const [status, setStatus] = useState<string>("");
   // const [orderDetails, setOrderDetails] = useState<TOrdersData>({} as TOrdersData);
   const params = useParams();
     const hireCreatorId = params["project-details"];
@@ -97,6 +98,7 @@ const CreatorVideoUpload = () => {
     console.log("Fetch Uploaded Videos Response:", res);
     if (res.success) {
       toast.success("Videos fetched successfully!", { id: "fetch" });
+      setStatus(res?.data?.status);
       setAwsVideoUrls(res?.data?.uploadedFiles);
     } else {
       toast.error(res.message || "Fetching failed!", { id: "fetch" });
@@ -157,7 +159,7 @@ const CreatorVideoUpload = () => {
   return (
     <div className='px-2 max-w-[1200px] mx-auto'>
       <div className='bg-white p-4 rounded-lg shadow-md min-h-200'>
-        <Form {...form}>
+        {status !== "delivered" && <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
             {/* Videos Upload */}
@@ -204,13 +206,13 @@ const CreatorVideoUpload = () => {
               </Button>
             </div>
           </form>
-        </Form>
+        </Form>}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 py-16">
           {awsVideoUrls?.map((singleVideo: any) => (
             <div key={singleVideo?._id} className='relative'>
-              <div onClick={() => deleteVideo(singleVideo.url)} className='flex items-center justify-center bg-white p-1 rounded-full shadow w-8 h-8 hover:bg-gray-100 transition-colors duration-300 cursor-pointer group absolute z-10 top-2 right-2'>
+              {status !== "delivered" && <div onClick={() => deleteVideo(singleVideo.url)} className='flex items-center justify-center bg-white p-1 rounded-full shadow w-8 h-8 hover:bg-gray-100 transition-colors duration-300 cursor-pointer group absolute z-10 top-2 right-2'>
                 <MdDeleteForever className='text-red-500 cursor-pointer text-xl group-hover:text-red-700 transition-colors duration-300' />
-              </div>
+              </div>}
 
               <div className='w-full h-[200px]'>
                 <video width="480" height="320" controls className='h-full'>

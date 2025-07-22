@@ -4,8 +4,9 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import { Suspense } from "react";
 
-export function CustomSearchBar() {
+function CustomSearchBarSuspense() {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const params = new URLSearchParams(searchParams);
@@ -30,5 +31,13 @@ export function CustomSearchBar() {
         onChange={(e) => handleSearch(e.target.value)}
       />
     </div>
+  );
+}
+
+export function CustomSearchBar() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CustomSearchBarSuspense />
+    </Suspense>
   );
 }
