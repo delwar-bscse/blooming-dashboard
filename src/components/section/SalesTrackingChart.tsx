@@ -41,7 +41,7 @@ const SalesTrackingChartSuspense = () => {
   return (
     <>
       <div className="flex items-center justify-between mb-4 px-6 py-4">
-        <h2 className="text-4xl font-bold text-gray-700">Total Subscription</h2>
+        <h2 className="text-4xl font-bold text-gray-700">Total Revenue</h2>
         <CustomSelectOption selectOptions={selectOptionsRevenue} placeHolderValue="Select Year" queryKey="revenueDuration" />
       </div>
       <ResponsiveContainer width="100%" height={400}>

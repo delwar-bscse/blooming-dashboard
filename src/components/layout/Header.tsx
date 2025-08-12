@@ -19,7 +19,7 @@ const Header = () => {
         const response = await myFetch("/users/my-profile", {
           method: "GET"
         });
-        console.log("Header User Data:", response?.data);
+        // console.log("Header User Data:", response?.data);
         setUser(response?.data);
 
       };

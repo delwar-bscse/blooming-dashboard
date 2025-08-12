@@ -53,7 +53,7 @@ const defaultValues: Partial<VideoUploadFormValues> = {
 
 const AdminVideoUploadSuspense = () => {
   const searchParams = useSearchParams();
-  const category = searchParams.get('category');
+  const category = searchParams.get('category') || 'Hero Section';
 
   const [awsVideoUrls, setAwsVideoUrls] = useState<string[]>([]);
   const form = useForm<VideoUploadFormValues>({
@@ -129,7 +129,7 @@ const AdminVideoUploadSuspense = () => {
       body: formData,
     }
     );
-    // console.log("Upload Videos Response:", res);
+    console.log("Upload Videos Response:", res);
     if (res.success) {
       toast.success("Videos uploaded successfully!", { id: "upload" });
       form.reset();

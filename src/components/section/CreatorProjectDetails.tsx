@@ -24,10 +24,13 @@ const CreatorProjectDetails = () => {
     // console.log(id);
 
     toast.loading("Order Details Fetching...", { id: "fetch" });
-    const res = await myFetch(`/hire-creator/${id}`, {
+    const res = await myFetch(`/assign-task-creator/${id}`, {
       method: "GET",
     });
-    // console.log(res?.data);
+    // const res = await myFetch(`/hire-creator/${id}`, {
+    //   method: "GET",
+    // });
+    console.log("Hire Creator Project Details:",res?.data);
 
     if (res?.data) {
       toast.success("Order Details fetched successfully!", { id: "fetch" });

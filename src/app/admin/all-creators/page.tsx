@@ -39,11 +39,12 @@ const AllCreatorsSuspense = () => {
   const searchParams = useSearchParams();
   const step = searchParams.get("step");
   const page = searchParams.get("page") || "1";
+  const query = searchParams.get("query") || "";
 
   // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
   const getAllCreators = async() => {
     toast.loading("Fetching creators...", {id: "fetchAllCreators"});
-    const res  = await myFetch(`/creator?status=${step}&page=${page}`,{
+    const res  = await myFetch(`/creator?status=${step}&page=${page}&searchTerm=${query}`,{
       method: "GET",
     });
     console.log(res?.data);
@@ -59,7 +60,7 @@ const AllCreatorsSuspense = () => {
   useEffect(() => {
     getAllCreators();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step])
+  }, [step, page, query]);
 
 
 
@@ -70,7 +71,7 @@ const AllCreatorsSuspense = () => {
       </div>
       <div className="flex items-center gap-2">
         <div className="w-full max-w-[600px]">
-          <CustomSearchBar />
+          <CustomSearchBar placeholder="Search by Email, Country"/>
         </div>
         {/* <div>
           <CustomModal

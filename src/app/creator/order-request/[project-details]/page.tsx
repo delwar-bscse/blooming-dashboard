@@ -24,7 +24,7 @@ const CreatorProjectDetailsPageSuspense = () => {
     const res = await myFetch(`/assign-task-creator/${requestId}`, {
       method: "GET",
     });
-    // console.log("Request Project Details:", res?.data);
+    console.log("Request Project Details:", res?.data);
 
     if (res?.data) {
       toast.success("Request Order Details fetched successfully!", { id: "fetch" });

@@ -2,7 +2,7 @@ import React from 'react'
 
 const deadlineCommunication = [
   "Content must be delivered by the agreed-upon deadline.",
-  "If you need an extension, you must inform Blooming Brands at least 48 hours in advance.",
+  "If you need an extension, you must inform The Social Chance Brands at least 48 hours in advance.",
   "Failure to meet the deadline without notice will result in a 20% deduction from the base project fee.",
   "A maximum extension of 2 days may be granted if communicated in time."
 ]
@@ -28,7 +28,7 @@ const contentDelivery = [
 const CreatorVideoGuidelines = () => {
   return (
     <div className='space-y-5 pb-16'>
-      <p className='text-gray-600 text-xl font-semibold bg-white rounded-2xl p-8'>Blooming BrandsTo ensure consistency, quality, and professionalism across all content, please follow the guidelines below when creating UGC for our partnered brands:</p>
+      <p className='text-gray-600 text-xl font-semibold bg-white rounded-2xl p-8'>The Social Chance BrandsTo ensure consistency, quality, and professionalism across all content, please follow the guidelines below when creating UGC for our partnered brands:</p>
       <div className='bg-white rounded-2xl p-8'>
         <div>
           <SubComponent title="Deadline Communication" list={deadlineCommunication} />

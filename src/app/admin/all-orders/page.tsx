@@ -42,12 +42,13 @@ const AllOrdersSuspense = () => {
   const searchParams = useSearchParams();
   const filterType = searchParams.get("filter") ?? "pending";
   const page = searchParams.get("page") || "1";
+  const query = searchParams.get("query") || "";
 
   // const data = orderDatas.slice(0, 9) as TOrdersData[];
 
   const getAllOrders = async() => {
     toast.loading("Fetching Orders...", {id: "fetch"});
-    const res  = await myFetch(`/hire-creator?status=${filterType}&page=${page}`,{
+    const res  = await myFetch(`/hire-creator?status=${filterType}&page=${page}&searchTerm=${query}`,{
       method: "GET",
     });
     console.log(res?.data);
@@ -63,7 +64,7 @@ const AllOrdersSuspense = () => {
   useEffect(() => {
     getAllOrders();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterType])
+  }, [filterType, page, query]);
 
   return (
     <div className="pt-8">
@@ -72,7 +73,7 @@ const AllOrdersSuspense = () => {
       </div> */}
       <div className="flex items-center gap-2">
         <div className="w-full max-w-[600px]">
-          <CustomSearchBar />
+          <CustomSearchBar  placeholder="Search by Email, Brand, Product Name"/>
         </div>
         <div>
           <CustomModalFilter

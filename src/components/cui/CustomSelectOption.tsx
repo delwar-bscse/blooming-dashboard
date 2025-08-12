@@ -27,7 +27,7 @@ const CustomSelectOptionSuspense = ({ selectOptions, placeHolderValue, queryKey 
       onValueChange={value => {
         const params = new URLSearchParams(Array.from(searchParams.entries()));
         params.set(queryKey, value);
-        router.push(`?${params.toString()}`);
+        router.push(`?${params.toString()}`, { scroll: false });
       }}
     >
       <SelectTrigger className="cursor-pointer">

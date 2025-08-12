@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { Suspense } from "react";
 
-function CustomSearchBarSuspense() {
+function CustomSearchBarSuspense({placeholder = "Search here..."}: {placeholder?: string}) {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const params = new URLSearchParams(searchParams);
@@ -25,7 +25,7 @@ function CustomSearchBarSuspense() {
       <Search className="absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-500" />
       <Input
         className="w-full rounded-full bg-background pl-12 pr-2 py-2 h-12 focus-visible:ring focus-visible:ring-primary/50 font-semibold text-2xl"
-        placeholder="Search here..."
+        placeholder={placeholder}
         type="search"
         defaultValue={searchParams.get("query")?.toString()}
         onChange={(e) => handleSearch(e.target.value)}
@@ -34,10 +34,10 @@ function CustomSearchBarSuspense() {
   );
 }
 
-export function CustomSearchBar() {
+export function CustomSearchBar({placeholder = "Search here..."}: {placeholder?: string}) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <CustomSearchBarSuspense />
+      <CustomSearchBarSuspense placeholder={placeholder} />
     </Suspense>
   );
 }
