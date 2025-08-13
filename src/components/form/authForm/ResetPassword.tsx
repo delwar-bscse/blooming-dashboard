@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { myFetch } from "@/utils/myFetch";
 
 // Schema
 const contactUsFormSchema = z
@@ -52,9 +54,27 @@ const ResetPassword = () => {
     mode: "onChange",
   });
 
-  function onSubmit(data: ContactUsFormValues) {
-    console.log("Submitted Data:", data);
-    router.push("/login");
+ async function onSubmit(data: ContactUsFormValues) {
+    // console.log("Submitted Data:", data);
+    const res = await myFetch("/auth/forgot-password-reset", {
+      method: "PATCH",
+      body: {
+        newPassword: data.password,
+        confirmPassword: data.confirmPassword,
+      },
+      headers: {
+        token: localStorage.getItem("forgetOtpMatchToken") || "", // Include email in the request header
+      },
+    });
+    // console.log("Response Verify OTP:", res);
+    if (res.success) {
+      toast.success(res.message || "OTP verified successfully!");
+      localStorage.removeItem("forgetOtpMatchToken");
+      router.push("/login");
+    } else {
+      toast.error(res.message || "Invalid OTP, please try again.");
+    }
+    // router.push("/login");
   }
 
   return (

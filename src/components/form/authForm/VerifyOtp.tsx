@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { toast } from "sonner";
+import { myFetch } from "@/utils/myFetch";
 
 // Schema
 const contactUsFormSchema = z
@@ -37,9 +39,27 @@ const VerifyOtp = () => {
     mode: "onChange",
   });
 
-  function onSubmit(data: ContactUsFormValues) {
-    console.log("Submitted Data:", data);
-    router.push("/reset-password");
+  async function onSubmit(data: ContactUsFormValues) {
+    // console.log("Submitted Data:", data);
+    const res = await myFetch("/auth/forgot-password-otp-match", {
+      method: "PATCH",
+      body: {
+        otp: data.verifyOtp,
+      },
+      headers: {
+        token: localStorage.getItem("forgetPasswordToken") || "",
+      },
+    });
+
+    // console.log("Response Verify OTP:", res);
+    if (res.success) {
+      toast.success(res.message || "OTP verified successfully!");
+      localStorage.removeItem("forgetPasswordToken");
+      localStorage.setItem("forgetOtpMatchToken", res?.data?.forgetOtpMatchToken);
+      router.push("/reset-password");
+    } else {
+      toast.error(res.message || "Invalid OTP, please try again.");
+    }
   }
 
 

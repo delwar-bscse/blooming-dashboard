@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { myFetch } from "@/utils/myFetch";
+import { toast } from "sonner";
 
 // Schema
 const contactUsFormSchema = z
@@ -40,9 +42,27 @@ const ForgotPassword = () => {
     mode: "onChange",
   });
 
-  function onSubmit(data: ContactUsFormValues) {
-    console.log("Submitted Data:", data);
-    router.push("/verify-otp");
+  async function onSubmit(data: ContactUsFormValues) {
+    // console.log("Submitted Data:", data);
+    const res = await myFetch("/auth/forgot-password-otp", {
+      method: "POST",
+      body: {
+        email: data.email,
+      },
+    })
+    console.log("Response Forgot Password:", res);
+    if (res.success) {
+      // Handle success, e.g., show a toast notification
+      toast.success(res?.message || "Reset code sent successfully.");
+      localStorage.setItem("forgetPasswordToken", res?.data?.forgetToken);
+
+      // Optionally redirect to the OTP verification page
+      router.push(`/verify-otp?email=${data.email}`);
+    } else {
+      // Handle error, e.g., show a toast notification
+      toast.error(res?.message || "Failed to send reset code.");
+      console.error("Failed to send reset code:", res.message);
+    }
   }
 
 

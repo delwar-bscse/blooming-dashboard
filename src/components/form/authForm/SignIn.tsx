@@ -132,7 +132,7 @@ const SignIn = () => {
                       {...field}
                     />
                     <div
-                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-100 hover:text-gray-200 z-10"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer  hover:text-gray-200 z-10 text-gray-500"
                       onClick={() => setShowPassword(prev => !prev)}
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -151,7 +151,7 @@ const SignIn = () => {
           </Button>
 
           <div className="relative -top-2 flex justify-end items-center">
-            <Link href="/forgot-password" className="text-gray-100 hover:text-gray-200 font-semibold">
+            <Link href="/forgot-password" className="text-gray-500 hover:text-gray-400 font-semibold">
               Forgot Password
             </Link>
           </div>

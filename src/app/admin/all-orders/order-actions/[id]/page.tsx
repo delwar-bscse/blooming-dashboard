@@ -47,17 +47,19 @@ const OrderActionsSuspense = () => {
   const { price, setPrice } = usePrice();
   const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const [creator, setCreator] = useState<PartialExceptId<TSingleCreator>>({} as PartialExceptId<TSingleCreator>);
+  const [user, setUser] = useState<Record<string, any>>({});
   const [agreedCreatorsDatas, setAgreedCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const searchParams = useSearchParams();
   const params = useParams();
   const step = searchParams.get("step");
+  const query = searchParams.get("query") || "";
   const hireCreatorId = params["id"];
 
   // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
 
   const getCreators = async () => {
     toast.loading("Fetching Creators...", { id: "fetch" });
-    const res = await myFetch(`/creator?status=approved`);
+    const res = await myFetch(`/creator?status=approved&searchTerm=${query}`);
     // console.log(res?.data);
     if (res?.data) {
       setCreatorsDatas(res?.data);
@@ -70,9 +72,10 @@ const OrderActionsSuspense = () => {
   const getApprovedCreator = async () => {
     toast.loading("Fetching Approved Creator...", { id: "fetchCreator" });
     const res = await myFetch(`/hire-creator/${hireCreatorId}`);
-    console.log(res?.data?.creatorId);
+    console.log("Approved Creator:", res?.data?.userId);
     if (res?.data?.creatorId) {
       setCreator(res?.data?.creatorId);
+      setUser(res?.data?.userId);
       toast.success("Approved creator fetched successfully!", { id: "fetchCreator" });
     } else {
       toast.error(res?.message || "Approved Creator Fetching failed!", { id: "fetchCreator" });
@@ -114,7 +117,7 @@ const OrderActionsSuspense = () => {
     if (step === "approved-creator") {
       getApprovedCreator();
     }
-  }, [step])
+  }, [step, query]);
 
 
   return (
@@ -134,23 +137,8 @@ const OrderActionsSuspense = () => {
             <div className="flex items-center gap-2">
               <div className='flex-1 flex items-center gap-4'>
                 <div className="w-full max-w-[600px]">
-                  <CustomSearchBar />
+                  <CustomSearchBar placeholder = "Search by Email, Country"/>
                 </div>
-                {/* <div>
-                  <CustomModal
-                    title="Advanced Filters"
-                    submitText="Apply"
-                    trigger={
-                      <Button variant="ghost" size="lg" className="rounded-full border flex items-center justify-center h-12 w-12 bg-white">
-                        <SlidersHorizontal className="h-4 w-4" />
-                      </Button>
-                    }
-                  >
-                    <div>
-                      <AdminCreatorListFilter />
-                    </div>
-                  </CustomModal>
-                </div> */}
               </div>
               <div className='flex items-center gap-2'>
                 <p className='text-gray-800 font-semibold'>Price: </p>
@@ -180,7 +168,7 @@ const OrderActionsSuspense = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CreatorDetails creator={creator} />
+            <CreatorDetails creator={creator} user={user} />
           </motion.div>
         )}
       </AnimatePresence>

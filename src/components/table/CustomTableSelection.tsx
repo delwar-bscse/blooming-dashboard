@@ -34,7 +34,7 @@ interface CustomTableProps<TData extends RowWithId> {
 }
 
 function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
-  const { price } = usePrice();
+  const { price, setPrice } = usePrice();
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();
   const params = useParams();
@@ -42,6 +42,11 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
   const step = searchParams.get("step");
 
   const sendRequestToUser = async (selectedIds: (string | number)[]) => {
+
+    if(price && price < 0) {
+      toast.error("Please select a valid price!");
+      return;
+    }
 
     const payload = {
       creatorsIds: selectedIds,
@@ -61,6 +66,7 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
 
     if (res?.data) {
       toast.success("All creators fetched successfully!", { id: "requestSend" });
+      setPrice(0);
     } else {
       toast.error(res?.message || "Request send failed!", { id: "requestSend" });
     }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import CustomButton from './CustomButtom';
 import Image from 'next/image';
@@ -8,8 +9,9 @@ import { toast } from 'sonner';
 import { myFetch } from '@/utils/myFetch';
 import { useRouter } from 'next/navigation';
 
-const CreatorDetails = ({ creator, id }: { creator: Partial<TSingleCreator>, id?: string }) => {
+const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator>, user?: Record<string, any>, id?: string }) => {
   const router = useRouter();
+  console.log("Creator Details:", creator)
 
     const handleApprove = async () => {
     toast.loading("Updating creator status...", { id: "approved" });
@@ -55,6 +57,7 @@ const CreatorDetails = ({ creator, id }: { creator: Partial<TSingleCreator>, id?
       <div className="flex flex-col md:flex-row gap-11 mb-8">
         <div className='w-[290px] h-[290px] rounded-lg overflow-hidden'>
           {creator?.userId?.profile && <Image src={creator?.userId?.profile} alt="Creator" width={100} height={100} className="w-full h-auto rounded-lg" />}
+          {user?.profile && <Image src={user?.profile} alt="Creator" width={100} height={100} className="w-full h-auto rounded-lg" />}
         </div>
         <div className="">
           {/* <h2 className="text-xl font-semibold text-gray-700 mb-4">Personal Information</h2> */}
