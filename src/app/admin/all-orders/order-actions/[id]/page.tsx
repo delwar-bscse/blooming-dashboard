@@ -44,7 +44,7 @@ const stepDatas: StepDataType[] = [
 
 
 const OrderActionsSuspense = () => {
-  const { price, setPrice } = usePrice();
+  const { setPrice } = usePrice();
   const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const [creator, setCreator] = useState<PartialExceptId<TSingleCreator>>({} as PartialExceptId<TSingleCreator>);
   const [user, setUser] = useState<Record<string, any>>({});
@@ -142,7 +142,7 @@ const OrderActionsSuspense = () => {
               </div>
               <div className='flex items-center gap-2'>
                 <p className='text-gray-800 font-semibold'>Price: </p>
-                <Input onChange={(e) => { setPrice(Number(e.target.value))}} value={price} type="number" />
+                <Input min={0} onChange={(e) => { setPrice(Number(e.target.value))}}  type="number" className='bg-white h-11'/>
               </div>
             </div>
             {creatorsDatas && <CustomTableSelection<PartialExceptId<TSingleCreator>> data={creatorsDatas} columns={adminCreatorListColumns} />}

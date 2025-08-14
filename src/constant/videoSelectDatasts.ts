@@ -1,6 +1,7 @@
 
 export const selectOptions = [
   { value: "Hero Section", label: "Hero Section" },
+  { value: "Contact Us", label: "Contact Us" },
   { value: "Meet Our Team", label: "Meet Our Team" },
   { value: "Landing Page", label: "Landing Page" },
   { value: "Beauty And Skincare", label: "Beauty And Skincare" },
