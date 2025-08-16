@@ -22,6 +22,8 @@ import CustomTableRadio from '@/components/table/CustomTableRadio';
 import CreatorDetails from '@/components/cui/CreatorDetails';
 import { Input } from '@/components/ui/input';
 import { usePrice } from '@/contexts/PriceContext';
+import Link from 'next/link';
+import { PiEyeBold } from "react-icons/pi";
 
 const stepDatas: StepDataType[] = [
   {
@@ -122,8 +124,15 @@ const OrderActionsSuspense = () => {
 
   return (
     <>
-      <div className="py-4">
-        <CustomStep stepDatas={stepDatas} />
+      <div className="py-4 flex items-center justify-between gap-4">
+        <div className='flex-1'>
+          <CustomStep stepDatas={stepDatas} className='pb-4'/>
+        </div>
+        <div className="flex items-center justify-center w-20 border-4 py-1 border-gray-300 rounded-lg">
+          <Link href={`/admin/all-orders/order-details/${hireCreatorId}`} className="flex items-center justify-center">
+            <PiEyeBold className="text-3xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
+          </Link>
+        </div>
       </div>
       <AnimatePresence mode="wait">
         {step === "creator-list" && (
@@ -137,12 +146,12 @@ const OrderActionsSuspense = () => {
             <div className="flex items-center gap-2">
               <div className='flex-1 flex items-center gap-4'>
                 <div className="w-full max-w-[600px]">
-                  <CustomSearchBar placeholder = "Search by Email, Country"/>
+                  <CustomSearchBar placeholder="Search by Email, Country" />
                 </div>
               </div>
               <div className='flex items-center gap-2'>
                 <p className='text-gray-800 font-semibold'>Price: </p>
-                <Input min={0} onChange={(e) => { setPrice(Number(e.target.value))}}  type="number" className='bg-white h-11'/>
+                <Input min={0} onChange={(e) => { setPrice(Number(e.target.value)) }} type="number" className='bg-white h-11' />
               </div>
             </div>
             {creatorsDatas && <CustomTableSelection<PartialExceptId<TSingleCreator>> data={creatorsDatas} columns={adminCreatorListColumns} />}

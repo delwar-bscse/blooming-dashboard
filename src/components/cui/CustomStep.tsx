@@ -1,10 +1,11 @@
 "use client"
 
+import { cn } from '@/lib/utils';
 import { StepDataType } from '@/type/type';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense, useEffect } from 'react'
 
-const CustomStepSuspense = ({ stepDatas }: { stepDatas: StepDataType[] }) => {
+const CustomStepSuspense = ({ stepDatas, className }: { stepDatas: StepDataType[], className?: string }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentStep = searchParams.get('step') || stepDatas[0]?.label;
@@ -37,23 +38,23 @@ const CustomStepSuspense = ({ stepDatas }: { stepDatas: StepDataType[] }) => {
               <li 
                 key={item.id} 
                 onClick={() => handleStepChange(item.label)} 
-                className={`${handleStyle(item.label)}`}
+                className={cn(`${handleStyle(item.label)}`, className)}
               >
                 {item.title}
               </li>
             ))}
           </ul>
-          <div className='border-b-6 border-b-gray-300 relative -top-1.5 w-full' />
+          <div className={cn('border-b-6 border-b-gray-300 relative -top-1.5 w-full')} />
         </div>
       </div>
     </div>
   )
 }
 
-export default function CustomStep({ stepDatas }: { stepDatas: StepDataType[] }) {
+export default function CustomStep({ stepDatas, className }: { stepDatas: StepDataType[], className?: string }) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <CustomStepSuspense stepDatas={stepDatas} />
+      <CustomStepSuspense stepDatas={stepDatas} className={className} />
     </Suspense>
   );
 }

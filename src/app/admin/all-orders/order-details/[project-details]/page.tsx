@@ -5,10 +5,12 @@ import CreatorProjectDetails from '@/components/section/CreatorProjectDetails'
 import { StepDataType } from '@/type/type';
 import React, { Suspense } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
-import { useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import CreatorVideoGuidelines from '@/components/section/CreatorVideoGuidelines';
 import CreatorVideoUpload from '@/components/section/CreatorVideoUpload';
 import CreatorScript from '@/components/section/CreatorScript';
+import Link from 'next/link';
+import { BiUserCircle } from "react-icons/bi";
 
 const stepDatas: StepDataType[] = [
   {
@@ -30,15 +32,24 @@ const stepDatas: StepDataType[] = [
 
 const OrderDetailsSuspense = () => {
   const searchParams = useSearchParams();
+  const params = useParams();
   const step = searchParams.get("step");
+  const hireCreatorId = params["project-details"];
 
 
 
 
   return (
     <div>
-      <div className="py-4">
-        <CustomStep stepDatas={stepDatas} />
+      <div className="py-4 flex items-center justify-between gap-4">
+        <div className='flex-1'>
+          <CustomStep stepDatas={stepDatas}  className='pb-4'/>
+        </div>
+        <div className="flex items-center justify-center w-20 border-4 py-1 border-gray-300 rounded-lg">
+          <Link href={`/admin/all-orders/order-actions/${hireCreatorId}`} className="flex items-center justify-center">
+          <BiUserCircle className="text-3xl font-bold text-blue-500 hover:text-blue-600 transition-colors duration-300" />
+        </Link>
+        </div>
       </div>
       <AnimatePresence mode="wait">
         {step === "order-details" && (

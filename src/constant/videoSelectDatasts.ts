@@ -10,6 +10,7 @@ export const selectOptions = [
   { value: "Teach And Digital Products", label: "Tech And Digital Products" },
   { value: "Health And Fitness", label: "Health And Fitness" },
   { value: "Fashion And Lifestyle", label: "Fashion And Lifestyle" },
+  { value: "Warm And collaboration", label: "Warm And collaboration" },
 ];
 
 export const selectOptionsSubscription = [
