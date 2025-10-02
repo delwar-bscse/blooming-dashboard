@@ -75,7 +75,7 @@ const SignIn = () => {
         setCookie("bloom_accessToken", res?.data?.accessToken);
         toast.success("Login Success", { id: "login" });
 
-        if (res?.data?.user?.role === "admin") {
+        if (res?.data?.user?.role === "admin" || res?.data?.user?.role === "sub_admin") {
           router.push("/admin");
         }
 

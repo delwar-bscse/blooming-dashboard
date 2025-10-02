@@ -43,13 +43,13 @@ const Sidebar = ({ menu }: { menu?: menuType[] }) => {
         </div>
       </div>
       <div className='flex flex-col gap-1'>
-        {menu?.map((item) => {
+        {menu?.map((item, index) => {
           const isItemActive = isActive(item?.label); // Check if the menu item is active (or part of a nested route)
 
           return (
             <Link
               href={item?.label}
-              key={item.id}
+              key={index}
               className={`flex gap-2 items-center py-2 px-4 transition-colors duration-300 rounded-md cursor-pointer ${isItemActive ? 'bg-yellow-500 text-white' : 'hover:bg-yellow-300'}`}
             >
               <Image src={item.icon} alt={item.title} />

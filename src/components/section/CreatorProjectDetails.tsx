@@ -53,7 +53,7 @@ const CreatorProjectDetails = () => {
     const res = await myFetch(`/hire-creator/cancel/${id}`, {
       method: "PATCH",
     });
-    // console.log(res?.data);
+    // console.log( res?.data);
 
     if (res?.data) {
       toast.success("Deleted successfully!", { id: "delete" });
@@ -91,16 +91,19 @@ const CreatorProjectDetails = () => {
         {orderDetails?.brandInfo && <SubComponent title="Project Info" list={orderDetails.brandInfo} />}
       </div>
       <div className='bg-white rounded-2xl p-8'>
+        <SubComponent title="Contain Info" list={orderDetails.brandInfo} />
+      </div>
+      <div className='bg-white rounded-2xl p-8'>
         <SubComponent title="Brand Social" list={orderDetails.brandSocial} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Contain Info" list={orderDetails.contentInfo} />
-      </div>
-      <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Do & Don'ts" list={orderDetails.doAndDonts} />
+        <SubComponent title="Video Info" list={orderDetails.videoInfo} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
         <SubComponent title="Characteristics Of The Creator" list={orderDetails.characteristicInfo} />
+      </div>
+      <div className='bg-white rounded-2xl p-8'>
+        <SubComponent title="Add-Ons" list={orderDetails.addOns} />
       </div>
 
       {orderDetails.status === "pending" && <div className='flex items-center justify-end space-x-4'>

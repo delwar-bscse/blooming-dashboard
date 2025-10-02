@@ -90,20 +90,6 @@ const AllOrdersSuspense = () => {
         <div className="w-full max-w-[600px]">
           {/* <CustomSearchBar /> */}
         </div>
-        {/* <div>
-          <CustomModalFilter
-            title="Advanced Filters"
-            trigger={
-              <Button variant="ghost" size="lg" className="rounded-full border flex items-center justify-center h-12 w-12 bg-white">
-                <SlidersHorizontal className="h-4 w-4" />
-              </Button>
-            }
-          >
-            <div>
-              <OrderFilter dynamicFilterValue={dynamicFilterValue} />
-            </div>
-          </CustomModalFilter>
-        </div> */}
       </div>
       <div className="pt-4">
         <CustomTable<TOrdersData> columns={requestOrderColumnsForCreator} data={allCreatorsData} />

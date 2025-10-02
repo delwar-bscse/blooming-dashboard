@@ -1,6 +1,13 @@
 import { StaticImageData } from "next/image"
 
 
+export interface reviewDataType {
+  _id: number;
+  details: string;
+  image: string;
+};
+
+
 export type TMessage = {
   role: string; // or boolean if "true" should be boolean
   _id: string;
@@ -63,7 +70,7 @@ export interface creatorOrderDataType {
 
 // Menu Data type
 export interface menuType {
-  id: number;
+  id?: number;
   icon: StaticImageData;
   title: string;
   label: string;
@@ -78,6 +85,22 @@ export type CreatorDataType = {
   category: string[]
   status: "pending" | "active"
 }
+
+export type UserDataType = {
+  rating: number;
+  reviews: number;
+  _id: string;
+  profile: string;
+  fullName: string;
+  email: string;
+  role: "user" | "sub_admin"
+  phone: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  address: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+};
 
 // All Creator Steps Data type
 export type StepDataType = {

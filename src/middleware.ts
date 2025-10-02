@@ -3,21 +3,19 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  // const token = req.cookies.get('qwert_accessToken')?.value;
 
   const user = await myFetch(`/users/my-profile`, {
     method: 'GET',
-  })
-  // console.log("Middleware User :", user);
+  });
 
   const role = user?.data?.role;
-  // console.log("Middleware User Role:", role);
 
   if (!user?.success || !user?.data) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  if (pathname === '/' && role === "admin") {
+  // Redirect root
+  if (pathname === '/' && (role === "admin" || role === "sub_admin")) {
     return NextResponse.redirect(new URL('/admin', req.url));
   }
 
@@ -25,12 +23,13 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/creator/all-project', req.url));
   }
 
-
-  if (pathname.startsWith('/admin') && role !== 'admin') {
+  // Protect admin routes
+  if (pathname.startsWith('/admin') && role !== "admin" && role !== "sub_admin") {
     return NextResponse.redirect(new URL('/signin', req.url));
   }
 
-  if (pathname.startsWith('/creator') && role !== 'creator') {
+  // Protect creator routes
+  if (pathname.startsWith('/creator') && role !== "creator") {
     return NextResponse.redirect(new URL('/signin', req.url));
   }
 
@@ -38,5 +37,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/admin:path*', '/creator:path*',],
+  matcher: ['/', '/admin:path*', '/creator:path*'],
 };
