@@ -13,7 +13,7 @@ import { useSocket } from "@/lib/SocketContext";
 const CreatorMessage = () => {
   const [msgId, setMsgId] = useState<string>(""); // chatId of current chat
   const [msg, setMsg] = useState<TMessage[]>([]); // message list
-  const [page, setPage] = useState(1); // pagination page
+  const [page, setPage] = useState(1); // pagination page 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -22,28 +22,51 @@ const CreatorMessage = () => {
 
   const { socket } = useSocket();
 
-  // Fetch chat ID
-  const myMessageId = async () => {
-    try {
-      const res = await myFetch(`/chat/my-chat-list`);
-      const chatId = res?.data?.[0]?.chat?._id;
-      if (chatId) setMsgId(chatId);
-      console.log("Creator Message ID: ", res?.data);
-    } catch (error) {
-      setError("Failed to fetch chat ID.");
-      console.error("Error fetching chat ID:", error);
+   // Fetch chat ID
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await myFetch(`/chat/my-chat-list`);
+        const chatId = res?.data?.[0]?.chat?._id;
+        if (chatId) setMsgId(chatId);
+        console.log("Creator Message ID: ", res?.data);
+      } catch (error) {
+        setError("Failed to fetch chat ID.");
+        console.error("Error fetching chat ID:", error);
+      }
+    })();
+  }, []);
+  
+  // Scroll helpers
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  // Preserve scroll position when prepending messages
+  const preserveScrollOnPrepend = (oldHeight: number) => {
+    if (messageContainerRef.current) {
+      const newHeight = messageContainerRef.current.scrollHeight;
+      messageContainerRef.current.scrollTop = newHeight - oldHeight;
+    }
+  };
+
+
   // Fetch messages
-  const myMessage = async (pageNumber: number = 1) => {
+  const myMessage = async (pageNumber: number) => {
     if (!msgId) return;
 
-    setLoading(true);
     try {
+
+      setLoading(true);
+
+      const prevHeight = messageContainerRef.current?.scrollHeight || 0;
+
       const res = await myFetch(
         `/message/my-messages/${msgId}?page=${pageNumber}&limit=20`
       );
+
       if (res?.data?.result) {
         setMsg((prevMsgs) => {
           if (pageNumber > 1) {
@@ -51,6 +74,14 @@ const CreatorMessage = () => {
           }
           return res.data.result; // reset on first load
         });
+
+        if (pageNumber > 1) {
+          // restore scroll after loading older messages
+          requestAnimationFrame(() => preserveScrollOnPrepend(prevHeight));
+        } else {
+          // scroll to bottom only for initial load
+          requestAnimationFrame(() => scrollToBottom());
+        }
       }
     } catch (error) {
       setError("Failed to fetch messages.");
@@ -64,10 +95,9 @@ const CreatorMessage = () => {
   const sendMessage = async () => {
     if (!inputRef.current || inputRef.current.value.trim() === "") return;
 
-    const text = inputRef.current.value;
     const formData = new FormData();
     formData.append("chatId", msgId);
-    formData.append("text", text);
+    formData.append("text", inputRef.current.value);
 
     try {
       const res = await myFetch("/message/send-messages", {
@@ -76,8 +106,7 @@ const CreatorMessage = () => {
       });
 
       if (res?.success) {
-        inputRef.current.value = ""; // clear
-        // ✅ Let socket event handle updating messages
+        inputRef.current.value = ""; 
       } else {
         setError("Failed to send the message.");
       }
@@ -99,37 +128,26 @@ const CreatorMessage = () => {
     }
   }, 200);
 
-  // Initial fetch chat ID
-  useEffect(() => {
-    myMessageId();
-  }, []);
+
 
   // When chat ID changes, fetch messages + listen for new ones
   useEffect(() => {
     if (!msgId || !socket) return;
-
-    myMessage(1); // load first page
-
+    
+    
     const eventName = "new-message::" + msgId;
-
+    
     socket.on(eventName, (newMsg: TMessage) => {
       setMsg((prev) => [newMsg, ...prev]); // prepend new message
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
+      
+      myMessage(1);
+      scrollToBottom();
     });
 
     return () => {
       socket.off(eventName);
     };
   }, [msgId, socket]);
-
-  // Auto-scroll on new msgs
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [msg]);
 
   return (
     <div className="w-full max-w-[1000px] mx-auto h-[90vh] flex flex-col justify-between py-8">
@@ -143,14 +161,12 @@ const CreatorMessage = () => {
           {msg.map((m) => (
             <div
               key={m._id}
-              className={`${
-                m?.sender?.role === "creator" ? "flex-row-reverse" : "flex-row"
-              } flex gap-4 group`}
+              className={`${m?.sender?.role === "creator" ? "flex-row-reverse" : "flex-row"
+                } flex gap-4 group`}
             >
               <div
-                className={`${
-                  m?.sender?.role !== "creator" ? "bg-gray-50" : "bg-white"
-                } p-4 rounded-2xl w-[800px]`}
+                className={`${m?.sender?.role !== "creator" ? "bg-gray-50" : "bg-white"
+                  } p-4 rounded-2xl w-[800px]`}
               >
                 <p className="text-gray-600">{m.text}</p>
                 <p className="text-right text-gray-400 pt-4 text-sm">
@@ -163,7 +179,7 @@ const CreatorMessage = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {/* Input - Send Message */}
       <div className="flex items-center gap-4 pt-4">
         <Input
           ref={inputRef}
@@ -176,9 +192,8 @@ const CreatorMessage = () => {
         />
         <span
           onClick={sendMessage}
-          className={`text-2xl cursor-pointer bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-all duration-300 ${
-            loading ? "cursor-not-allowed opacity-50" : ""
-          }`}
+          className={`text-2xl cursor-pointer bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-all duration-300 ${loading ? "cursor-not-allowed opacity-50" : ""
+            }`}
         >
           <IoIosSend className="text-gray-600 hover:text-gray-400 transition-all duration-300 text-2xl" />
         </span>

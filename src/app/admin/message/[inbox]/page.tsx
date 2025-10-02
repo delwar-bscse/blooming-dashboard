@@ -23,20 +23,49 @@ const AdminInbox = () => {
   const msgId = params["inbox"];
   const { socket } = useSocket();
 
+  // Scroll helpers
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Preserve scroll position when prepending messages
+  const preserveScrollOnPrepend = (oldHeight: number) => {
+    if (messageContainerRef.current) {
+      const newHeight = messageContainerRef.current.scrollHeight;
+      messageContainerRef.current.scrollTop = newHeight - oldHeight;
+    }
+  };
+
   // Fetch messages from backend
   const myMessage = async (pageNumber: number) => {
+    if (!msgId) return;
+    
     try {
       setLoading(true);
+
+      const prevHeight = messageContainerRef.current?.scrollHeight || 0;
+
       const res = await myFetch(
         `/message/my-messages/${msgId}?page=${pageNumber}&limit=20`
       );
+
       if (res?.data?.result) {
         setMsgs((prevMsgs) => {
           if (pageNumber > 1) {
             return [...prevMsgs, ...res.data.result]; // append older msgs
           }
-          return res.data.result;
+          return res.data.result; // first page load
         });
+
+        if (pageNumber > 1) {
+          // restore scroll after loading older messages
+          requestAnimationFrame(() => preserveScrollOnPrepend(prevHeight));
+        } else {
+          // scroll to bottom only for initial load
+          requestAnimationFrame(() => scrollToBottom());
+        }
       }
     } catch (err) {
       console.error("Error fetching messages:", err);
@@ -61,8 +90,7 @@ const AdminInbox = () => {
       });
 
       if (res?.success) {
-        inputRef.current.value = ""; // clear input
-        // no need to refetch here, socket will handle new message
+        inputRef.current.value = "";
       } else {
         setError("Failed to send message.");
       }
@@ -76,7 +104,6 @@ const AdminInbox = () => {
   const handleScroll = debounce(() => {
     if (messageContainerRef.current && !loading && msgs.length > 0) {
       const { scrollTop } = messageContainerRef.current;
-
       if (scrollTop === 0) {
         const newPage = page + 1;
         setPage(newPage);
@@ -87,31 +114,24 @@ const AdminInbox = () => {
 
   // Initial fetch + socket listener
   useEffect(() => {
-    myMessage(1);
+    if (!msgId || !socket) return;
 
-    if (!socket) return;
-
+    
     const eventName = "new-message::" + msgId;
-
+    
     socket.on(eventName, (newMsg: TMessage) => {
-      // prepend new message at bottom
       setMsgs((prev) => [newMsg, ...prev]);
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
+      
+      myMessage(1);
+      scrollToBottom();
+      
     });
 
     return () => {
-      socket.off(eventName); // ✅ cleanup only
+      socket.off(eventName);
     };
   }, [msgId, socket]);
 
-  // Auto-scroll when messages change
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [msgs]);
 
   return (
     <div className="w-full max-w-[1000px] mx-auto h-[90vh] flex flex-col justify-between py-8">
@@ -125,16 +145,14 @@ const AdminInbox = () => {
           {msgs.map((msg: TMessage) => (
             <div
               key={msg?._id}
-              className={`${
-                msg?.sender?.role === "admin"
+              className={`${msg?.sender?.role === "admin"
                   ? "flex-row-reverse"
                   : "flex-row"
-              } flex gap-4 group`}
+                } flex gap-4 group`}
             >
               <div
-                className={`${
-                  msg?.sender?.role !== "admin" ? "bg-gray-50" : "bg-white"
-                } p-4 rounded-2xl w-[800px]`}
+                className={`${msg?.sender?.role !== "admin" ? "bg-gray-50" : "bg-white"
+                  } p-4 rounded-2xl w-[800px]`}
               >
                 <p className="text-gray-600">{msg?.text}</p>
                 <p className="text-right text-gray-400 pt-4 text-sm">
@@ -160,9 +178,8 @@ const AdminInbox = () => {
         />
         <span
           onClick={sendMessage}
-          className={`text-2xl cursor-pointer bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-all duration-300 ${
-            loading ? "cursor-not-allowed opacity-50" : ""
-          }`}
+          className={`text-2xl cursor-pointer bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-all duration-300 ${loading ? "cursor-not-allowed opacity-50" : ""
+            }`}
         >
           <IoIosSend className="text-gray-600 hover:text-gray-400 transition-all duration-300 text-2xl" />
         </span>
