@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useLayoutEffect, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { IoIosSend } from "react-icons/io";
 import dayjs from "dayjs";
@@ -10,94 +10,169 @@ import { TMessage } from "@/type/type";
 import { debounce } from "lodash";
 import { useSocket } from "@/lib/SocketContext";
 
+const SCROLL_THRESHOLD = 60; // px
+
 const CreatorMessage = () => {
-  const [msgId, setMsgId] = useState<string>(""); // chatId of current chat
-  const [msg, setMsg] = useState<TMessage[]>([]); // message list
-  const [page, setPage] = useState(1); // pagination page 
+  const [msgId, setMsgId] = useState<string>("");            // current chatId
+  const [msg, setMsg] = useState<TMessage[]>([]);            // messages (oldest -> newest)
+  const [page, setPage] = useState(1);                       // pagination page for older history
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageContainerRef = useRef<HTMLDivElement>(null);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);       // sentinel (bottom)
+
+  const isNearBottom = useRef(true);                         // track if user was near bottom before updates
   const { socket } = useSocket();
 
-   // Fetch chat ID
+  // ------- helpers -------
+  const getIsNearBottom = () => {
+    const el = messageContainerRef.current;
+    if (!el) return true;
+    const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
+    return distance < SCROLL_THRESHOLD;
+    };
+
+  const scrollToBottom = () => {
+    const el = messageContainerRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  };
+
+  const preserveScrollOnPrepend = (prevHeight: number) => {
+    const el = messageContainerRef.current;
+    if (!el) return;
+    const newHeight = el.scrollHeight;
+    el.scrollTop = newHeight - prevHeight;
+  };
+
+  // ------- fetch chat id on mount -------
   useEffect(() => {
     (async () => {
       try {
         const res = await myFetch(`/chat/my-chat-list`);
         const chatId = res?.data?.[0]?.chat?._id;
-        if (chatId) setMsgId(chatId);
-        console.log("Creator Message ID: ", res?.data);
-      } catch (error) {
+        if (chatId) {
+          setMsgId(chatId);
+        } else {
+          setError("No chat found.");
+        }
+      } catch (err) {
         setError("Failed to fetch chat ID.");
-        console.error("Error fetching chat ID:", error);
+        console.error("Error fetching chat ID:", err);
       }
     })();
   }, []);
-  
-  // Scroll helpers
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
-  // Preserve scroll position when prepending messages
-  const preserveScrollOnPrepend = (oldHeight: number) => {
-    if (messageContainerRef.current) {
-      const newHeight = messageContainerRef.current.scrollHeight;
-      messageContainerRef.current.scrollTop = newHeight - oldHeight;
-    }
-  };
-
-
-  // Fetch messages
+  // ------- fetch messages (keep oldest -> newest in state) -------
   const myMessage = async (pageNumber: number) => {
     if (!msgId) return;
-
     try {
-
       setLoading(true);
-
       const prevHeight = messageContainerRef.current?.scrollHeight || 0;
 
-      const res = await myFetch(
-        `/message/my-messages/${msgId}?page=${pageNumber}&limit=20`
-      );
+      const res = await myFetch(`/message/my-messages/${msgId}?page=${pageNumber}&limit=20`);
+      const list: TMessage[] = res?.data?.result ?? [];
 
-      if (res?.data?.result) {
-        setMsg((prevMsgs) => {
-          if (pageNumber > 1) {
-            return [...prevMsgs, ...res.data.result]; // append older
-          }
-          return res.data.result; // reset on first load
-        });
+      // Normalize each batch as oldest -> newest
+      const normalized = list
+        .slice()
+        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
+      setMsg(prev => {
         if (pageNumber > 1) {
-          // restore scroll after loading older messages
-          requestAnimationFrame(() => preserveScrollOnPrepend(prevHeight));
-        } else {
-          // scroll to bottom only for initial load
-          requestAnimationFrame(() => scrollToBottom());
+          // prepend older
+          return [...normalized, ...prev];
         }
-      }
-    } catch (error) {
+        // first load / refresh
+        return normalized;
+      });
+
+      requestAnimationFrame(() => {
+        if (pageNumber > 1) {
+          preserveScrollOnPrepend(prevHeight);
+        } else {
+          scrollToBottom();
+        }
+      });
+    } catch (err) {
       setError("Failed to fetch messages.");
-      console.error("Error fetching messages:", error);
+      console.error("Error fetching messages:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Send message
+  // initial fetch when chat id is ready
+  useEffect(() => {
+    if (!msgId) return;
+    setPage(1);
+    myMessage(1);
+  }, [msgId]);
+
+  // ------- scroll listener: load older when at top; track stickiness -------
+  const handleScroll = useMemo(
+    () =>
+      debounce(() => {
+        const el = messageContainerRef.current;
+        if (!el) return;
+
+        // update "near bottom" flag continuously
+        isNearBottom.current = getIsNearBottom();
+
+        if (!loading && msg.length > 0 && el.scrollTop === 0) {
+          const newPage = page + 1;
+          setPage(newPage);
+          myMessage(newPage);
+        }
+      }, 120),
+    [loading, msg.length, page, msgId]
+  );
+
+  useEffect(() => {
+    return () => handleScroll.cancel();
+  }, [handleScroll]);
+
+  // ------- auto-stick to bottom on list re-render (only when near bottom before) -------
+  useLayoutEffect(() => {
+    if (isNearBottom.current) {
+      scrollToBottom();
+    }
+  }, [msg]);
+
+  // ------- socket: append new message (newest at end) -------
+  useEffect(() => {
+    if (!msgId || !socket) return;
+
+    const eventName = "new-message::" + msgId;
+
+    const onNewMsg = (newMsg: TMessage) => {
+      // capture stickiness just before mutating
+      isNearBottom.current = getIsNearBottom();
+
+      setMsg(prev => [...prev, newMsg]); // append at end (oldest -> newest)
+
+      requestAnimationFrame(() => {
+        if (isNearBottom.current) scrollToBottom();
+      });
+    };
+
+    socket.on(eventName, onNewMsg);
+    return () => {
+      socket.off(eventName, onNewMsg);
+    };
+  }, [msgId, socket]);
+
+  // ------- send message -------
   const sendMessage = async () => {
-    if (!inputRef.current || inputRef.current.value.trim() === "") return;
+    if (!inputRef.current) return;
+    const value = inputRef.current.value.trim();
+    if (!value || !msgId) return;
 
     const formData = new FormData();
     formData.append("chatId", msgId);
-    formData.append("text", inputRef.current.value);
+    formData.append("text", value);
 
     try {
       const res = await myFetch("/message/send-messages", {
@@ -106,48 +181,19 @@ const CreatorMessage = () => {
       });
 
       if (res?.success) {
-        inputRef.current.value = ""; 
+        inputRef.current.value = "";
+        // rely on socket echo to append; if backend doesn't echo, you can optimistically add:
+        // const optimistic: TMessage = { _id: crypto.randomUUID(), text: value, createdAt: new Date().toISOString(), sender: { role: "creator" } as any };
+        // setMsg(prev => [...prev, optimistic]);
+        // requestAnimationFrame(scrollToBottom);
       } else {
         setError("Failed to send the message.");
       }
-    } catch (error) {
+    } catch (err) {
       setError("Error sending message. Please try again.");
-      console.error("Error sending message:", error);
+      console.error("Error sending message:", err);
     }
   };
-
-  // Scroll event → load older messages when at top
-  const handleScroll = debounce(() => {
-    if (messageContainerRef.current && !loading && msg.length > 0) {
-      const { scrollTop } = messageContainerRef.current;
-      if (scrollTop === 0) {
-        const newPage = page + 1;
-        setPage(newPage);
-        myMessage(newPage);
-      }
-    }
-  }, 200);
-
-
-
-  // When chat ID changes, fetch messages + listen for new ones
-  useEffect(() => {
-    if (!msgId || !socket) return;
-    
-    
-    const eventName = "new-message::" + msgId;
-    
-    socket.on(eventName, (newMsg: TMessage) => {
-      setMsg((prev) => [newMsg, ...prev]); // prepend new message
-      
-      myMessage(1);
-      scrollToBottom();
-    });
-
-    return () => {
-      socket.off(eventName);
-    };
-  }, [msgId, socket]);
 
   return (
     <div className="w-full max-w-[1000px] mx-auto h-[90vh] flex flex-col justify-between py-8">
@@ -157,18 +203,17 @@ const CreatorMessage = () => {
         className="flex-1 overflow-y-auto hide-scrollbar"
         onScroll={handleScroll}
       >
-        <div className="flex flex-col-reverse justify-end gap-4">
+        {/* normal column flow; newest ends up at the bottom */}
+        <div className="flex flex-col justify-end gap-4">
           {msg.map((m) => (
             <div
               key={m._id}
-              className={`${m?.sender?.role === "creator" ? "flex-row-reverse" : "flex-row"
-                } flex gap-4 group`}
+              className={`${m?.sender?.role === "creator" ? "flex-row-reverse" : "flex-row"} flex gap-4 group`}
             >
               <div
-                className={`${m?.sender?.role !== "creator" ? "bg-gray-50" : "bg-white"
-                  } p-4 rounded-2xl w-[800px]`}
+                className={`${m?.sender?.role !== "creator" ? "bg-gray-50" : "bg-white"} p-4 rounded-2xl w-[800px]`}
               >
-                <p className="text-gray-600">{m.text}</p>
+                <p className="text-gray-600 break-words">{m.text}</p>
                 <p className="text-right text-gray-400 pt-4 text-sm">
                   {dayjs(m?.createdAt).format("YYYY-MM-DD hh:mm:ss A")}
                 </p>
@@ -176,10 +221,11 @@ const CreatorMessage = () => {
             </div>
           ))}
         </div>
+        {/* Keep this at the bottom as a sentinel */}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input - Send Message */}
+      {/* Composer */}
       <div className="flex items-center gap-4 pt-4">
         <Input
           ref={inputRef}
@@ -190,13 +236,16 @@ const CreatorMessage = () => {
           disabled={loading}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
-        <span
+        <button
           onClick={sendMessage}
-          className={`text-2xl cursor-pointer bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-all duration-300 ${loading ? "cursor-not-allowed opacity-50" : ""
-            }`}
+          disabled={loading}
+          className={`text-2xl bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-all duration-300 ${
+            loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+          }`}
+          aria-label="Send message"
         >
           <IoIosSend className="text-gray-600 hover:text-gray-400 transition-all duration-300 text-2xl" />
-        </span>
+        </button>
       </div>
 
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
