@@ -12,7 +12,7 @@ import { Button } from '../ui/button';
 
 
 
-const CreatorProjectDetails = () => {
+const ProjectDetailsAdmin = () => {
   const router = useRouter();
   const [orderDetails, setOrderDetails] = useState<TOrdersData>({} as TOrdersData);
   const params = useParams();
@@ -30,7 +30,7 @@ const CreatorProjectDetails = () => {
     const res = await myFetch(`/hire-creator/${id}`, {
       method: "GET",
     });
-    console.log("Hire Creator Project Details:",res);
+    console.log("Hire Creator Project Details:", res);
 
     if (res?.data) {
       toast.success("Order Details fetched successfully!", { id: "fetch" });
@@ -83,10 +83,17 @@ const CreatorProjectDetails = () => {
   return (
     <div className='max-w-[900px] mx-auto space-y-5 pb-16'>
       <div className='bg-white rounded-2xl p-8'>
-        <div className='flex items-center justify-center rounded-sm bg-[#FFF0BE] shadow gap-2 w-72 py-2.5 mb-6'>
-          <Image src={StarEmogi} alt="package" width={30} height={30} />
-          <p className='text-xl font-semibold text-gray-700'>Price ${orderDetails?.creatorPrice}</p>
-          <Image src={LoveEmogi} alt="package" width={30} height={30} />
+        <div className='flex gap-4 items-center'>
+          <div className='flex items-center justify-center rounded-sm bg-[#FFF0BE] shadow gap-2 w-72 py-2.5 mb-6'>
+            <Image src={StarEmogi} alt="package" width={30} height={30} />
+            <p className='text-xl font-semibold text-gray-700'>Brand Price ${orderDetails?.brandPrice}</p>
+            <Image src={LoveEmogi} alt="package" width={30} height={30} />
+          </div>
+          {orderDetails?.creatorPrice && <div className='flex items-center justify-center rounded-sm bg-[#FFF0BE] shadow gap-2 w-72 py-2.5 mb-6'>
+            <Image src={StarEmogi} alt="package" width={30} height={30} />
+            <p className='text-xl font-semibold text-gray-700'>Creator Price ${orderDetails?.creatorPrice}</p>
+            <Image src={LoveEmogi} alt="package" width={30} height={30} />
+          </div>}
         </div>
         {orderDetails?.brandInfo && <SubComponent title="Project Info" list={orderDetails.brandInfo} />}
       </div>
@@ -136,4 +143,4 @@ const SubComponent = ({ title, list }: { title: string; list: any }) => {
 };
 
 
-export default CreatorProjectDetails
+export default ProjectDetailsAdmin

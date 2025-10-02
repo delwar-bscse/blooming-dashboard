@@ -1,7 +1,6 @@
 "use client"
 
 import CustomStep from '@/components/cui/CustomStep'
-import CreatorProjectDetails from '@/components/section/CreatorProjectDetails'
 import { StepDataType } from '@/type/type';
 import React, { Suspense } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
@@ -11,6 +10,7 @@ import CreatorVideoUpload from '@/components/section/CreatorVideoUpload';
 import CreatorScript from '@/components/section/CreatorScript';
 import Link from 'next/link';
 import { BiUserCircle } from "react-icons/bi";
+import ProjectDetailsAdmin from '@/components/section/ProjectDetailsAdmin';
 
 const stepDatas: StepDataType[] = [
   {
@@ -60,7 +60,7 @@ const OrderDetailsSuspense = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CreatorProjectDetails />
+            <ProjectDetailsAdmin />
           </motion.div>
         )}
         {step === "video-guidelines" && (

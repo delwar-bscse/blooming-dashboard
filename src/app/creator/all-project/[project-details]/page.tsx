@@ -1,7 +1,6 @@
 "use client"
 
 import CustomStep from '@/components/cui/CustomStep';
-import CreatorProjectDetails from '@/components/section/CreatorProjectDetails';
 import CreatorScript from '@/components/section/CreatorScript';
 import { StepDataType } from '@/type/type';
 import { useSearchParams } from 'next/navigation';
@@ -9,9 +8,10 @@ import React, { Suspense } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
 import CreatorVideoGuidelines from '@/components/section/CreatorVideoGuidelines';
 import CreatorVideoUpload from '@/components/cui/CreatorVideoUpload';
+import ProjectDetailsCreator from '@/components/section/ProjectDetailsCreator';
 
 
-const CreatorProjectDetailsPageSuspense = () => {
+const ProjectDetailsPageSuspense = () => {
   const searchParams = useSearchParams();
   const step = searchParams.get("step");
 
@@ -55,7 +55,7 @@ const CreatorProjectDetailsPageSuspense = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CreatorProjectDetails />
+            <ProjectDetailsCreator />
           </motion.div>
         )}
         {step === "video-guidelines" && (
@@ -99,7 +99,7 @@ const CreatorProjectDetailsPageSuspense = () => {
 export default function CreatorProjectDetailsPage() {
   return (
     <Suspense fallback={<div>Loading...</div>} >
-      <CreatorProjectDetailsPageSuspense />
+      <ProjectDetailsPageSuspense />
     </Suspense>
   )
 }

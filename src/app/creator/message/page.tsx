@@ -1,157 +1,135 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { IoIosSend } from "react-icons/io";
 import dayjs from "dayjs";
-import { io } from "socket.io-client";
 import { myFetch } from "@/utils/myFetch";
 import { TMessage } from "@/type/type";
 import { debounce } from "lodash";
+import { useSocket } from "@/lib/SocketContext";
 
 const CreatorMessage = () => {
   const [msgId, setMsgId] = useState<string>(""); // chatId of current chat
-  const [msg, setMsg] = useState<TMessage[]>([] as TMessage[]); // message list state
-  const [page, setPage] = useState(1); // page state for pagination
-  const [loading, setLoading] = useState(false); // loading state to prevent duplicate fetches
-  const [error, setError] = useState<string | null>(null); // error message state
+  const [msg, setMsg] = useState<TMessage[]>([]); // message list
+  const [page, setPage] = useState(1); // pagination page
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageContainerRef = useRef<HTMLDivElement>(null); // ref for message container to listen for scroll events
+  const messageContainerRef = useRef<HTMLDivElement>(null);
 
-  const socket = useMemo(() => io(process.env.NEXT_PUBLIC_IMAGE_URL), []); // socket connection
+  const { socket } = useSocket();
 
-  // Fetch the chat ID
+  // Fetch chat ID
   const myMessageId = async () => {
     try {
       const res = await myFetch(`/chat/my-chat-list`);
-      setMsgId(res?.data[0]?.chat?._id); // Update msgId with chatId
-      console.log("Creator Message ID: ", res?.data[0]?.chat?._id);
+      const chatId = res?.data?.[0]?.chat?._id;
+      if (chatId) setMsgId(chatId);
+      console.log("Creator Message ID: ", res?.data);
     } catch (error) {
       setError("Failed to fetch chat ID.");
       console.error("Error fetching chat ID:", error);
     }
   };
 
-  // Fetch messages for the current chat
-  const myMessage = async () => {
-    if (!msgId) return; // Ensure msgId is available before fetching messages
+  // Fetch messages
+  const myMessage = async (pageNumber: number = 1) => {
+    if (!msgId) return;
 
     setLoading(true);
     try {
-      const res = await myFetch(`/message/my-messages/${msgId}?page=${page}&limit=20`);
+      const res = await myFetch(
+        `/message/my-messages/${msgId}?page=${pageNumber}&limit=20`
+      );
       if (res?.data?.result) {
         setMsg((prevMsgs) => {
-          if (page > 1) {
-            return [...prevMsgs, ...res?.data?.result]; // Append new messages at the bottom
+          if (pageNumber > 1) {
+            return [...prevMsgs, ...res.data.result]; // append older
           }
-          return res?.data?.result; // Replace with the latest messages
+          return res.data.result; // reset on first load
         });
       }
     } catch (error) {
       setError("Failed to fetch messages.");
       console.error("Error fetching messages:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  // Send a message to the server
+  // Send message
   const sendMessage = async () => {
-    if (inputRef?.current && inputRef.current.value.trim() !== "") {
-      const formData = new FormData();
-      formData.append("chatId", msgId);
-      formData.append("text", inputRef.current.value || "");
+    if (!inputRef.current || inputRef.current.value.trim() === "") return;
 
-      try {
-        const res = await myFetch("/message/send-messages", {
-          method: "POST",
-          body: formData,
-        });
+    const text = inputRef.current.value;
+    const formData = new FormData();
+    formData.append("chatId", msgId);
+    formData.append("text", text);
 
-        if (res?.success) {
-          setPage(1); // Reset to page 1 after sending the message
-          myMessage(); // Re-fetch messages to get the latest one
-          inputRef.current.value = ""; // Clear input field
-          socket.emit("newMessage"); // Emit socket event for real-time updates
-        } else {
-          setError("Failed to send the message.");
-        }
-      } catch (error) {
-        setError("Error sending message. Please try again.");
-        console.error("Error sending message:", error);
+    try {
+      const res = await myFetch("/message/send-messages", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res?.success) {
+        inputRef.current.value = ""; // clear
+        // ✅ Let socket event handle updating messages
+      } else {
+        setError("Failed to send the message.");
       }
+    } catch (error) {
+      setError("Error sending message. Please try again.");
+      console.error("Error sending message:", error);
     }
   };
 
-  // Handle scroll events with debouncing for performance
+  // Scroll event → load older messages when at top
   const handleScroll = debounce(() => {
     if (messageContainerRef.current && !loading && msg.length > 0) {
-      const scrollTop = messageContainerRef.current.scrollTop;
-      const scrollHeight = messageContainerRef.current.scrollHeight;
-      const clientHeight = messageContainerRef.current.clientHeight;
-
-      if (scrollTop === 0 && !loading) {
-        // If at the top, fetch previous messages
-        setPage((prev) => {
-          const newPage = prev + 1;
-          if (newPage !== page) {
-            myMessage(); // Re-fetch messages based on new page
-          }
-          return newPage;
-        });
-      }
-
-      if (scrollTop + clientHeight === scrollHeight && !loading) {
-        // If at the bottom, fetch next messages
-        setPage((prev) => {
-          const newPage = prev + 1;
-          if (newPage !== page) {
-            myMessage(); // Re-fetch messages based on new page
-          }
-          return newPage;
-        });
+      const { scrollTop } = messageContainerRef.current;
+      if (scrollTop === 0) {
+        const newPage = page + 1;
+        setPage(newPage);
+        myMessage(newPage);
       }
     }
-  }, 200); // Debounce with 200ms delay
+  }, 200);
 
+  // Initial fetch chat ID
   useEffect(() => {
-    myMessageId(); // Fetch chat ID on initial render
+    myMessageId();
+  }, []);
 
-    socket.on("connect", () => {
-      console.log("Connected to socket");
-    });
-
-    return () => {
-      socket.disconnect(); // Cleanup socket connection when the component is unmounted
-    };
-  }, [socket]); // Only run this on initial render
-
-  // Fetch messages and listen to socket events when msgId changes
+  // When chat ID changes, fetch messages + listen for new ones
   useEffect(() => {
-    if (!msgId) return; // Don't fetch messages if chatId is not set
+    if (!msgId || !socket) return;
 
-    // Fetch messages when msgId changes
-    myMessage();
+    myMessage(1); // load first page
 
     const eventName = "new-message::" + msgId;
-    // Listen for real-time new messages via socket
-    socket.on(eventName, () => {
-      myMessage(); // Re-fetch messages when new messages arrive
+
+    socket.on(eventName, (newMsg: TMessage) => {
+      setMsg((prev) => [newMsg, ...prev]); // prepend new message
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
     });
 
-    // Cleanup socket listener when msgId changes
     return () => {
       socket.off(eventName);
     };
-  }, [msgId, socket, page]); // Re-fetch messages when msgId, socket, or page changes
+  }, [msgId, socket]);
 
-  // Scroll to the bottom after messages are updated
+  // Auto-scroll on new msgs
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [msg]); // Re-run this effect when new messages are received
+  }, [msg]);
 
   return (
     <div className="w-full max-w-[1000px] mx-auto h-[90vh] flex flex-col justify-between py-8">
@@ -162,17 +140,21 @@ const CreatorMessage = () => {
         onScroll={handleScroll}
       >
         <div className="flex flex-col-reverse justify-end gap-4">
-          {msg?.map((msg) => (
+          {msg.map((m) => (
             <div
-              key={msg._id}
-              className={`${msg?.sender?.role === "creator" ? "flex-row-reverse" : "flex-row"} flex gap-4 group`}
+              key={m._id}
+              className={`${
+                m?.sender?.role === "creator" ? "flex-row-reverse" : "flex-row"
+              } flex gap-4 group`}
             >
               <div
-                className={`${msg?.sender?.role !== "creator" ? "bg-gray-50" : "bg-white"} p-4 rounded-2xl w-[800px]`}
+                className={`${
+                  m?.sender?.role !== "creator" ? "bg-gray-50" : "bg-white"
+                } p-4 rounded-2xl w-[800px]`}
               >
-                <p className="text-gray-600">{msg.text}</p>
+                <p className="text-gray-600">{m.text}</p>
                 <p className="text-right text-gray-400 pt-4 text-sm">
-                  {dayjs(msg?.createdAt).format("YYYY-MM-DD hh:mm:ss A")}
+                  {dayjs(m?.createdAt).format("YYYY-MM-DD hh:mm:ss A")}
                 </p>
               </div>
             </div>
@@ -181,15 +163,16 @@ const CreatorMessage = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Field and Send Button */}
+      {/* Input */}
       <div className="flex items-center gap-4 pt-4">
         <Input
           ref={inputRef}
           type="text"
           variant="msgField"
-          placeholder="type..."
+          placeholder="Type..."
           className="flex-1 transition-all duration-300"
-          disabled={loading} // Disable input while loading
+          disabled={loading}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
         <span
           onClick={sendMessage}
@@ -201,7 +184,6 @@ const CreatorMessage = () => {
         </span>
       </div>
 
-      {/* Error Handling */}
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
     </div>
   );

@@ -3,15 +3,16 @@
 "use client";
 
 import Image from 'next/image'
-import React, { Suspense, useEffect, useMemo } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { LuSquareArrowOutUpRight } from "react-icons/lu";
 import { TbChecks } from "react-icons/tb";
 import ProfileImg from "@/assets/common/profileImage02.png"
 import { useRouter, useSearchParams } from 'next/navigation';
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 import { myFetch } from '@/utils/myFetch';
 import dayjs from 'dayjs';
 import { CustomSearchBar } from '@/components/cui/CustomSearchBar';
+import { useSocket } from '@/lib/SocketContext';
 
 interface IChatItem {
   profile?: string;
@@ -28,6 +29,9 @@ const MessageSuspense = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('query') || '';
+   // handle live chatting
+  // const socket = useMemo(() => io(process.env.NEXT_PUBLIC_IMAGE_URL), []);
+  const { socket } = useSocket()
 
   const allMessages = async () => {
     const res = await myFetch(`/chat/my-chat-list?search=${searchQuery}`);
@@ -46,11 +50,6 @@ const MessageSuspense = () => {
     setAdminMessage(msgArray); // Update message state
   };
 
-  // handle live chatting
-  const socket = useMemo(() => io(process.env.NEXT_PUBLIC_IMAGE_URL), []);
-  socket.on("connect", () => {
-    console.log("Connected to socket");
-  });
 
   useEffect(() => {
 

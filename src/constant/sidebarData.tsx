@@ -1,4 +1,4 @@
- import { overviewImg, blogPostImg, brandsImg, changePasswordImg, contactSupportImg, creatorsImg, messageImg, packageImg, privacyPolicyImg, profileImg, subscriptionImg, termsConditionImg, uploadImg } from "@/assets/assets";
+ import { overviewImg, blogPostImg, brandsImg, changePasswordImg, contactSupportImg, creatorsImg, messageImg, packageImg, privacyPolicyImg, profileImg, subscriptionImg, termsConditionImg, uploadImg, review } from "@/assets/assets";
 import { menuType } from "@/type/type";
 
 
@@ -59,11 +59,6 @@ export const adminMenu: menuType[] = [
     label: "/admin/message",
   },
   {
-    icon: changePasswordImg,
-    title: "Change Password",
-    label: "/admin/change-password",
-  },
-  {
     icon: privacyPolicyImg,
     title: "Privacy Policy",
     label: "/admin/privacy-policy",
@@ -72,7 +67,17 @@ export const adminMenu: menuType[] = [
     icon: termsConditionImg,
     title: "Terms & Condition",
     label: "/admin/terms-and-condition",
-  }
+  },
+  {
+    icon: review,
+    title: "Brand Review",
+    label: "/admin/brand-review",
+  },
+  {
+    icon: changePasswordImg,
+    title: "Change Password",
+    label: "/admin/change-password",
+  },
 ];
 
 export const creatorMenu: menuType[] = [

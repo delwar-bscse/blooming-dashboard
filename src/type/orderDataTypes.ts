@@ -96,6 +96,7 @@ export interface TOrdersData {
   addOns: AddOns;
   status: string;
   creatorPrice?: string;
+  brandPrice?: string;
   paymentStatus: string;
   takeVideoCount: number;
   createdAt: string; // ISO Date String

@@ -14,6 +14,7 @@ import profileImg from "./sidebar/profile.png";
 import subscriptionImg from "./sidebar/subscription.png";
 import termsConditionImg from "./sidebar/termsCondition.png";
 import uploadImg from "./sidebar/upload.png";
+import review from "./sidebar/review.png";
 
 
 import profileImage01 from "./common/profileImage.png";
@@ -30,7 +31,7 @@ import videoThumbnail from "./common/video_thumbnail.png";
 
 
 export { 
-  dashboard, overviewImg, blogPostImg, brandsImg, changePasswordImg, contactSupportImg, creatorsImg, Img, logoutImg, messageImg, packageImg, privacyPolicyImg, profileImg, subscriptionImg, termsConditionImg, uploadImg,
+  dashboard, overviewImg, blogPostImg, brandsImg, changePasswordImg, contactSupportImg, creatorsImg, Img, logoutImg, messageImg, packageImg, privacyPolicyImg, profileImg, subscriptionImg, termsConditionImg, uploadImg, review,
 
   authBackground, bloomimgLogo, package00, package01, package02, package03, package04, profileImage01, profileImage02, videoThumbnail
  };

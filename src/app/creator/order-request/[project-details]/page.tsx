@@ -13,7 +13,7 @@ import LoveEmogi from "@/assets/common/loveEmoji.png"
 import Image from 'next/image';
 
 
-const CreatorProjectDetailsPageSuspense = () => {
+const ProjectDetailsPageSuspense = () => {
   const router = useRouter();
 
   const [orderDetails, setOrderDetails] = React.useState<any>(null);
@@ -94,7 +94,7 @@ const CreatorProjectDetailsPageSuspense = () => {
                 <p className='text-xl font-semibold text-gray-700'>Price ${orderDetails?.price}</p>
                 <Image src={LoveEmogi} alt="package" width={30} height={30} />
               </div>
-              {orderDetails?.brandInfo && <SubComponent title="Project Info" list={orderDetails?.hireCreatorId?.brandInfo} />}
+              {orderDetails?.brandInfo && <SubComponent title="Project Info" list={orderDetails?.hireCreatorId.brandInfo} />}
             </div>
             <div className='bg-white rounded-2xl p-8'>
               <SubComponent title="Brand Social" list={orderDetails?.hireCreatorId?.brandSocial} />
@@ -108,11 +108,6 @@ const CreatorProjectDetailsPageSuspense = () => {
             <div className='bg-white rounded-2xl p-8'>
               <SubComponent title="Characteristics Of The Creator" list={orderDetails?.hireCreatorId?.characteristicInfo} />
             </div>
-
-            {/* {orderDetails.status === "pending" && <div className='flex items-center justify-end space-x-4'>
-              <Button onClick={handleApprove}>Approve</Button>
-              <Button onClick={handleDelete}>Delete</Button>
-            </div>} */}
           </div>
           {orderDetails?.status === "pending" && <div className='flex items-center justify-center space-x-4'>
             <Button onClick={handleApprove}>Approve</Button>
@@ -148,7 +143,7 @@ const SubComponent = ({ title, list }: { title: string; list: any }) => {
 export default function CreatorProjectDetailsPage() {
   return (
     <Suspense fallback={<div>Loading...</div>} >
-      <CreatorProjectDetailsPageSuspense />
+      <ProjectDetailsPageSuspense />
     </Suspense>
   )
 }
