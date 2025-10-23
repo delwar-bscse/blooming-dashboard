@@ -26,8 +26,12 @@ export const dynamicFilterValue = [
 ]
 export const dynamicFilterValueCreator = [
   {
-    value: 'ongoing',
-    label: 'Ongoing Orders',
+    value: 'pending',
+    label: 'Pending Orders',
+  },
+  {
+    value: 'approved',
+    label: 'Approved Orders',
   },
   {
     value: 'completed',

@@ -49,7 +49,9 @@ const AllOrdersSuspense = () => {
 
   const getAllOrders = async () => {
     toast.loading("Fetching Orders request...", { id: "fetch" });
-    const res = await myFetch(`/assign-task-creator/assign?page=${page}`);
+    const res = await myFetch(`/assign-task-creator/assign?status=pending&page=${page}`);
+    console.log("Creator task : ", res.data);
+
     if (res?.data) {
       toast.success("All Orders request fetched successfully!", { id: "fetch" });
       const formatedData = res?.data?.map((item: any) => ({

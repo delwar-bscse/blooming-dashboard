@@ -9,8 +9,6 @@ import CustomStep from '@/components/cui/CustomStep';
 // import AdminCreatorListFilter from '@/components/modal/AdminCreatorListFilter';
 import CustomTableSelection from '@/components/table/CustomTableSelection';
 // import { Button } from '@/components/ui/button';
-import { adminCreatorListColumns } from '@/tableColumn/adminCreatorsListColumns';
-import { StepDataType } from '@/type/type';
 // import { SlidersHorizontal } from 'lucide-react';
 import { useParams, useSearchParams } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react'
@@ -18,12 +16,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { myFetch } from '@/utils/myFetch';
 import { toast } from 'sonner';
 import { PartialExceptId, TSingleCreator } from '@/type/creatorDataTypes';
-import CustomTableRadio from '@/components/table/CustomTableRadio';
-import CreatorDetails from '@/components/cui/CreatorDetails';
+import { StepDataType } from "@/type/type";
 import { Input } from '@/components/ui/input';
 import { usePrice } from '@/contexts/PriceContext';
 import Link from 'next/link';
 import { PiEyeBold } from "react-icons/pi";
+import CustomTableSelection2 from '@/components/table/CustomTableSelection2';
+import { adminCreatorListColumns } from '@/tableColumn/adminCreatorsListColumns';
+import { adminCreatorListColumns2 } from '@/tableColumn/adminCreatorsListColumns2';
+import CustomPagination from '@/components/cui/CustomPagination';
 
 const stepDatas: StepDataType[] = [
   {
@@ -39,7 +40,12 @@ const stepDatas: StepDataType[] = [
   {
     id: 3,
     title: "Approved Creator",
-    label: "approved-creator",
+    label: "approved-creators",
+  },
+  {
+    id: 4,
+    title: "Brand Approved",
+    label: "brand-approved",
   }
 ];
 
@@ -48,50 +54,50 @@ const stepDatas: StepDataType[] = [
 const OrderActionsSuspense = () => {
   const { setPrice } = usePrice();
   const [creatorsDatas, setCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
-  const [creator, setCreator] = useState<PartialExceptId<TSingleCreator>>({} as PartialExceptId<TSingleCreator>);
-  const [user, setUser] = useState<Record<string, any>>({});
   const [agreedCreatorsDatas, setAgreedCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
+  const [approvedByAdminCreatorsDatas, setApprovedByAdminCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
+  const [approvedByBrandCreatorsDatas, setApprovedByBrandCreatorsDatas] = useState<PartialExceptId<TSingleCreator>[]>([] as PartialExceptId<TSingleCreator>[]);
   const searchParams = useSearchParams();
   const params = useParams();
   const step = searchParams.get("step");
+  const page = searchParams.get("page") || "1";
   const query = searchParams.get("query") || "";
   const hireCreatorId = params["id"];
 
-  // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
+  console.log("Hire Creator ID : ", hireCreatorId)
 
   const getCreators = async () => {
-    toast.loading("Fetching Creators...", { id: "fetch" });
     const res = await myFetch(`/creator?status=approved&searchTerm=${query}`);
-    // console.log(res?.data);
+    // console.log("Response Data: ", res?.data);
     if (res?.data) {
-      setCreatorsDatas(res?.data);
-      toast.success("All creators fetched successfully!", { id: "fetch" });
+      const modifyDatas = res?.data?.map((item: any) => {
+        return {
+          _id: item?._id,
+          creatorId:item?._id,
+          accountHolderName: item?.accountHolderName,
+          email: item?.email,
+          phone: item?.phone,
+          country: item?.country,
+          status: item?.status
+        }
+      });
+      // console.log("Modify Data: ", modifyDatas);
+      setCreatorsDatas(modifyDatas);
     } else {
-      toast.error(res?.message || "Creators Fetching failed!", { id: "fetch" });
+      toast.error(res?.message || "Creators Fetching failed!");
     }
   }
 
-  const getApprovedCreator = async () => {
-    toast.loading("Fetching Approved Creator...", { id: "fetchCreator" });
-    const res = await myFetch(`/hire-creator/${hireCreatorId}`);
-    console.log("Approved Creator:", res?.data?.userId);
-    if (res?.data?.creatorId) {
-      setCreator(res?.data?.creatorId);
-      setUser(res?.data?.userId);
-      toast.success("Approved creator fetched successfully!", { id: "fetchCreator" });
-    } else {
-      toast.error(res?.message || "Approved Creator Fetching failed!", { id: "fetchCreator" });
-    }
-  }
 
   const getAgreedCreators = async () => {
-    toast.loading("Fetching AgreedCreators...", { id: "fetchAgreedCreators" });
-    const res = await myFetch(`/assign-task-creator?status=request_approved&hireCreatorId=${hireCreatorId}`);
+    const res = await myFetch(`/assign-task-creator/${hireCreatorId}?status=request_approved`);
+    // const res = await myFetch(`/assign-task-creator?status=request_approved&hireCreatorId=${hireCreatorId}`);
     if (res?.data) {
       console.log(res?.data);
       const modifyDatas = res?.data?.map((item: any) => {
         return {
           _id: item?._id,
+          creatorId:item?.creatorId,
           accountHolderName: item?.creatorUserId?.fullName,
           email: item?.creatorUserId?.email,
           phone: item?.creatorUserId?.phone,
@@ -101,11 +107,55 @@ const OrderActionsSuspense = () => {
       });
       console.log(modifyDatas);
       setAgreedCreatorsDatas(modifyDatas);
-      toast.success("All agreed creators fetched successfully!", { id: "fetchAgreedCreators" });
     } else {
-      toast.error(res?.message || "Agreed Creators Fetching failed!", { id: "fetchAgreedCreators" });
+      toast.error(res?.message || "Agreed Creators Fetching failed!");
     }
   }
+
+  const getApprovedCreators = async () => {
+    const res = await myFetch(`/assign-task-creator/${hireCreatorId}?status=approved_by_admin`);
+    console.log("Approved Creator:", res?.data);
+    if (res?.data) {
+      const modifyDatas = res?.data?.map((item: any) => {
+        return {
+          _id: item?._id,
+          creatorId:item?.creatorId,
+          accountHolderName: item?.creatorUserId?.fullName,
+          email: item?.creatorUserId?.email,
+          phone: item?.creatorUserId?.phone,
+          country: item?.creatorUserId?.address,
+          status: item?.status
+        }
+      });
+      // console.log(modifyDatas);
+      setApprovedByAdminCreatorsDatas(modifyDatas);
+    } else {
+      toast.error(res?.message || "Approved Creator Fetching failed!");
+    }
+  }
+
+  const getApprovedByBrandCreators = async () => {
+    const res = await myFetch(`/assign-task-creator/${hireCreatorId}?status=approved`);
+    console.log("Approved by Brand:", res?.data);
+    if (res?.data) {
+      const modifyDatas = res?.data?.map((item: any) => {
+        return {
+          _id: item?._id,
+          creatorId:item?.creatorId,
+          accountHolderName: item?.creatorUserId?.fullName,
+          email: item?.creatorUserId?.email,
+          phone: item?.creatorUserId?.phone,
+          country: item?.creatorUserId?.address,
+          status: item?.status
+        }
+      });
+      console.log(modifyDatas);
+      setApprovedByBrandCreatorsDatas(modifyDatas);
+    } else {
+      toast.error(res?.message || "Approved Creator Fetching failed!");
+    }
+  }
+
 
 
 
@@ -116,17 +166,20 @@ const OrderActionsSuspense = () => {
     if (step === "agreed-creators") {
       getAgreedCreators();
     }
-    if (step === "approved-creator") {
-      getApprovedCreator();
+    if (step === "approved-creators") {
+      getApprovedCreators();
     }
-  }, [step, query]);
+    if (step === "brand-approved") {
+      getApprovedByBrandCreators();
+    }
+  }, [step, page, query]);
 
 
   return (
     <>
       <div className="py-4 flex items-center justify-between gap-4">
         <div className='flex-1'>
-          <CustomStep stepDatas={stepDatas} className='pb-4'/>
+          <CustomStep stepDatas={stepDatas} className='pb-4' />
         </div>
         <div className="flex items-center justify-center w-20 border-4 py-1 border-gray-300 rounded-lg">
           <Link href={`/admin/all-orders/order-details/${hireCreatorId}`} className="flex items-center justify-center">
@@ -166,10 +219,10 @@ const OrderActionsSuspense = () => {
             transition={{ duration: 0.3 }}
           >
             {/* {creatorsDatas && <CustomTableRadio<PartialExceptId<TSingleCreator>> data={creatorsDatas} columns={adminCreatorListColumns} />} */}
-            {agreedCreatorsDatas && <CustomTableRadio<PartialExceptId<TSingleCreator>> data={agreedCreatorsDatas} columns={adminCreatorListColumns} />}
+            {agreedCreatorsDatas && <CustomTableSelection2<PartialExceptId<TSingleCreator>> data={agreedCreatorsDatas} columns={adminCreatorListColumns} />}
           </motion.div>
         )}
-        {step === "approved-creator" && (
+        {step === "approved-creators" && (
           <motion.div
             key="video-upload"
             initial={{ opacity: 0 }}
@@ -177,10 +230,27 @@ const OrderActionsSuspense = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CreatorDetails creator={creator} user={user} />
+            {/* <CreatorDetails creator={creator} user={user} /> */}
+
+            {approvedByAdminCreatorsDatas && <CustomTableSelection2<PartialExceptId<TSingleCreator>> data={approvedByAdminCreatorsDatas} columns={adminCreatorListColumns2} />}
+          </motion.div>
+        )}
+        {step === "brand-approved" && (
+          <motion.div
+            key="video-upload"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* <CreatorDetails creator={creator} user={user} /> */}
+
+            {approvedByBrandCreatorsDatas && <CustomTableSelection2<PartialExceptId<TSingleCreator>> data={approvedByBrandCreatorsDatas} columns={adminCreatorListColumns2} />}
           </motion.div>
         )}
       </AnimatePresence>
+
+      <CustomPagination TOTAL_PAGES={5} />
     </>
   )
 }

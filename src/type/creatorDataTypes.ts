@@ -12,6 +12,7 @@ interface TUserId {
 
 export interface TSingleCreator {
   _id: string;
+  creatorId?: string;
   userId: TUserId;
   phone: string;
   email: string;

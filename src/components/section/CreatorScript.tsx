@@ -29,7 +29,10 @@ const CreatorScript = () => {
   return (
     <div className="" style={{ height: "calc(100vh - 220px)" }}>
       <p className='text-2xl font-semibold py-4'>Status: {status}</p>
-      <Textarea readOnly value={script} variant="blackBorder" placeholder="" className=" bg-white min-h-[500px] p-3" />
+      <Textarea onChange={(e) => setScript(e.target.value)} value={script} variant="blackBorder" placeholder="" className=" bg-white min-h-[500px] p-3" />
+      <div>
+        <button className='bg-yellow-400 text-white font-semibold px-4 py-2 rounded-lg'>Add Script</button>
+      </div>
     </div>
   )
 }

@@ -22,10 +22,8 @@ import {
 } from "@/components/ui/form";
 import { BsUpload } from "react-icons/bs";
 import { myFetch } from '@/utils/myFetch';
-// import { LuUpload } from "react-icons/lu";
 import { toast } from 'sonner';
 import { useParams } from 'next/navigation';
-// import { TOrdersData } from '@/type/orderDataTypes';
 
 
 
@@ -36,10 +34,10 @@ const VideoUploadFormSchema = z.object({
     .refine(
       (files) =>
         Array.isArray(files) &&
-        files.length > 0 &&
-        files.length <= 6 &&
+        files.length >= 1 &&
+        files.length <= 2 &&
         files.every((file) => file instanceof File && file.type.startsWith("video/")),
-      "Please upload up to 6 valid video files"
+      "Maximum 2 video files"
     )
 });
 

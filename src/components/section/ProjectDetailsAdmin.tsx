@@ -53,7 +53,6 @@ const ProjectDetailsAdmin = () => {
     const res = await myFetch(`/hire-creator/cancel/${id}`, {
       method: "PATCH",
     });
-    // console.log( res?.data);
 
     if (res?.data) {
       toast.success("Deleted successfully!", { id: "delete" });

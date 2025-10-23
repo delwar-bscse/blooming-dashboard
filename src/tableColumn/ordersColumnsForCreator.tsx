@@ -12,21 +12,21 @@ export const orderColumnsForCreator: ColumnDef<TOrdersData>[] = [
     ),
   },
   {
-    accessorKey: "brandInfo.name",
+    accessorKey: "brandName",
     header: () => <div className="text-center">Brand Name</div>,
     cell: ({ row }) => {
       // Access nested value directly
-      const brandName = row.original?.brandInfo?.name;
+      // const brandName = row.original?.brandInfo?.name;
       return (
-        <div className="text-center">{brandName}</div>
+        <div className="text-center">{row.getValue("brandName")}</div>
       );
     },
   },
   {
-    accessorKey: "brandInfo.productName",
+    accessorKey: "productName",
     header: () => <div className="text-center">Product Name</div>,
     cell: ({ row }) => (
-      <div className="text-center">{row.original?.brandInfo?.productName}</div>
+      <div className="text-center">{row.getValue("productName")}</div>
     ),
   },
   // {
@@ -37,10 +37,10 @@ export const orderColumnsForCreator: ColumnDef<TOrdersData>[] = [
   //   ),
   // },
   {
-    accessorKey: "brandInfo.email",
+    accessorKey: "brandEmail",
     header: () => <div className="text-center">Email</div>,
     cell: ({ row }) => (
-      <div className="text-center">{row.original?.brandInfo?.email}</div>
+      <div className="text-center">{row.getValue("brandEmail")}</div>
     ),
   },
   {

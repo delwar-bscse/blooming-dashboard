@@ -24,7 +24,7 @@ const ProjectDetailsPageSuspense = () => {
     // console.log("Request ID:", requestId);
 
     toast.loading("Request Order Details Fetching...", { id: "fetch" });
-    const res = await myFetch(`/assign-task-creator/${requestId}`, {
+    const res = await myFetch(`/assign-task-creator//single/${requestId}`, {
       method: "GET",
     });
     console.log("Request Project Details:", res?.data);
@@ -46,8 +46,8 @@ const ProjectDetailsPageSuspense = () => {
     // console.log(id);
 
     toast.loading("Deleting...", { id: "delete" });
-    const res = await myFetch(`/assign-task-creator/${requestId}`, {
-      method: "DELETE",
+    const res = await myFetch(`/assign-task-creator/status/${requestId}`, {
+      method: "PATCH",
     });
     // console.log(res?.data);
 

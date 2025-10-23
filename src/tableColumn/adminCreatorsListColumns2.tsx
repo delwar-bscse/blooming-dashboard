@@ -1,12 +1,10 @@
 // import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
-// import { PiEyeBold } from "react-icons/pi";
-import { Checkbox } from "@/components/ui/checkbox"
 import { PartialExceptId, TSingleCreator } from "@/type/creatorDataTypes";
 import Link from "next/link";
 import { PiEyeBold } from "react-icons/pi";
 
-export const adminCreatorListColumns: ColumnDef<PartialExceptId<TSingleCreator>>[] = [
+export const adminCreatorListColumns2: ColumnDef<PartialExceptId<TSingleCreator>>[] = [
   {
     accessorKey: "_id",
     header: () => <div className="text-center">No.</div>,
@@ -58,48 +56,13 @@ export const adminCreatorListColumns: ColumnDef<PartialExceptId<TSingleCreator>>
       <div className="capitalize text-center text-semibold text-white bg-gray-600 hover:bg-gray-700 hover:text-gray-100 transition-colors duration-300 py-1 rounded-md cursor-pointer">{row.getValue("status")}</div>
     ),
   },
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex justify-center">
-        <Checkbox
-          checked={table.getIsAllRowsSelected()}
-          onCheckedChange={value => table.toggleAllRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
+    {
+    id: "action",
+    header: () => <div className="text-center">Action</div>,
     cell: ({ row }) => (
-      <div className="flex items-center justify-center gap-2">
-        <Link href={`/admin/all-orders/${row.original?.creatorId}`} className="flex items-center justify-center">
-          <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
-        </Link>
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={value => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          onClick={e => e.stopPropagation()}
-        />
-      </div>
+      <Link href={`/admin/all-orders/${row.original?.creatorId}`} className="flex items-center justify-center">
+        <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
+      </Link>
     ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  // {
-  //   id: "select",
-  //   header: () => <div className="text-center">Select</div>,
-  //   cell: ({ row }) => (
-  //     <div className="flex justify-center items-center">
-  //       <input
-  //         type="checkbox"
-  //         checked={row.getIsSelected?.()}
-  //         onChange={e => {
-  //           e.stopPropagation(); // Prevent row click
-  //           row.toggleSelected?.();
-  //           console.log(e.target.checked);
-  //         }}
-  //       />
-  //     </div>
-  //   ),
-  // }
+  }
 ]

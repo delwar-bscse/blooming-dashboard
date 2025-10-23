@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import CustomTable from '@/components/table/CustomTable'
@@ -17,56 +18,51 @@ import { useSearchParams } from 'next/navigation';
 import CustomModalFilter from '@/components/cui/CustomModalFilter';
 import { dynamicFilterValueCreator } from '@/constant/filterValue';
 import { orderColumnsForCreator } from '@/tableColumn/ordersColumnsForCreator';
-import {Suspense} from 'react';
-
-
-
-// const stepDatas: StepDataType[] = [
-//   {
-//     id: 1,
-//     title: "All Order",
-//     label: "all-order",
-//   },
-//   {
-//     id: 2,
-//     title: "Complete Order",
-//     label: "complete-order",
-//   }
-// ];
+import { Suspense } from 'react';
 
 
 
 
 const AllOrdersSuspense = () => {
   const [totalPage, setTotalPage] = useState(1);
-  const [allCreatorsData, setAllCreatorsData] = useState<TOrdersData[]>([]);
+  const [allCreatorsData, setAllCreatorsData] = useState<any[]>([]);
   const searchParams = useSearchParams();
-  const filterType = searchParams.get("filter");
+  const filterType = searchParams.get("filter") || "pending";
   const page = searchParams.get("page") || "1";
 
   // const data = orderDatas.slice(0, 9) as TOrdersData[];
 
-  const getAllOrders = async() => {
-    toast.loading("Fetching Orders...", {id: "fetch"});
-    const res  = await myFetch(
-      `/hire-creator/creator-all-orders?page=${page}${filterType ? `&status=${filterType}` : ""}`,
+  const getAllOrders = async () => {
+    // toast.loading("Fetching Orders...", { id: "fetch" });
+    const res = await myFetch(
+      `/assign-task-creator/assign?page=${page}${filterType ? `&status=${filterType}` : ""}`,
       {
         method: "GET",
       }
     );
-    // console.log(res?.data);
-    if(res?.data){
-      toast.success("All Orders fetched successfully!", {id: "fetch"});
-      setAllCreatorsData(res?.data);
+    console.log("All Orders: ", res?.data);
+    if (res?.data) {
+      // toast.success("All Orders fetched successfully!", { id: "fetch" });
+      const modifyDatas = res?.data?.map((item:any)=>{
+        return {
+          _id:"",
+          brandName:item?.hireCreatorId?.brandInfo?.name,
+          productName:item?.hireCreatorId?.brandInfo?.productName,
+          brandEmail:item?.hireCreatorId?.brandInfo?.email,
+          status:item?.status,
+        }
+      })
+      console.log("Modify Datas : ", modifyDatas)
+      setAllCreatorsData(modifyDatas);
       setTotalPage(res?.pagination?.totalPage || 1);
-    }else {
-      toast.error(res?.message || "Orders Fetching failed!", {id: "fetch"});
+    } else {
+      // toast.error(res?.message || "Orders Fetching failed!", { id: "fetch" });
     }
   }
 
   useEffect(() => {
     getAllOrders();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType, page])
 
   return (
@@ -88,15 +84,15 @@ const AllOrdersSuspense = () => {
             }
           >
             <div>
-              <OrderFilter dynamicFilterValue={dynamicFilterValueCreator}/>
+              <OrderFilter dynamicFilterValue={dynamicFilterValueCreator} />
             </div>
           </CustomModalFilter>
         </div>
       </div>
       <div className="pt-4">
-        <CustomTable<TOrdersData> columns={orderColumnsForCreator} data={allCreatorsData} />
+        {allCreatorsData && <CustomTable<TOrdersData> columns={orderColumnsForCreator} data={allCreatorsData} />}
       </div>
-      <CustomPagination TOTAL_PAGES={totalPage}/>
+      <CustomPagination TOTAL_PAGES={totalPage} />
     </div>
   )
 }

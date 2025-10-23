@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/table"
 import { toast } from "sonner";
 import { myFetch } from "@/utils/myFetch";
-import { usePrice } from "@/contexts/PriceContext";
 
 
 
@@ -34,7 +33,6 @@ interface CustomTableProps<TData extends RowWithId> {
 }
 
 function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
-  const { price, setPrice } = usePrice();
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();
   const params = useParams();
@@ -43,37 +41,25 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
 
   const sendRequestToUser = async (selectedIds: (string | number)[]) => {
 
-    if(!price) {
-      toast.error("Please enter price!");
-      return;
-    }
-
-    if(price && price < 1) {
-      toast.error("Please enter valid price!");
-      return;
-    }
-
     const payload = {
-      creatorsIds: selectedIds,
-      hireCreatorId: hireCreatorId,
-      price
+      hirecreatorId: hireCreatorId,
+      assignTaskCreatorIds: selectedIds,
     }
 
     console.log(payload);
 
-    toast.loading("Request Send to Creators...", { id: "requestSend" });
-    const res = await myFetch(`/assign-task-creator/create-assign-task-creator`, {
-      method: "POST",
+    toast.loading("Approve creators...", { id: "requestSend" });
+    const res = await myFetch(`/assign-task-creator/approved-by-admin`, {
+      method: "PATCH",
       body: payload,
     });
 
-    console.log(res?.data);
+    console.log(res);
 
     if (res?.data) {
-      toast.success("All creators fetched successfully!", { id: "requestSend" });
-      setPrice(0);
+      toast.success("Creators approved successfully!", { id: "requestSend" });
     } else {
-      toast.error(res?.message || "Request send failed!", { id: "requestSend" });
+      toast.error(res?.message || "Approve creators failed!", { id: "requestSend" });
     }
   }
 
@@ -166,7 +152,7 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
   )
 }
 
-export default function CustomTableSelection<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
+export default function CustomTableSelection2<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
   return (
     <React.Suspense fallback={<div>Loading...</div>} >
       <CustomTableSelectionSuspense data={data} columns={columns} />
