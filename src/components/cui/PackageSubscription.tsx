@@ -70,11 +70,8 @@ const PackageSubscriptionSuspense = () => {
   }, []);
 
   async function onSubmit(data: ContactUsFormValues) {
-    // toast.success("Message send successfully!");
-    // console.log("Submitted Data:", data);
 
     const formData = new FormData();
-    // console.log( type);
 
     // formData.append("type", type ?? "");
     formData.append("title", data.title);
@@ -84,7 +81,6 @@ const PackageSubscriptionSuspense = () => {
     formData.append("image", data.image);
 
     if(type === "one_time" || type === "monthly") {
-      // console.log( type);
       formData.append("type", type );
     }
 
@@ -98,12 +94,9 @@ const PackageSubscriptionSuspense = () => {
       method: "POST",
       body: formData,
     });
-    // console.log("package Response:", res);
 
     if (res?.success) {
       toast.success("Package created successfully!");
-      // console.log("Package created successfully!");
-      // Optionally, you can reset the form or redirect
       form.reset();
       setImgUrl(null);
       setBenefits([]);
@@ -255,7 +248,6 @@ const PackageSubscriptionSuspense = () => {
                   className="border-2 border-gray-400 cursor-pointer p-2.5 rounded-md"
                   onClick={() => {
                     if (benefitInput.trim()) {
-                      // console.log(benefitInput);
                       setBenefits([...benefits as string[], benefitInput.trim()]);
                       setBenefitInput('');
                     }

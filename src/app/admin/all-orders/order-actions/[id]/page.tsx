@@ -63,17 +63,16 @@ const OrderActionsSuspense = () => {
   const page = searchParams.get("page") || "1";
   const query = searchParams.get("query") || "";
   const hireCreatorId = params["id"];
-
-  console.log("Hire Creator ID : ", hireCreatorId)
+  
 
   const getCreators = async () => {
     const res = await myFetch(`/creator?status=approved&searchTerm=${query}`);
-    // console.log("Response Data: ", res?.data);
+    
     if (res?.data) {
       const modifyDatas = res?.data?.map((item: any) => {
         return {
           _id: item?._id,
-          creatorId:item?._id,
+          creatorId: item?._id,
           accountHolderName: item?.accountHolderName,
           email: item?.email,
           phone: item?.phone,
@@ -81,7 +80,6 @@ const OrderActionsSuspense = () => {
           status: item?.status
         }
       });
-      // console.log("Modify Data: ", modifyDatas);
       setCreatorsDatas(modifyDatas);
     } else {
       toast.error(res?.message || "Creators Fetching failed!");
@@ -93,11 +91,10 @@ const OrderActionsSuspense = () => {
     const res = await myFetch(`/assign-task-creator/${hireCreatorId}?status=request_approved`);
     // const res = await myFetch(`/assign-task-creator?status=request_approved&hireCreatorId=${hireCreatorId}`);
     if (res?.data) {
-      console.log(res?.data);
       const modifyDatas = res?.data?.map((item: any) => {
         return {
           _id: item?._id,
-          creatorId:item?.creatorId,
+          creatorId: item?.creatorId,
           accountHolderName: item?.creatorUserId?.fullName,
           email: item?.creatorUserId?.email,
           phone: item?.creatorUserId?.phone,
@@ -105,7 +102,6 @@ const OrderActionsSuspense = () => {
           status: item?.status
         }
       });
-      console.log(modifyDatas);
       setAgreedCreatorsDatas(modifyDatas);
     } else {
       toast.error(res?.message || "Agreed Creators Fetching failed!");
@@ -114,12 +110,11 @@ const OrderActionsSuspense = () => {
 
   const getApprovedCreators = async () => {
     const res = await myFetch(`/assign-task-creator/${hireCreatorId}?status=approved_by_admin`);
-    console.log("Approved Creator:", res?.data);
     if (res?.data) {
       const modifyDatas = res?.data?.map((item: any) => {
         return {
           _id: item?._id,
-          creatorId:item?.creatorId,
+          creatorId: item?.creatorId,
           accountHolderName: item?.creatorUserId?.fullName,
           email: item?.creatorUserId?.email,
           phone: item?.creatorUserId?.phone,
@@ -127,7 +122,6 @@ const OrderActionsSuspense = () => {
           status: item?.status
         }
       });
-      // console.log(modifyDatas);
       setApprovedByAdminCreatorsDatas(modifyDatas);
     } else {
       toast.error(res?.message || "Approved Creator Fetching failed!");
@@ -136,12 +130,11 @@ const OrderActionsSuspense = () => {
 
   const getApprovedByBrandCreators = async () => {
     const res = await myFetch(`/assign-task-creator/${hireCreatorId}?status=approved`);
-    console.log("Approved by Brand:", res?.data);
     if (res?.data) {
       const modifyDatas = res?.data?.map((item: any) => {
         return {
           _id: item?._id,
-          creatorId:item?.creatorId,
+          creatorId: item?.creatorId,
           accountHolderName: item?.creatorUserId?.fullName,
           email: item?.creatorUserId?.email,
           phone: item?.creatorUserId?.phone,
@@ -149,7 +142,7 @@ const OrderActionsSuspense = () => {
           status: item?.status
         }
       });
-      console.log(modifyDatas);
+      
       setApprovedByBrandCreatorsDatas(modifyDatas);
     } else {
       toast.error(res?.message || "Approved Creator Fetching failed!");

@@ -69,7 +69,7 @@ const AdminVideoUploadSuspense = () => {
       method: 'GET',
     }
     );
-    console.log("Fetch Uploaded Videos Response:", res);
+    
     if (res.success) {
       toast.success("Videos fetched successfully!", { id: "fetch" });
       if (res?.data?.videos?.length > 0) {
@@ -98,7 +98,7 @@ const AdminVideoUploadSuspense = () => {
         videourl: url
       }
     })
-    console.log("Delete Video Response:", res);
+    
     if (res.success) {
       getAwsVideosUrls();
       toast.success("Video deleted successfully!", { id: "delete" });
@@ -112,12 +112,12 @@ const AdminVideoUploadSuspense = () => {
 
   async function onSubmit(data: VideoUploadFormValues) {
     toast.loading("Uploading videos...", { id: "upload" });
-    // console.log("Submitted Data:", data);
+    
     if (!category) {
       toast.error("Please select a category!", { id: "upload" });
       return;
     }
-    console.log(category);
+    
     const formData = new FormData();
     formData.append("category", category);
     data.uploadVideos.forEach((file: File) => {
@@ -129,7 +129,7 @@ const AdminVideoUploadSuspense = () => {
       body: formData,
     }
     );
-    console.log("Upload Videos Response:", res);
+    
     if (res.success) {
       toast.success("Videos uploaded successfully!", { id: "upload" });
       form.reset();

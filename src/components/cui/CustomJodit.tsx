@@ -19,7 +19,7 @@ const CustomJodit = () => {
     const res = await myFetch(`/setting`, {
       method: "GET",
     })
-    console.log(res);
+    
     if (res?.data) {
       if (pathname.endsWith("/terms-and-condition")) setContent(res?.data?.termsOfService);
       if (pathname.endsWith("/privacy-policy")) setContent(res?.data?.privacyPolicy);
@@ -31,7 +31,7 @@ const CustomJodit = () => {
 
   const handleOnSave = async () => {
     toast.loading("Updating...", { id: "update" });
-    console.log(content);
+    
     let payload
 
     if (pathname.endsWith("/terms-and-condition")) {
@@ -49,7 +49,7 @@ const CustomJodit = () => {
       method: "PATCH",
       body: payload,
     });
-    console.log(res);
+    
     if (res?.data) {
       toast.success("Updated successfully!", { id: "update" });
       getContent();

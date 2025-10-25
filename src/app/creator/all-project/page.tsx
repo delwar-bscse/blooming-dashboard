@@ -11,7 +11,7 @@ import { SlidersHorizontal } from "lucide-react";
 // import { orderDatas } from "@/data/orderDatas";
 import OrderFilter from "@/components/modal/OrderFilter";
 import { TOrdersData } from "@/type/orderDataTypes";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { myFetch } from "@/utils/myFetch";
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -27,7 +27,7 @@ const AllOrdersSuspense = () => {
   const [totalPage, setTotalPage] = useState(1);
   const [allCreatorsData, setAllCreatorsData] = useState<any[]>([]);
   const searchParams = useSearchParams();
-  const filterType = searchParams.get("filter") || "pending";
+  const filterType = searchParams.get("filter") || "approved";
   const page = searchParams.get("page") || "1";
 
   // const data = orderDatas.slice(0, 9) as TOrdersData[];
@@ -40,19 +40,19 @@ const AllOrdersSuspense = () => {
         method: "GET",
       }
     );
-    console.log("All Orders: ", res?.data);
+    
     if (res?.data) {
       // toast.success("All Orders fetched successfully!", { id: "fetch" });
       const modifyDatas = res?.data?.map((item:any)=>{
         return {
-          _id:"",
+          _id:item._id,
           brandName:item?.hireCreatorId?.brandInfo?.name,
           productName:item?.hireCreatorId?.brandInfo?.productName,
           brandEmail:item?.hireCreatorId?.brandInfo?.email,
           status:item?.status,
         }
       })
-      console.log("Modify Datas : ", modifyDatas)
+      
       setAllCreatorsData(modifyDatas);
       setTotalPage(res?.pagination?.totalPage || 1);
     } else {
@@ -67,9 +67,6 @@ const AllOrdersSuspense = () => {
 
   return (
     <div className="pt-8">
-      {/* <div className="pb-4">
-        <CustomStep stepDatas={stepDatas} />
-      </div> */}
       <div className="flex items-center gap-2">
         <div className="w-full max-w-[600px]">
           <CustomSearchBar />

@@ -54,7 +54,6 @@ const EditPackageSubscriptionSuspense = () => {
   const id = searchParams.get("id");     // e.g. "662f..."
   const type = searchParams.get("type");
 
-  // console.log(id, type);
 
   const defaultValues: Partial<ContactUsFormValues> = {
     title: "",
@@ -70,12 +69,10 @@ const EditPackageSubscriptionSuspense = () => {
   });
 
   useEffect(() => {
-    console.log("first useEffect called");
     const fetchPackageData = async () => {
       const res = await myFetch(`/package/${id}`, {
         method: "GET",
       });
-      console.log("GET: package Response:", res);
       setImgUrl(res?.data?.image || null);
       setBenefits(res?.data?.benefits || []);
 
@@ -92,11 +89,8 @@ const EditPackageSubscriptionSuspense = () => {
   }, [id, form]);
 
   async function onSubmit(data: ContactUsFormValues) {
-    // toast.success("Message send successfully!");
-    // console.log("Submitted Data:", data);
 
     const formData = new FormData();
-    console.log(id, type);
 
 
     formData.append("title", data.title);
@@ -105,7 +99,6 @@ const EditPackageSubscriptionSuspense = () => {
     formData.append("price", data.price);
 
     if (type === "one_time" || type === "monthly") {
-      // console.log( type);
       formData.append("type", type);
     }
 
@@ -123,7 +116,6 @@ const EditPackageSubscriptionSuspense = () => {
       method: "PATCH",
       body: formData,
     });
-    console.log("Update package Response:", res);
 
     if (res?.success) {
       toast.success("Package updated successfully!");
@@ -272,7 +264,6 @@ const EditPackageSubscriptionSuspense = () => {
                   className="border-2 border-gray-400 cursor-pointer p-2.5 rounded-md"
                   onClick={() => {
                     if (benefitInput.trim()) {
-                      // console.log(benefitInput);
                       setBenefits([...benefits as string[], benefitInput.trim()]);
                       setBenefitInput('');
                     }

@@ -13,7 +13,6 @@ const TheyBloom = async() => {
     method: "GET",
   });
 
-  // console.log("Blog Post Response:", res);
   const bloomDatas: reviewDataType[] = res?.data || [];
 
 

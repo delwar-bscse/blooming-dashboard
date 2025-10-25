@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
@@ -6,7 +7,7 @@ import LoveEmogi from "@/assets/common/loveEmoji.png"
 import { toast } from 'sonner';
 import { myFetch } from '@/utils/myFetch';
 import { useParams, useRouter } from 'next/navigation';
-import { TOrdersData } from '@/type/orderDataTypes';
+// import { TOrdersData } from '@/type/orderDataTypes';
 import { Button } from '../ui/button';
 
 
@@ -14,23 +15,18 @@ import { Button } from '../ui/button';
 
 const ProjectDetailsCreator = () => {
   const router = useRouter();
-  const [orderDetails, setOrderDetails] = useState<TOrdersData>({} as TOrdersData);
+  const [orderDetails, setOrderDetails] = useState<any>({});
   const params = useParams();
   const id = params["project-details"];
   // const id = "686faecf79e3153cdede9fc1"
 
 
   const getOrderDetails = async () => {
-    // console.log(id);
 
     toast.loading("Order Details Fetching...", { id: "fetch" });
-    // const res = await myFetch(`/assign-task-creator/${id}`, {
-    //   method: "GET",
-    // });
-    const res = await myFetch(`/hire-creator/${id}`, {
+    const res = await myFetch(`/assign-task-creator/single/${id}`, {
       method: "GET",
     });
-    console.log("Hire Creator Project Details:", res);
 
     if (res?.data) {
       toast.success("Order Details fetched successfully!", { id: "fetch" });
@@ -42,18 +38,14 @@ const ProjectDetailsCreator = () => {
 
   useEffect(() => {
     getOrderDetails();
-    // console.log(orderDetails)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleDelete = async () => {
-    // console.log(id);
 
     toast.loading("Deleting...", { id: "delete" });
     const res = await myFetch(`/hire-creator/cancel/${id}`, {
       method: "PATCH",
     });
-    // console.log( res?.data);
 
     if (res?.data) {
       toast.success("Deleted successfully!", { id: "delete" });
@@ -64,13 +56,11 @@ const ProjectDetailsCreator = () => {
   }
 
   const handleApprove = async () => {
-    // console.log(id);
 
     toast.loading("Approving...", { id: "approve" });
     const res = await myFetch(`/hire-creator/approved/${id}`, {
       method: "PATCH",
     });
-    // console.log(res?.data);
 
     if (res?.data) {
       toast.success("Approved successfully!", { id: "approve" });
@@ -86,26 +76,26 @@ const ProjectDetailsCreator = () => {
         <div className='flex gap-4 items-center'>
           <div className='flex items-center justify-center rounded-sm bg-[#FFF0BE] shadow gap-2 w-72 py-2.5 mb-6'>
             <Image src={StarEmogi} alt="package" width={30} height={30} />
-            <p className='text-xl font-semibold text-gray-700'>Creator Price ${orderDetails?.creatorPrice}</p>
+            <p className='text-xl font-semibold text-gray-700'>Creator Price ${orderDetails?.price}</p>
             <Image src={LoveEmogi} alt="package" width={30} height={30} />
           </div>
         </div>
-        {orderDetails?.brandInfo && <SubComponent title="Project Info" list={orderDetails.brandInfo} />}
+        {orderDetails?.hireCreatorId?.brandInfo && <SubComponent title="Project Info" list={orderDetails?.hireCreatorId?.brandInfo} />}
+      </div>
+      {/* <div className='bg-white rounded-2xl p-8'>
+        <SubComponent title="Contain Info" list={orderDetails?.hireCreatorId?.brandInfo} />
+      </div> */}
+      <div className='bg-white rounded-2xl p-8'>
+        <SubComponent title="Brand Social" list={orderDetails?.hireCreatorId?.brandSocial} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Contain Info" list={orderDetails.brandInfo} />
+        <SubComponent title="Video Info" list={orderDetails?.hireCreatorId?.videoInfo} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Brand Social" list={orderDetails.brandSocial} />
+        <SubComponent title="Characteristics Of The Creator" list={orderDetails?.hireCreatorId?.characteristicInfo} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Video Info" list={orderDetails.videoInfo} />
-      </div>
-      <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Characteristics Of The Creator" list={orderDetails.characteristicInfo} />
-      </div>
-      <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Add-Ons" list={orderDetails.addOns} />
+        <SubComponent title="Add-Ons" list={orderDetails?.hireCreatorId?.addOns} />
       </div>
 
       {orderDetails.status === "pending" && <div className='flex items-center justify-end space-x-4'>

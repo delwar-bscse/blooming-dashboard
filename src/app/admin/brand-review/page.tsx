@@ -18,15 +18,12 @@ const BrandReviewSuspense = () => {
   const searchParams = useSearchParams();
   const page = searchParams.get("page") || "1";
 
-  // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
   const getReviews = async() => {
-
-    // console.log("Role Change:", changRole);
     
     const res  = await myFetch(`/review?page=${page}`,{
       method: "GET",
     });
-    console.log(res?.data);
+    
     if(res?.data){
       setAllReviewsData(res?.data);
       setTotalPage(res?.pagination?.totalPage || 1);

@@ -62,7 +62,6 @@ const AddBlogPostSuspense = () => {
   async function onSubmit(data: ContactUsFormValues) {
     toast.loading("Uploading blog...", { id: "upload" });
     // toast.success("Message send successfully!");
-    console.log("Submitted Data:", data);
 
     const formData = new FormData();
     formData.append("title", data.title);
@@ -74,7 +73,7 @@ const AddBlogPostSuspense = () => {
       method: "POST",
       body: formData,
     });
-    console.log("Blog Response:", res);
+    
     if (res.success) {
       toast.success("Blog uploaded successfully!", { id: "upload" });
       form.reset();

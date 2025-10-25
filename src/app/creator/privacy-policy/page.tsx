@@ -12,7 +12,7 @@ const CreatorPrivacyPolicy = () => {
     const res = await myFetch(`/setting`, {
       method: "GET",
     })
-    console.log(res);
+    
     if (res?.data) {
       setContent(res?.data?.privacyPolicy)
       toast.success("Fetched successfully!", { id: "fetch" });

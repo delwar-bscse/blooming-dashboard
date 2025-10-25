@@ -38,7 +38,6 @@ const BlogPost = async() => {
     method: "GET",
   });
 
-  console.log("Blog Post Response:", res);
   const blogDatas: BlogData[] = res?.data || [];
 
 

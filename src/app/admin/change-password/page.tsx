@@ -60,7 +60,6 @@ function ChangePassword() {
 
   async function onSubmit(data: ContactUsFormValues) {
     toast.loading("Changing Password...", { id: "changePassword" });
-    console.log("Submitted Data:", data);
     const payload = {
       oldPassword: data.oldPassword,
       newPassword: data.newPassword
@@ -69,7 +68,7 @@ function ChangePassword() {
       method: "PATCH",
       body: payload,
     })
-    console.log(res);
+    
     if(res?.success) {
       toast.success("Password changed successfully!", { id: "changePassword" });
       router.push("/login");

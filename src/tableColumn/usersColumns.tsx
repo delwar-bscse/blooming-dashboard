@@ -4,13 +4,11 @@ import { toast } from "sonner";
 import { myFetch } from "@/utils/myFetch";
 
 const handleRoleChange = async (id: string) => {
-  // console.log("Change role for user with id:", id);
-  // users/roleSwitch/689f0b3b797cd49aefe7d0dd
   toast.loading("Fetching users...", { id: "fetchAllUsers" });
   const res = await myFetch(`/users/roleSwitch/${id}`, {
     method: "POST",
   });
-  // console.log(res?.data);
+  
   if (res?.data) {
     toast.success("All users fetched successfully!", { id: "fetchAllUsers" });
     window.location.reload();

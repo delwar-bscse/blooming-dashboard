@@ -46,15 +46,11 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
       assignTaskCreatorIds: selectedIds,
     }
 
-    console.log(payload);
-
     toast.loading("Approve creators...", { id: "requestSend" });
     const res = await myFetch(`/assign-task-creator/approved-by-admin`, {
       method: "PATCH",
       body: payload,
     });
-
-    console.log(res);
 
     if (res?.data) {
       toast.success("Creators approved successfully!", { id: "requestSend" });

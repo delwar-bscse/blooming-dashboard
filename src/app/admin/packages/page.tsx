@@ -17,7 +17,6 @@ const PackageSection = async () => {
   const res = await myFetch("/package/packages", {
     method: "GET",
   });
-  // console.log("all package Response:", res);
   const packageData = res?.data || [];
 
   return (

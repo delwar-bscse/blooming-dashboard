@@ -13,7 +13,6 @@ const SubscriptionComponent = async () => {
   const res = await myFetch("/package/subscription-packages", {
     method: "GET",
   });
-  console.log("All subscription response:", res);
   const packageData: packageDataType[] = res?.data || [];
 
 

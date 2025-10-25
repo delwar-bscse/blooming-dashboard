@@ -30,7 +30,7 @@ const ContactSupportSuspense = () => {
     const res = await myFetch(`/contact-us?status=${category}&page=${page}`, {
       method: "GET",
     })
-    console.log("Contact Support Response:", res);
+    
     if (res?.success) {
       toast.success("Fetched successfully!", { id: "fetchSupport" });
       setData(res?.data);

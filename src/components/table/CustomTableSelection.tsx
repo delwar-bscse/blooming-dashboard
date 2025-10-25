@@ -59,7 +59,7 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
       price
     }
 
-    console.log(payload);
+    
 
     toast.loading("Request Send to Creators...", { id: "requestSend" });
     const res = await myFetch(`/assign-task-creator/create-assign-task-creator`, {
@@ -67,7 +67,7 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
       body: payload,
     });
 
-    console.log(res?.data);
+    
 
     if (res?.data) {
       toast.success("All creators fetched successfully!", { id: "requestSend" });

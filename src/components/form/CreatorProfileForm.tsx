@@ -40,22 +40,17 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
 
 
   useEffect(() => {
-    // console.log(myProfile)
     setIsMounted(true);
   }, []);
 
   async function onSubmit(data: creatorProfileFormValues) {
     toast.loading("Updating Profile...", { id: "updateProfile" });
-    console.log("Submitted Data:", data);
-    const { profile, ugcExampleVideo, introductionvideo, ...restData } = data
-    // console.log("Submitted Data:", restData);
-    console.log("Submitted Data:", profile, ugcExampleVideo, introductionvideo);
+    const { profile, ugcExampleVideo, introductionvideo, ...restData } = data;
 
     const formData = new FormData();
     Object.entries(restData).forEach(([key, value]) => {
       formData.append(key, value);
-    })
-    // console.log("Submitted Form Data:", JSON.stringify(formData));
+    });
 
 
 
@@ -79,7 +74,7 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
       body: formData,
       tags: ["creatorProfile"]
     })
-    console.log("Creator Update Response: ", res);
+    
     if (res.success) {
       toast.success("Profile updated successfully!", { id: "updateProfile" });
       getMe();

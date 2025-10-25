@@ -25,7 +25,6 @@ const GeneralStateSection = () => {
     const res = await myFetch(`/payment/overview-all`, {
       method: "GET",
     });
-    // console.log(res?.data);
     if (res?.success) {
       setOverviewDatas(res?.data);
       toast.success("Fetched successfully!", { id: "fetch" });

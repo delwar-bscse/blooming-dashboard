@@ -10,7 +10,7 @@ const handleStatus = async(supportId: any) => {
   const res = await myFetch(`/contact-us/status/${supportId}`, {
     method: "PATCH",
   })
-  console.log(res?.data);
+  
   if (res?.success) {
     toast.success("Solved successfully!");
   } else {
@@ -69,9 +69,8 @@ export const supportColumns: ColumnDef<SupportDataType>[] = [
     header: () => <div className="text-center">Action</div>,
     cell: ({ row }) => {
       const rowData = row.original
-      const handleSubmit = () => {
-        console.log("It is working")
-      }
+      const handleSubmit = () => {}
+      
       return <div className="flex items-center justify-center">
         <div>
           <CustomModalView

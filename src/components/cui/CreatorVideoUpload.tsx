@@ -54,7 +54,7 @@ const CreatorVideoUpload = () => {
   const [status, setStatus] = useState<string>("");
   // const [orderDetails, setOrderDetails] = useState<TOrdersData>({} as TOrdersData);
   const params = useParams();
-    const hireCreatorId = params["project-details"];
+  const hireCreatorId = params["project-details"];
 
   const [awsVideoUrls, setAwsVideoUrls] = useState<string[]>([]);
   const form = useForm<VideoUploadFormValues>({
@@ -63,37 +63,13 @@ const CreatorVideoUpload = () => {
     mode: "onChange",
   });
 
-    // const getOrderDetails = async () => {
-    //   console.log(hireCreatorId);
-  
-    //   toast.loading("Order Details Fetching...", { id: "fetch" });
-    //   const res = await myFetch(`/hire-creator/${hireCreatorId}`, {
-    //     method: "GET",
-    //   });
-    //   console.log(res?.data);
-  
-    //   if (res?.data) {
-    //     toast.success("Order Details fetched successfully!", { id: "fetch" });
-    //     setOrderDetails(res?.data);
-    //   } else {
-    //     toast.error(res?.message || "Order Details Fetching failed!", { id: "fetch" });
-    //   }
-    // }
-  
-    // useEffect(() => {
-    //   getOrderDetails();
-    //   console.log(orderDetails)
-    //   // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [])
-
 
   const getAwsVideosUrls = async () => {
     toast.loading("Fetching uploaded videos...", { id: "fetch" });
-    const res = await myFetch(`/hire-creator/${hireCreatorId}`, {
-      method: 'GET',
-    }
-    );
-    console.log("Fetch Uploaded Videos Response:", res);
+    const res = await myFetch(`/assign-task-creator/single/${hireCreatorId}`, {
+      method: "GET",
+    });
+    
     if (res.success) {
       toast.success("Videos fetched successfully!", { id: "fetch" });
       setStatus(res?.data?.status);
@@ -111,13 +87,13 @@ const CreatorVideoUpload = () => {
 
   const deleteVideo = async (url: string) => {
     toast.loading("Deleting video...", { id: "delete" });
-    const res = await myFetch(`/hire-creator/delete-video/${hireCreatorId}`, {
+    const res = await myFetch(`/assign-task-creator/delete-video/${hireCreatorId}`, {
       method: 'DELETE',
       body: {
         videourl: url
       }
     })
-    console.log("Delete Video Response:", res);
+    
     if (res.success) {
       getAwsVideosUrls();
       toast.success("Video deleted successfully!", { id: "delete" });
@@ -131,18 +107,18 @@ const CreatorVideoUpload = () => {
 
   async function onSubmit(data: VideoUploadFormValues) {
     toast.loading("Uploading videos...", { id: "upload" });
-    // console.log("Submitted Data:", data);
+    
     const formData = new FormData();
     data.uploadVideos.forEach((file: File) => {
       formData.append("uploadVideos", file);
     });
 
-    const res = await myFetch(`/hire-creator/uploadVideos/${hireCreatorId}`, {
+    const res = await myFetch(`/assign-task-creator/uploadVideos/${hireCreatorId}`, {
       method: 'PATCH',
       body: formData,
     }
     );
-    // console.log("Upload Videos Response:", res);
+    
     if (res.success) {
       toast.success("Videos uploaded successfully!", { id: "upload" });
       form.reset();

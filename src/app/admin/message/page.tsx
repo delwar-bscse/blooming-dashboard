@@ -35,7 +35,7 @@ const MessageSuspense = () => {
 
   const allMessages = async () => {
     const res = await myFetch(`/chat/my-chat-list?search=${searchQuery}`);
-    console.log("Admin Message: ", res?.data);
+    
     const msgArray = res?.data.map((msg: Record<string, any>) => {
       return {
         id: msg?.chat?._id,
@@ -68,8 +68,7 @@ const MessageSuspense = () => {
   return (
     <div className='py-4'>
       <div className='max-w-[700px] py-4'>
-        {/* <Input onChange={(e) => { console.log(e.target.value) }} type="Search ..." variant='msgField' placeholder="type..." className='flex-1 transition-all duration-300' /> */}
-        <CustomSearchBar />
+       <CustomSearchBar />
       </div>
       <div className='space-y-4'>
         {adminMessage?.map((msg) => (

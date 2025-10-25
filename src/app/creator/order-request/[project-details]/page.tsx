@@ -21,13 +21,12 @@ const ProjectDetailsPageSuspense = () => {
   const requestId = searchParams.get("requestId");
 
   const getOrderDetails = async () => {
-    // console.log("Request ID:", requestId);
 
     toast.loading("Request Order Details Fetching...", { id: "fetch" });
     const res = await myFetch(`/assign-task-creator//single/${requestId}`, {
       method: "GET",
     });
-    console.log("Request Project Details:", res?.data);
+    
 
     if (res?.data) {
       toast.success("Request Order Details fetched successfully!", { id: "fetch" });
@@ -43,13 +42,11 @@ const ProjectDetailsPageSuspense = () => {
   }, [])
 
   const handleDelete = async () => {
-    // console.log(id);
 
     toast.loading("Deleting...", { id: "delete" });
     const res = await myFetch(`/assign-task-creator/status/${requestId}`, {
       method: "PATCH",
     });
-    // console.log(res?.data);
 
     if (res?.data) {
       toast.success("Deleted successfully!", { id: "delete" });
@@ -60,13 +57,11 @@ const ProjectDetailsPageSuspense = () => {
   }
 
   const handleApprove = async () => {
-    // console.log(id);
 
     toast.loading("Approving...", { id: "approve" });
     const res = await myFetch(`/assign-task-creator/status/${requestId}?status=request_approved`, {
       method: "PATCH",
     });
-    // console.log(res?.data);
 
     if (res?.data) {
       toast.success("Approved successfully!", { id: "approve" });

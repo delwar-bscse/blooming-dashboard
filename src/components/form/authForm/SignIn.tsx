@@ -52,7 +52,6 @@ const SignIn = () => {
   });
 
   async function onSubmit(data: ContactUsFormValues) {
-    // console.log("Submitted Data:", data);
     toast.loading("Logging in...", {
       id: "login",
     });
@@ -61,17 +60,14 @@ const SignIn = () => {
       email: data.email,
       password: data.password,
     };
-    // console.log(payload);
 
     try {
       const res = await myFetch("/auth/login", {
         method: "POST",
         body: payload,
       });
-      console.log("response", res)
 
       if (res?.success) {
-        // console.log("Login successful:", res);
         setCookie("bloom_accessToken", res?.data?.accessToken);
         toast.success("Login Success", { id: "login" });
 

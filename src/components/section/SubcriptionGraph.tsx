@@ -44,7 +44,6 @@ function SubscriptionGraphSuspense() {
   useEffect(() => {
     const getGraphDate = async () => {
       const res = await myFetch(`/payment/all-subsription-users-rasio?days=${subscriptionDuration}`);
-      // console.log(res?.data);
       if (res?.success) {
         if(subscriptionDuration === "7day") {
           const formatedData = res?.data?.map((item:TData) => ({

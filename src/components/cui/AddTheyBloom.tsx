@@ -60,8 +60,6 @@ const AddTheBloomSuspense = () => {
 
   async function onSubmit(data: ContactUsFormValues) {
     toast.loading("Uploading blog...", { id: "upload" });
-    // toast.success("Message send successfully!");
-    console.log("Submitted Data:", data);
 
     const formData = new FormData();
     formData.append("details", data.details);
@@ -72,13 +70,12 @@ const AddTheBloomSuspense = () => {
       method: "POST",
       body: formData,
     });
-    // console.log("Bloom Response:", res);
+    
     if (res.success) {
       toast.success("Bloom uploaded successfully!", { id: "upload" });
       form.reset();
     } else {
       toast.error(res.message || "Upload failed!", { id: "upload" });
-      // console.error("Upload failed:", res.message);
     }
 
 

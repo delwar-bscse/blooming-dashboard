@@ -15,7 +15,7 @@ const CreatorProfile = () => {
       const res = await myFetch(`/creator/me`,{
         tags: ["creatorProfile"]
       });
-      // console.log("Creator Profile: ", res?.data);
+      
       if (res?.success) {
         toast.success("Profile fetched successfully!", { id: "fetchProfile" });
         setMyProfile(res?.data);

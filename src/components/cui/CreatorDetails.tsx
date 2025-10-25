@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation';
 
 const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator>, user?: Record<string, any>, id?: string }) => {
   const router = useRouter();
-  console.log("Creator Details:", creator)
 
     const handleApprove = async () => {
     toast.loading("Updating creator status...", { id: "approved" });
@@ -20,7 +19,7 @@ const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator
       method: "PATCH",
       tags: ["creator"],
     });
-    // console.log(res);
+    
     if (res?.data) {
       toast.success("Creator Approved successfully!", { id: "approved" });
       // getCreator();
@@ -36,7 +35,7 @@ const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator
       method: "PATCH",
       tags: ["creator"],
     });
-    console.log(res);
+    
     if (res?.data) {
       toast.success("Creator Declined successfully!", { id: "decline" });
       router.push("/admin/all-creators");

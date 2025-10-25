@@ -46,13 +46,11 @@ const AllUsersSuspense = () => {
   // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
   const getAllUsers = async() => {
     toast.loading("Fetching users...", {id: "fetchAllUsers"});
-
-    // console.log("Role Change:", changRole);
     
     const res  = await myFetch(`/users/all-users?role=${step ?? "user"}&page=${page}&searchTerm=${query}`,{
       method: "GET",
     });
-    // console.log(res?.data);
+    
     if(res?.data){
       toast.success("All users fetched successfully!", {id: "fetchAllUsers"});
       setAllUsersData(res?.data);

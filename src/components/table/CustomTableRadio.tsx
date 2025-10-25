@@ -32,32 +32,15 @@ interface CustomTableProps<TData extends RowWithId> {
 function CustomTableRadioSuspense<TData extends RowWithId>({ data, columns }: CustomTableProps<TData>) {
   const [selectedRowId, setSelectedRowId] = React.useState<string | number | null>(null);
   const searchParams = useSearchParams();
-  const step = searchParams.get("step"); // e.g., "creator-list"
+  const step = searchParams.get("step"); 
 
-  // Add a radio button column dynamically
-  // const allColumns = React.useMemo<ColumnDef<TData>[]>(() => {
-  //   const radioCol: ColumnDef<TData> = {
-  //     id: "select",
-  //     header: "",
-  //     cell: ({ row }) => (
-  //       <input
-  //         type="radio"
-  //         name="rowSelect"
-  //         checked={row.getIsSelected()}
-  //         onChange={() => row.toggleSelected(true)}
-  //       />
-  //     ),
-  //     enableSorting: false,
-  //   };
-  //   return [radioCol, ...columns];
-  // }, [columns]);
   const handleApprove = async (hiredCreatorId: string) => {
     toast.loading("Approving...", { id: "approved" });
-    console.log("Approved: ", hiredCreatorId);
+    
     const res = await myFetch(`/assign-task-creator/approved/${hiredCreatorId}`, {
       method: "PATCH",
     })
-    console.log(res?.data);
+    
     if (res?.data) {
       toast.success("Approved successfully!", { id: "approved" });
     } else {

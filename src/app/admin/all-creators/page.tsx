@@ -47,7 +47,7 @@ const AllCreatorsSuspense = () => {
     const res  = await myFetch(`/creator?status=${step}&page=${page}&searchTerm=${query}`,{
       method: "GET",
     });
-    console.log(res?.data);
+    
     if(res?.data){
       toast.success("All creators fetched successfully!", {id: "fetchAllCreators"});
       setAllCreatorsData(res?.data);

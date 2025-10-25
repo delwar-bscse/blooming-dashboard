@@ -17,7 +17,6 @@ const TotalRevenue = () => {
   useEffect(() => {
     const getGraphDate = async () => {
       const res = await myFetch(`/payment/brand-engagement?days=${brandEngagementDuration}`);
-      console.log("Active Users: ", res?.data);
       if (res?.success) {
         setUserSummary((prev) => ({
           ...prev,

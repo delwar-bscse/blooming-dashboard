@@ -84,22 +84,5 @@ export const adminCreatorListColumns: ColumnDef<PartialExceptId<TSingleCreator>>
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  // {
-  //   id: "select",
-  //   header: () => <div className="text-center">Select</div>,
-  //   cell: ({ row }) => (
-  //     <div className="flex justify-center items-center">
-  //       <input
-  //         type="checkbox"
-  //         checked={row.getIsSelected?.()}
-  //         onChange={e => {
-  //           e.stopPropagation(); // Prevent row click
-  //           row.toggleSelected?.();
-  //           console.log(e.target.checked);
-  //         }}
-  //       />
-  //     </div>
-  //   ),
-  // }
+  }
 ]

@@ -6,11 +6,11 @@ import React, { Suspense } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
 import { useParams, useSearchParams } from 'next/navigation';
 import CreatorVideoGuidelines from '@/components/section/CreatorVideoGuidelines';
-import CreatorVideoUpload from '@/components/section/CreatorVideoUpload';
 import CreatorScript from '@/components/section/CreatorScript';
 import Link from 'next/link';
 import { BiUserCircle } from "react-icons/bi";
 import ProjectDetailsAdmin from '@/components/section/ProjectDetailsAdmin';
+import AdminVideoWatchParent from '@/components/section/AdminVideoWatch';
 
 const stepDatas: StepDataType[] = [
   {
@@ -35,8 +35,6 @@ const OrderDetailsSuspense = () => {
   const params = useParams();
   const step = searchParams.get("step");
   const hireCreatorId = params["project-details"];
-
-
 
 
   return (
@@ -82,7 +80,7 @@ const OrderDetailsSuspense = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CreatorVideoUpload />
+            <AdminVideoWatchParent />
           </motion.div>
         )}
         {step === "script" && (

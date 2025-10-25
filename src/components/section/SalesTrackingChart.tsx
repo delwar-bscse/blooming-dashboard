@@ -26,7 +26,6 @@ const SalesTrackingChartSuspense = () => {
   useEffect(() => {
     const getGraphDate = async () => {
       const res = await myFetch(`/payment/all-income-rasio?year=${revenueDuration}`);
-      // console.log(res?.data);
       if (res?.success) {
         const formatData = res?.data?.map((item: { month: number; totalIncome: number }) => ({
           month: monthArray[item.month - 1],
