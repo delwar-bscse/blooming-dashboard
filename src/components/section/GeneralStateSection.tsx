@@ -51,13 +51,13 @@ const GeneralStateSection = () => {
 
 const SubComponent = ({ title, des, icon }: { title: string; des: string | number; icon: React.ElementType }) => {
   return (
-    <div className="bg-white rounded-xl py-6 ps-3 flex gap-4 cursor-pointer">
-      <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
-        {icon && React.createElement(icon, { className: "text-gray-500", size: 20 })}
+    <div className="bg-white rounded-xl py-6 ps-3 flex flex-col 2xl:flex-row items-center 2xl:items-start gap-4 cursor-pointer">
+      <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full bg-secondary flex items-center justify-center">
+        {icon && React.createElement(icon, { className: "text-gray-500 size-4 2xl:size-6" })}
       </div>
-      <div className="flex flex-col items-start gap-1">
-        <h2 className="text-center text-2xl font-semibold text-gray-500">{title}</h2>
-        <h3 className="text-center text-2xl font-bold text-gray-600">
+      <div className="flex flex-col items-center 2xl:items-start gap-1">
+        <h2 className="text-center 2xl:text-left text-base 2xl:text-2xl font-semibold text-gray-500">{title}</h2>
+        <h3 className="text-center text-xl 2xl:text-2xl font-bold text-gray-600">
           {des}
         </h3>
       </div>

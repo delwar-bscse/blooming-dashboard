@@ -1,43 +1,72 @@
 "use client";
 
 import { myFetch } from '@/utils/myFetch';
-import { useSearchParams } from 'next/navigation';
+// import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-import CustomSelectOption from '../cui/CustomSelectOption';
-import { selectOptionsSubscription } from '@/constant/videoSelectDatasts';
+// import CustomSelectOption from '../cui/CustomSelectOption';
+// import { selectOptionsSubscription } from '@/constant/videoSelectDatasts';
+import { toast } from 'sonner';
 
 const TotalRevenue = () => {
   const [userSummary, setUserSummary] = useState<Record<string, number>>({
-    activeUsers: 65,
-    inactiveUsers: 35,
+    totalBrands: 65,
+    totalCreators: 35,
   });
-  const searchParams = useSearchParams();
-  const brandEngagementDuration = searchParams.get("brandEngagementDuration") ?? "7day";
+  // const searchParams = useSearchParams();
+  // const brandEngagementDuration = searchParams.get("brandEngagementDuration") ?? "7day";
+
+  const getOverview = async () => {
+    const response = await myFetch(`/payment/overview-all`, {
+      method: "GET",
+    });
+
+    console.log("Brand Engagement Data:", response);
+
+    if (response?.success) {
+      // setOverviewDatas(response?.data);
+      const brand = Math.round(response?.data?.totalBrand * 100 / (response?.data?.totalBrand + response?.data?.totalCreator));
+      const creator = Math.round(response?.data?.totalCreator * 100 / (response?.data?.totalBrand +  response?.data?.totalCreator));
+
+      setUserSummary((prev) => ({
+        ...prev,
+        totalBrands: brand,
+        totalCreators: creator
+      }))
+    } else {
+      toast.error(response?.message || "Failed to fetch Brand And Creator ratio!");
+    }
+  }
 
   useEffect(() => {
-    const getGraphDate = async () => {
-      const res = await myFetch(`/payment/brand-engagement?days=${brandEngagementDuration}`);
-      if (res?.success) {
-        setUserSummary((prev) => ({
-          ...prev,
-          activeUsers: res?.data,
-          inactiveUsers: 100 - res?.data
-        }))
-      }
-    };
-    getGraphDate();
-  }, [brandEngagementDuration]);
+    getOverview();
+  }, []);
+
+  // useEffect(() => {
+  //   const getGraphDate = async () => {
+  //     // const response = await myFetch(`/payment/brand-engagement?days=${brandEngagementDuration}`);
+
+
+  //     // if (response?.success) {
+  //     //   setUserSummary((prev) => ({
+  //     //     ...prev,
+  //     //     totalBrands: response?.data,
+  //     //     totalCreators: 100 - response?.data
+  //     //   }))
+  //     // }
+  //   };
+  //   getGraphDate();
+  // }, [brandEngagementDuration]);
 
 
 
   return (
     <div className="border rounded-2xl bg-white p-4 flex flex-col items-center">
       <div className="w-full flex items-center justify-between mb-12 ">
-        <h2 className="text-2xl font-bold text-gray-700">Brand Engagement</h2>
-        <CustomSelectOption selectOptions={selectOptionsSubscription} placeHolderValue="Weekly" queryKey="brandEngagementDuration" />
+        <h2 className="text-2xl font-bold text-gray-700">Brand & Creator Engagement</h2>
+        {/* <CustomSelectOption selectOptions={selectOptionsSubscription} placeHolderValue="Weekly" queryKey="brandEngagementDuration" /> */}
       </div>
 
-      <div className="relative w-80 h-88 mb-6">
+      <div className="relative w-60 h-60 2xl:w-80 2xl:h-88 mb-6">
         <svg
           className="absolute inset-0 transform -rotate-90"
           viewBox="0 0 36 36"
@@ -60,7 +89,7 @@ const TotalRevenue = () => {
             strokeWidth="4"
             strokeDasharray="100"
             strokeDashoffset={
-              (100 * (100 - userSummary?.activeUsers)) / 100
+              (100 * (100 - userSummary?.totalBrands)) / 100
             }
             strokeLinecap="round"
           ></circle>
@@ -68,7 +97,7 @@ const TotalRevenue = () => {
 
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-secondary w-24 h-24 rounded-full flex flex-col items-center justify-center">
           <span className="text-2xl font-bold">
-            {userSummary?.activeUsers}%
+            {userSummary?.totalBrands}%
           </span>
         </div>
       </div>
@@ -77,13 +106,13 @@ const TotalRevenue = () => {
         <div className="flex items-center gap-2">
           <div className="w-4 h-3 rounded-3xl bg-primary"></div>
           <p className="text-sm font-medium">
-            Active Users: {userSummary?.activeUsers}%
+            Brands: {userSummary?.totalBrands}%
           </p>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-3 rounded-3xl bg-secondary"></div>
           <p className="text-sm font-medium">
-            Inactive Users: {userSummary?.inactiveUsers}%
+            Creators: {userSummary?.totalCreators}%
           </p>
         </div>
       </div>

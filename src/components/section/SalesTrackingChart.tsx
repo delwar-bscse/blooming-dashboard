@@ -43,33 +43,35 @@ const SalesTrackingChartSuspense = () => {
         <h2 className="text-4xl font-bold text-gray-700">Total Revenue</h2>
         <CustomSelectOption selectOptions={selectOptionsRevenue} placeHolderValue="Select Year" queryKey="revenueDuration" />
       </div>
-      <ResponsiveContainer width="100%" height={400}>
-        <BarChart
-          data={data}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-          barCategoryGap="30%" // Adjust gap between bars
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" tickLine={false} axisLine={false} />
-          <YAxis tickLine={false} axisLine={false} tickMargin={20} />
-          <Tooltip />
-          {/* <Legend /> */}
-          {/* Thinner bars */}
-          <Bar
-            dataKey="totalIncome"
-            stackId="a"
-            fill="#828D97"
-            background={{ fill: '#DEE5EC' }}
-            radius={[20, 20, 0, 0]} // Optional: rounded top corners
-            barSize={20} // Make bars thinner
-          />
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="h-[300px] 2xl:h-[400px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={data}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+            barCategoryGap="30%" // Adjust gap between bars
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" tickLine={false} axisLine={false} />
+            <YAxis tickLine={false} axisLine={false} tickMargin={20} />
+            <Tooltip />
+            {/* <Legend /> */}
+            {/* Thinner bars */}
+            <Bar
+              dataKey="totalIncome"
+              stackId="a"
+              fill="#828D97"
+              background={{ fill: '#DEE5EC' }}
+              radius={[20, 20, 0, 0]} // Optional: rounded top corners
+              barSize={20} // Make bars thinner
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </>
   );
 };

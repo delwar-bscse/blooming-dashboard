@@ -161,18 +161,18 @@ const AdminInbox = () => {
     formData.append("chatId", msgId);
     formData.append("text", value);
 
+    inputRef.current.value = "";
+
     try {
       const res = await myFetch("/message/send-messages", {
         method: "POST",
         body: formData,
       });
 
-      if (res?.success) {
-        inputRef.current.value = "";
-        // rely on socket echo to append; if backend doesn't echo, you can add an optimistic insert here
-      } else {
+      if (!res?.success) {
         setError("Failed to send message.");
       }
+
     } catch (err) {
       console.error("Error sending message:", err);
       setError("Error sending message. Please try again.");
@@ -195,7 +195,7 @@ const AdminInbox = () => {
               className={`${m?.sender?.role === "admin" ? "flex-row-reverse" : "flex-row"} flex gap-4 group`}
             >
               <div
-                className={`${m?.sender?.role !== "admin" ? "bg-gray-50" : "bg-white"} p-4 rounded-2xl w-[800px]`}
+                className={`${m?.sender?.role !== "admin" ? "bg-blue-50" : "bg-white"} p-4 rounded-2xl  w-[500px] 2xl:w-[600px]`}
               >
                 <p className="text-gray-600 break-words">{m?.text}</p>
                 <p className="text-right text-gray-400 pt-4 text-sm">
@@ -223,9 +223,8 @@ const AdminInbox = () => {
         <button
           onClick={sendMessage}
           disabled={loading}
-          className={`text-2xl bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-all duration-300 ${
-            loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-          }`}
+          className={`text-2xl bg-white p-2.5 rounded-full shadow-md hover:scale-105 transition-all duration-300 ${loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+            }`}
           aria-label="Send message"
         >
           <IoIosSend className="text-gray-600 hover:text-gray-400 transition-all duration-300 text-2xl" />

@@ -180,15 +180,12 @@ const CreatorMessage = () => {
         body: formData,
       });
 
-      if (res?.success) {
-        inputRef.current.value = "";
-        // rely on socket echo to append; if backend doesn't echo, you can optimistically add:
-        // const optimistic: TMessage = { _id: crypto.randomUUID(), text: value, createdAt: new Date().toISOString(), sender: { role: "creator" } as any };
-        // setMsg(prev => [...prev, optimistic]);
-        // requestAnimationFrame(scrollToBottom);
-      } else {
+      inputRef.current.value = "";
+
+      if (!res?.success) {
         setError("Failed to send the message.");
       }
+
     } catch (err) {
       setError("Error sending message. Please try again.");
       console.error("Error sending message:", err);
@@ -211,7 +208,7 @@ const CreatorMessage = () => {
               className={`${m?.sender?.role === "creator" ? "flex-row-reverse" : "flex-row"} flex gap-4 group`}
             >
               <div
-                className={`${m?.sender?.role !== "creator" ? "bg-gray-50" : "bg-white"} p-4 rounded-2xl w-[800px]`}
+                className={`${m?.sender?.role !== "creator" ? "bg-blue-50" : "bg-white"} p-4 rounded-2xl w-[500px] 2xl:w-[600px]`}
               >
                 <p className="text-gray-600 break-words">{m.text}</p>
                 <p className="text-right text-gray-400 pt-4 text-sm">
