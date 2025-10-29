@@ -3,6 +3,19 @@ import { ColumnDef } from "@tanstack/react-table"
 import { PartialExceptId, TSingleCreator } from "@/type/creatorDataTypes";
 import Link from "next/link";
 import { PiEyeBold } from "react-icons/pi";
+import { myFetch } from "@/utils/myFetch";
+import { toast } from "sonner";
+
+const makePayment = async (creatorId: string) => {
+  console.log("Make Payment to : ", creatorId);
+  const res = await myFetch(`/assign-task-creator/creator-payment-by-admin/${creatorId}`, { method: 'PATCH' });
+  if (res?.success) {
+    toast.success("Payment successful");
+    window.location.reload();
+  }else{
+    toast.error(res?.message || "Failed to make payment");
+  }
+}
 
 export const adminCreatorListColumns2: ColumnDef<PartialExceptId<TSingleCreator>>[] = [
   {
@@ -56,13 +69,18 @@ export const adminCreatorListColumns2: ColumnDef<PartialExceptId<TSingleCreator>
       <div className="capitalize text-center text-semibold text-white bg-gray-600 hover:bg-gray-700 hover:text-gray-100 transition-colors duration-300 py-1 rounded-md cursor-pointer">{row.getValue("status")}</div>
     ),
   },
-    {
+  {
     id: "action",
     header: () => <div className="text-center">Action</div>,
     cell: ({ row }) => (
-      <Link href={`/admin/all-orders/${row.original?.creatorId}`} className="flex items-center justify-center">
-        <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
-      </Link>
+      <div className="flex items-center justify-center gap-4">
+        <Link href={`/admin/all-orders/${row.original?.creatorId}`} className="flex items-center justify-center">
+          <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
+        </Link>
+        {row.original.status === "delivered" && <button onClick={() => makePayment(row.original._id)} className={`px-4 py-1 rounded-md text-white font-semibold ${row.original?.paymentStatus === "pending" ? "bg-blue-600 hover:bg-blue-700" : "bg-green-600 hover:bg-green-700"} transition-colors duration-300`}>
+          {row.original?.paymentStatus === "pending" ? "Pay" : "Paid"}
+        </button>}
+      </div>
     ),
   }
 ]

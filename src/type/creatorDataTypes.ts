@@ -49,6 +49,7 @@ export interface TSingleCreator {
   status: string;
   createdAt: string;  // ISO Date String
   updatedAt: string;  // ISO Date String
+  paymentStatus?: string;
 }
 
 export type PartialExceptId<T extends { _id: string }> = { _id: string } & Partial<Omit<T, "_id">>;

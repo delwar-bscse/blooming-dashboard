@@ -130,6 +130,7 @@ const OrderActionsSuspense = () => {
 
   const getApprovedByBrandCreators = async () => {
     const res = await myFetch(`/assign-task-creator/${hireCreatorId}?status=approved`);
+
     if (res?.data) {
       const modifyDatas = res?.data?.map((item: any) => {
         return {
@@ -139,7 +140,8 @@ const OrderActionsSuspense = () => {
           email: item?.creatorUserId?.email,
           phone: item?.creatorUserId?.phone,
           country: item?.creatorUserId?.address,
-          status: item?.status
+          status: item?.status,
+          paymentStatus: item?.paymentStatus,
         }
       });
       
