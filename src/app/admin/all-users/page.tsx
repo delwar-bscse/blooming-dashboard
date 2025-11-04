@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 
@@ -39,48 +40,49 @@ const AllUsersSuspense = () => {
   const [totalPage, setTotalPage] = useState(1);
   const [allUsersData, setAllUsersData] = useState<UserDataType[]>([]);
   const searchParams = useSearchParams();
-  const step = searchParams.get("step") || "user";
+  const role = searchParams.get("role") || "";
   const page = searchParams.get("page") || "1";
   const query = searchParams.get("query") || "";
 
   // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
-  const getAllUsers = async() => {
-    toast.loading("Fetching users...", {id: "fetchAllUsers"});
-    
-    const res  = await myFetch(`/users/all-users?role=${step ?? "user"}&page=${page}&searchTerm=${query}`,{
+  const getAllUsers = async () => {
+    toast.loading("Fetching users...", { id: "fetchAllUsers" });
+
+    const res = await myFetch(`/users/all-users?role=${role}&page=${page}&searchTerm=${query}`, {
       method: "GET",
     });
-    
-    if(res?.data){
-      toast.success("All users fetched successfully!", {id: "fetchAllUsers"});
+
+    console.log("All users and sub_admins Data : ", res?.data)
+
+    if (res?.data) {
+      toast.success("All users fetched successfully!", { id: "fetchAllUsers" });
       setAllUsersData(res?.data);
       setTotalPage(res?.pagination?.totalPage || 1);
-    }else {
-      toast.error(res?.message || "Fetching failed!", {id: "fetchAllUsers"});
+    } else {
+      toast.error(res?.message || "Fetching failed!", { id: "fetchAllUsers" });
     }
   }
 
   useEffect(() => {
     getAllUsers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, page, query]);
+  }, [role, page, query]);
 
 
 
   return (
     <div className="pt-8">
       <div className="pb-4">
-        <CustomStep stepDatas={stepDatas} />
+        <CustomStep stepDatas={stepDatas} status="role" />
       </div>
       <div className="flex items-center gap-2">
         <div className="w-full max-w-[600px]">
-          <CustomSearchBar placeholder="Search by Email, Country"/>
+          <CustomSearchBar placeholder="Search by Email, Country" />
         </div>
       </div>
       <div className="pt-4">
         {allUsersData.length > 0 && <CustomTable<UserDataType> columns={userColumns} data={allUsersData} />}
       </div>
-      <CustomPagination TOTAL_PAGES={totalPage}/>
+      <CustomPagination TOTAL_PAGES={totalPage} />
     </div>
   )
 }

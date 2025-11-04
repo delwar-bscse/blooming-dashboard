@@ -6,11 +6,11 @@ import React, { Suspense } from 'react'
 import { AnimatePresence, motion } from "framer-motion";
 import { useParams, useSearchParams } from 'next/navigation';
 import CreatorVideoGuidelines from '@/components/section/CreatorVideoGuidelines';
-import CreatorScript from '@/components/section/CreatorScript';
 import Link from 'next/link';
 import { BiUserCircle } from "react-icons/bi";
 import ProjectDetailsAdmin from '@/components/section/ProjectDetailsAdmin';
 import AdminVideoWatchParent from '@/components/section/AdminVideoWatch';
+import AdminScript from '@/components/section/AdminScript';
 
 const stepDatas: StepDataType[] = [
   {
@@ -91,7 +91,7 @@ const OrderDetailsSuspense = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CreatorScript />
+            <AdminScript />
           </motion.div>
         )}
       </AnimatePresence>

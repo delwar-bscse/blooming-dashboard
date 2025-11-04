@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
 
-const CreatorScript = () => {
+const AdminScript = () => {
   const [status, setStatus] = useState("")
   const [script, setScript] = useState("")
   const [scriptStatus, setScriptStatus] = useState<string>("");
@@ -13,10 +13,7 @@ const CreatorScript = () => {
   const id = params["project-details"];
 
   const getScript = async () => {
-    // const res = await myFetch(`/hire-creator/${id}`, {
-    //   method: "GET",
-    // });
-    const res = await myFetch(`/assign-task-creator/single/${id}`, {
+    const res = await myFetch(`/hire-creator/${id}`, {
       method: "GET",
     });
 
@@ -62,4 +59,4 @@ const CreatorScript = () => {
   )
 }
 
-export default CreatorScript
+export default AdminScript

@@ -1,16 +1,61 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { myFetch } from "@/utils/myFetch";
 import JoditEditor from "jodit-react";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 const CustomJodit = () => {
   const pathname = usePathname();
   const editor = useRef(null);
   const [content, setContent] = useState("");
+
+  // JoditEditor configuration
+    const config = useMemo(
+      () => ({
+        readonly: false,
+        placeholder: "Enter your privacy policy content here...",
+        height: 500,
+        toolbar: true,
+        spellcheck: true,
+        language: "en",
+        toolbarButtonSize: "middle",
+        showCharsCounter: true,
+        showWordsCounter: true,
+        showXPathInStatusbar: false,
+        askBeforePasteHTML: false,
+        askBeforePasteFromWord: false,
+        buttons: [
+          "bold",
+          "italic",
+          "underline",
+          "|",
+          "ul",
+          "ol",
+          "|",
+          "font",
+          "fontsize",
+          "brush",
+          "|",
+          "paragraph",
+          "align",
+          "|",
+          "undo",
+          "redo",
+          "|",
+          "hr",
+          "link",
+          "table",
+          "|",
+          "fullsize",
+          "source",
+        ],
+      }),
+      []
+    );
 
 
 
@@ -69,7 +114,7 @@ const CustomJodit = () => {
         <JoditEditor
           ref={editor}
           value={content}
-          config={{ readonly: false, height: 600 }}
+          config={config as any}
           onBlur={(newContent) => setContent(newContent)}
         />
       </div>

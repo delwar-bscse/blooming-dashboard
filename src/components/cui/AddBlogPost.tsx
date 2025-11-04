@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,12 +15,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Suspense, useState } from "react";
+import { Suspense, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
 import { myFetch } from "@/utils/myFetch";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
+import JoditEditor from "jodit-react";
 
 
 // Schema
@@ -41,10 +43,59 @@ type ContactUsFormValues = z.infer<typeof contactUsFormSchema>;
 
 {/* ---------------------------- Package Form ---------------------------- */ }
 const AddBlogPostSuspense = () => {
+  const editor = useRef(null);
+  const [content, setContent] = useState("");
   const [imgUrl, setImgUrl] = useState<string | null>(null);
 
   // const searchParams = useSearchParams();
   // const type = searchParams.get("type");
+
+  // JoditEditor configuration
+  const config = useMemo(
+    () => ({
+      readonly: false,
+      placeholder: "Enter your privacy policy content here...",
+      height: 500,
+      toolbar: true,
+      spellcheck: true,
+      language: "en",
+      toolbarButtonSize: "middle",
+      showCharsCounter: true,
+      showWordsCounter: true,
+      showXPathInStatusbar: false,
+      askBeforePasteHTML: false,
+      askBeforePasteFromWord: false,
+      buttons: [
+        "bold",
+        "italic",
+        "underline",
+        "|",
+        // "ul",
+        // "ol",
+        // "|",
+        "font",
+        "fontsize",
+        "brush",
+        "|",
+        "paragraph",
+        "align",
+        "|",
+        "undo",
+        "redo",
+        "|",
+        "hr",
+        "link",
+        "table",
+        "|",
+        "fullsize",
+        "source",
+      ],
+      style: {
+        "text-align": "left",
+      },
+    }),
+    []
+  );
 
 
 
@@ -58,14 +109,14 @@ const AddBlogPostSuspense = () => {
     mode: "onChange",
   });
 
-
   async function onSubmit(data: ContactUsFormValues) {
     toast.loading("Uploading blog...", { id: "upload" });
-    // toast.success("Message send successfully!");
+    console.log("Details Text Editor : ", content);
 
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("details", data.details);
+    formData.append("detailsTextEditor", content);
     formData.append("image", data.image!);
 
 
@@ -73,7 +124,9 @@ const AddBlogPostSuspense = () => {
       method: "POST",
       body: formData,
     });
-    
+
+    console.log("Create blog res : ", res)
+
     if (res.success) {
       toast.success("Blog uploaded successfully!", { id: "upload" });
       form.reset();
@@ -101,33 +154,33 @@ const AddBlogPostSuspense = () => {
     <div className="w-full max-w-[700px] mx-auto flex text-center justify-center py-10 px-2">
       <div className="bg-white px-2 sm:px-4 md:px-8 py-6 md:py-8 w-full rounded-4xl">
 
-          <div className="relative block">
-            <div className="w-full h-80 mx-auto rounded-xl overflow-hidden border-3 border-white bg-gray-300">
-              {imgUrl ? (
-                <Image
-                  src={imgUrl ?? ""}
-                  alt="content image"
-                  className="object-cover"
-                  width={800}
-                  height={500}
-                  unoptimized
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-500">
-                  No Image
-                </div>
-              )}
-            </div>
-
-            <Image
-              onClick={() => document.getElementById("packageImgCtrl")?.click()}
-              src={profileInputIcon}
-              alt="Upload Icon"
-              className="absolute -bottom-1 -right-1 w-8 h-8 z-10 cursor-pointer hover:scale-110 transition-all duration-300"
-              width={32}
-              height={32}
-            />
+        <div className="relative block">
+          <div className="w-full h-80 mx-auto rounded-xl overflow-hidden border-3 border-white bg-gray-300">
+            {imgUrl ? (
+              <Image
+                src={imgUrl ?? ""}
+                alt="content image"
+                className="object-cover"
+                width={800}
+                height={500}
+                unoptimized
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                No Image
+              </div>
+            )}
           </div>
+
+          <Image
+            onClick={() => document.getElementById("packageImgCtrl")?.click()}
+            src={profileInputIcon}
+            alt="Upload Icon"
+            className="absolute -bottom-1 -right-1 w-8 h-8 z-10 cursor-pointer hover:scale-110 transition-all duration-300"
+            width={32}
+            height={32}
+          />
+        </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -186,7 +239,16 @@ const AddBlogPostSuspense = () => {
               )}
             />
 
-            
+            <div className="" style={{ all: 'unset' }}>
+              <JoditEditor
+                ref={editor}
+                value={content}
+                config={config as any}
+                onBlur={(newContent) => setContent(newContent)}
+              />
+            </div>
+
+
 
             {/* Submit */}
             <Button variant="customYellow" type="submit" size="llg" className="w-full">

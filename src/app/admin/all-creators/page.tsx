@@ -16,6 +16,10 @@ import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useSearchParams } from 'next/navigation';
 import { creatorColumns } from '@/tableColumn/CreatorsColumns';
+import { Button } from '@/components/ui/button';
+import { SlidersHorizontal } from 'lucide-react';
+import CustomModalFilter from '@/components/cui/CustomModalFilter';
+import CustomFilter from '@/components/cui/CustomFilter';
 
 
 
@@ -37,44 +41,77 @@ const AllCreatorsSuspense = () => {
   const [totalPage, setTotalPage] = useState(1);
   const [allCreatorsData, setAllCreatorsData] = useState<CreatorDataType[]>([]);
   const searchParams = useSearchParams();
-  const step = searchParams.get("step");
+  const status = searchParams.get("status") || "";
   const page = searchParams.get("page") || "1";
   const query = searchParams.get("query") || "";
+  const language = searchParams.get("language") || "";
+  const gender = searchParams.get("gender") || "";
+  const niche = searchParams.get("niche") || "";
+  const ethnicity = searchParams.get("ethnicity") || "";
+  const skinType = searchParams.get("skinType") || "";
+  const bodyType = searchParams.get("bodyType") || "";
+  const hairType = searchParams.get("hairType") || "";
 
-  // const data = creatorDatas.slice(0, 9) as CreatorDataType[];
-  const getAllCreators = async() => {
-    toast.loading("Fetching creators...", {id: "fetchAllCreators"});
-    const res  = await myFetch(`/creator?status=${step}&page=${page}&searchTerm=${query}`,{
+  const getAllCreators = async () => {
+    toast.loading("Fetching creators...", { id: "fetchAllCreators" });
+
+    // Start with the base URL
+    let url = `/creator?`;
+
+    // Add parameters only if they have values
+    const queryParams = [
+      { key: 'page', value: page },
+      { key: 'searchTerm', value: query },
+      { key: 'status', value: status },
+      { key: 'language', value: language },
+      { key: 'gender', value: gender },
+      { key: 'niche', value: niche },
+      { key: 'ethnicity', value: ethnicity },
+      { key: 'skinType', value: skinType },
+      { key: 'bodyType', value: bodyType },
+      { key: 'hairType', value: hairType }
+    ];
+
+    queryParams.forEach(param => {
+      if (param.value) {
+        url += `&${param.key}=${param.value}`;
+      }
+    });
+
+    // console.log("filter url : ", url)
+
+    const res = await myFetch(url, {
       method: "GET",
     });
-    
-    if(res?.data){
-      toast.success("All creators fetched successfully!", {id: "fetchAllCreators"});
+
+    if (res?.data) {
+      toast.success("All creators fetched successfully!", { id: "fetchAllCreators" });
       setAllCreatorsData(res?.data);
       setTotalPage(res?.pagination?.totalPage || 1);
-    }else {
-      toast.error(res?.message || "Fetching failed!", {id: "fetchAllCreators"});
+    } else {
+      toast.error(res?.message || "Fetching failed!", { id: "fetchAllCreators" });
     }
   }
 
+
   useEffect(() => {
     getAllCreators();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, page, query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, page, query, language, gender, niche, ethnicity, skinType, bodyType, hairType]);
 
 
 
   return (
     <div className="pt-8">
       <div className="pb-4">
-        <CustomStep stepDatas={stepDatas} />
+        <CustomStep stepDatas={stepDatas} status='status' />
       </div>
       <div className="flex items-center gap-2">
         <div className="w-full max-w-[600px]">
-          <CustomSearchBar placeholder="Search by Email, Country"/>
+          <CustomSearchBar placeholder="Search by Email, Country" />
         </div>
-        {/* <div>
-          <CustomModal
+        <div>
+          <CustomModalFilter
             title="Advanced Filters"
             submitText="Apply"
             trigger={
@@ -84,15 +121,15 @@ const AllCreatorsSuspense = () => {
             }
           >
             <div>
-              <CreatorFilter />
+              <CustomFilter />
             </div>
-          </CustomModal>
-        </div> */}
+          </CustomModalFilter>
+        </div>
       </div>
       <div className="pt-4">
         <CustomTable<CreatorDataType> columns={creatorColumns} data={allCreatorsData} />
       </div>
-      <CustomPagination TOTAL_PAGES={totalPage}/>
+      <CustomPagination TOTAL_PAGES={totalPage} />
     </div>
   )
 }
