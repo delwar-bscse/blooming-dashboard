@@ -25,8 +25,8 @@ const Header = () => {
 
   return (
     <div className='flex items-center justify-between'>
-      <div>
-        <Image src={bloomimgLogo} alt="profileImage01" />
+      <div className='py-2'>
+        <Image src={bloomimgLogo} width={150} height={50} alt="profileImage01 object-contain" />
       </div>
       <div className='flex items-center justify-end gap-2'>
         <div className='flex gap-2 items-center'>

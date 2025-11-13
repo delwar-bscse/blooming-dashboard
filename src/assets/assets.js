@@ -20,7 +20,7 @@ import review from "./sidebar/review.png";
 import profileImage01 from "./common/profileImage.png";
 import profileImage02 from "./common/profileImage02.png";
 import authBackground from "./common/authBackground.png";
-import bloomimgLogo from "./common/bloomimgLogo.png";
+import bloomimgLogo from "./common/TheSocialChance.png";
 import package00 from "./common/package00.png";
 import package01 from "./common/package01.jpg";
 import package02 from "./common/package02.jpg";

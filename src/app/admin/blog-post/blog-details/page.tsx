@@ -5,6 +5,7 @@
 import CustomButton from '@/components/cui/CustomButtom';
 import { myFetch } from '@/utils/myFetch';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner';
@@ -30,7 +31,7 @@ function BlogDetailsSuspense() {
     const response = await myFetch(`/blog/${id}`, {
       method: "GET",
     });
-    console.log("Blog Details : ", response)
+    // console.log("Blog Details : ", response)
     if (response?.data) {
       setBlogData(response?.data);
       toast.success("Blog details fetched successfully!");
@@ -68,8 +69,13 @@ function BlogDetailsSuspense() {
               className='object-cover w-full childDiv transition-transform duration-500 ease-in-out'
             />
           </div>
-          <div onClick={handleDelete} className='w-40'>
-            <CustomButton text="Delete Blog" />
+          <div className='space-y-2'>
+            <div onClick={handleDelete} className='w-40'>
+              <CustomButton text="Delete Blog" />
+            </div>
+            <div>
+              <Link href={`/admin/blog-post/add-blog?id=${blogData?.title}`} className='w-40 bg-blue-500 inline-block text-center py-1.5 px-2 text-white rounded-sm hover:bg-blue-600 transition-colors duration-300 shadow'>Edit Blog</Link>
+            </div>
           </div>
         </div>
         <div className='flex-1 flex flex-col gap-4 pt-16'>

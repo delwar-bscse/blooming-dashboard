@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -15,13 +16,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Suspense, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
 import { myFetch } from "@/utils/myFetch";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import JoditEditor from "jodit-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 // Schema
@@ -31,9 +33,9 @@ const contactUsFormSchema = z.object({
     .refine(
       (file) => file instanceof File && file.type.startsWith("image/"),
       "Please upload a valid image file"
-    ),
+    ).optional(),
   title: z.string(),
-  details: z.string()
+  details: z.string(),
 
 });
 
@@ -46,9 +48,11 @@ const AddBlogPostSuspense = () => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
   const [imgUrl, setImgUrl] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string>("");
+  const route = useRouter();
 
-  // const searchParams = useSearchParams();
-  // const type = searchParams.get("type");
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
   // JoditEditor configuration
   const config = useMemo(
@@ -70,9 +74,9 @@ const AddBlogPostSuspense = () => {
         "italic",
         "underline",
         "|",
-        // "ul",
-        // "ol",
-        // "|",
+        "ul",
+        "ol",
+        "|",
         "font",
         "fontsize",
         "brush",
@@ -117,21 +121,26 @@ const AddBlogPostSuspense = () => {
     formData.append("title", data.title);
     formData.append("details", data.details);
     formData.append("detailsTextEditor", content);
-    formData.append("image", data.image!);
+
+    if (data?.image) {
+      formData.append("image", data?.image);
+    }
 
 
-    const res = await myFetch("/blog/create-blog", {
-      method: "POST",
+    const url = editId ? `/blog/${editId}` : "/blog/create-blog";
+    const res = await myFetch(url, {
+      method: editId ? "PATCH" : "POST",
       body: formData,
     });
 
     console.log("Create blog res : ", res)
 
     if (res.success) {
-      toast.success("Blog uploaded successfully!", { id: "upload" });
-      form.reset();
+      toast.success(`Blog ${editId ? "updated" : "created"} successfully!`, { id: "upload" });
+      // form.reset();
+      route.back()
     } else {
-      toast.error(res.message || "Upload failed!", { id: "upload" });
+      toast.error(res.message || `Blog ${editId ? "update" : "creation"} failed!`, { id: "upload" });
       // console.error("Upload failed:", res.message);
     }
 
@@ -150,8 +159,28 @@ const AddBlogPostSuspense = () => {
     }
   };
 
+  const fetchExistPost = async () => {
+    console.log("Add Blog ---- Blog Details id : ", id)
+
+    const response = await myFetch(`/blog/${id}`, {
+      method: "GET",
+    });
+    console.log("Add Blog ---- Blog Details : ", response)
+    if (response?.data) {
+      form.setValue("title", response?.data?.title);
+      form.setValue("details", response?.data?.details);
+      setContent(response?.data?.detailsTextEditor);
+      setImgUrl(response?.data?.image);
+      setEditId(response?.data?._id);
+    }
+  }
+
+  useEffect(() => {
+    fetchExistPost()
+  }, [id])
+
   return (
-    <div className="w-full max-w-[700px] mx-auto flex text-center justify-center py-10 px-2">
+    <div className="w-full max-w-[1000px] mx-auto flex text-center justify-center py-10 px-2">
       <div className="bg-white px-2 sm:px-4 md:px-8 py-6 md:py-8 w-full rounded-4xl">
 
         <div className="relative block">
@@ -252,7 +281,7 @@ const AddBlogPostSuspense = () => {
 
             {/* Submit */}
             <Button variant="customYellow" type="submit" size="llg" className="w-full">
-              Save
+              {editId ? "Update" : "Submit"}
             </Button>
           </form>
         </Form>

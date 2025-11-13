@@ -57,7 +57,7 @@ const BlogPost = async() => {
               <h3 className='text-lg md:text-xl font-bold text-font01'>{data.title}</h3>
               <p className='flex-1 text-justify'>{data.details.slice(0, 300)}...</p>
               <div className='w-full max-w-[200px] mx-auto'>
-                <CustomButton text="View Details" url={`/admin/blog-post/blog-details?id=${data._id}`}/>
+                <CustomButton text="View Details" url={`/admin/blog-post/blog-details?id=${data.title}`}/>
               </div>
             </div>
           </div>
