@@ -102,7 +102,6 @@ const AddBlogPostSuspense = () => {
   );
 
 
-
   const defaultValues: Partial<ContactUsFormValues> = {
     // image: null,
   };
@@ -162,7 +161,7 @@ const AddBlogPostSuspense = () => {
   const fetchExistPost = async () => {
     console.log("Add Blog ---- Blog Details id : ", id)
 
-    const response = await myFetch(`/blog/${id}`, {
+    const response = await myFetch(`/blog/admin/${id}`, {
       method: "GET",
     });
     console.log("Add Blog ---- Blog Details : ", response)

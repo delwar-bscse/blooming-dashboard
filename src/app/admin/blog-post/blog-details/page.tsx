@@ -28,7 +28,7 @@ function BlogDetailsSuspense() {
   const id = searchParams.get('id');
 
   const getBlogDetails = async () => {
-    const response = await myFetch(`/blog/${id}`, {
+    const response = await myFetch(`/blog/admin/${id}`, {
       method: "GET",
     });
     // console.log("Blog Details : ", response)
@@ -74,7 +74,7 @@ function BlogDetailsSuspense() {
               <CustomButton text="Delete Blog" />
             </div>
             <div>
-              <Link href={`/admin/blog-post/add-blog?id=${blogData?.title}`} className='w-40 bg-blue-500 inline-block text-center py-1.5 px-2 text-white rounded-sm hover:bg-blue-600 transition-colors duration-300 shadow'>Edit Blog</Link>
+              <Link href={`/admin/blog-post/add-blog?id=${blogData?._id}`} className='w-40 bg-blue-500 inline-block text-center py-1.5 px-2 text-white rounded-sm hover:bg-blue-600 transition-colors duration-300 shadow'>Edit Blog</Link>
             </div>
           </div>
         </div>
