@@ -37,7 +37,7 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
   const searchParams = useSearchParams();
   const params = useParams();
   const hireCreatorId = params["id"];
-  const step = searchParams.get("step");
+  const status = searchParams.get("status");
 
   const sendRequestToUser = async (selectedIds: (string | number)[]) => {
 
@@ -136,12 +136,12 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
         </Table>
       </div>
       <div className="flex items-center justify-end gap-2 py-4">
-        {(step === "creator-list" || step === "agreed-creators") && <button
+        {(status === "creator-list" || status === "agreed-creators") && <button
           className="mb-4 px-4 py-2 bg-green-700 text-white rounded"
           onClick={() => sendRequestToUser(selectedIds)}
         >
-          {step === "creator-list" && "Select Creator"}
-          {step === "agreed-creators" && "Approve Creator"}
+          {status === "creator-list" && "Select Creator"}
+          {status === "agreed-creators" && "Approve Creator"}
         </button>}
       </div>
     </div>
