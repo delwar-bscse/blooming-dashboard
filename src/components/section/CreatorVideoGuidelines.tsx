@@ -28,17 +28,20 @@ const contentDelivery = [
 const CreatorVideoGuidelines = () => {
   return (
     <div className='space-y-5 pb-16'>
-      <p className='text-gray-600 text-xl font-semibold bg-white rounded-2xl p-8'>The Social Chance BrandsTo ensure consistency, quality, and professionalism across all content, please follow the guidelines below when creating UGC for our partnered brands:</p>
+      <div className='font-semibold bg-white rounded-2xl p-8 space-y-3'>
+        <h2 className='text-3xl font-bold text-gray-700 uppercase'>The Social Chance</h2>
+        <p className='text-gray-600'>To ensure consistency, quality and professionalism across all content, please follow the guidelines below when creating UGC for our partnered Brands.</p>
+      </div>
       <div className='bg-white rounded-2xl p-8'>
         <div>
-          <SubComponent title="Deadline Communication" list={deadlineCommunication} />
+          <SubComponent title="Deadlines & Communication" list={deadlineCommunication} />
         </div>
       </div>
       <div className='bg-white rounded-2xl p-8'>
         <SubComponent title="Filming Guidelines" list={filmingGuidelines} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
-        <SubComponent title="Appearance and Styling" list={appearanceStyling} />
+        <SubComponent title="Appearance & Styling" list={appearanceStyling} />
       </div>
       <div className='bg-white rounded-2xl p-8'>
         <SubComponent title="Content Delivery" list={contentDelivery} />
@@ -50,7 +53,7 @@ const CreatorVideoGuidelines = () => {
 const SubComponent = ({ title, list }: { title: string; list: string[] }) => {
   return (
     <div>
-      <h2 className='text-2xl font-bold mb-4'>{title}</h2>
+      <h2 className='text-2xl font-semibold text-gray-700 mb-4'>{title}</h2>
       <ul className='space-y-1.5'>
         {list.map((item, index) => (
           <li key={index} className='list-disc list-inside pl-4 text-gray-600'>{item}</li>

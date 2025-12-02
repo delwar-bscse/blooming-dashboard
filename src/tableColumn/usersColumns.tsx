@@ -20,7 +20,7 @@ const handleRoleChange = async (id: string) => {
 export const userColumns: ColumnDef<UserDataType>[] = [
   {
     accessorKey: "_id",
-    header: () => <div className="text-center">No.</div>,
+    header: () => <div className="text-center">Unique ID</div>,
     cell: ({ row }) => (
       <div className="capitalize text-center">{row.getValue("_id")}</div>
     ),

@@ -51,10 +51,13 @@ const AllOrdersSuspense = () => {
     toast.loading("Fetching Orders request...", { id: "fetch" });
     const res = await myFetch(`/assign-task-creator/assign?status=pending&page=${page}`);
 
+    console.log("Order list : ", res?.data)
+
     if (res?.data) {
       toast.success("All Orders request fetched successfully!", { id: "fetch" });
       const formatedData = res?.data?.map((item: any) => ({
         _id: item._id,
+        hireCreatorId: item.hireCreatorId?._id,
         subscriptionId: {
           price: item.price,
         },
@@ -68,6 +71,8 @@ const AllOrdersSuspense = () => {
         status: item.status,
         paymentStatus: "paid",
       }));
+
+      console.log("Modified Order list : ", formatedData)
       
       setAllCreatorsData(formatedData);
       setTotalPage(res?.pagination?.totalPage || 1);

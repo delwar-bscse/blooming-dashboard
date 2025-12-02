@@ -40,18 +40,21 @@ const AllOrdersSuspense = () => {
         method: "GET",
       }
     );
+    console.log("Hrecreator Id : ", res?.data)
     
     if (res?.data) {
       // toast.success("All Orders fetched successfully!", { id: "fetch" });
       const modifyDatas = res?.data?.map((item:any)=>{
         return {
           _id:item._id,
+          hireCreatorId:item?.hireCreatorId?._id,
           brandName:item?.hireCreatorId?.brandInfo?.name,
           productName:item?.hireCreatorId?.brandInfo?.productName,
           brandEmail:item?.hireCreatorId?.brandInfo?.email,
           status:item?.status,
         }
       })
+      console.log("Modified Order list : ", modifyDatas)
       
       setAllCreatorsData(modifyDatas);
       setTotalPage(res?.pagination?.totalPage || 1);

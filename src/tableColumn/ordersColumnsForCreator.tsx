@@ -5,10 +5,10 @@ import { TOrdersData } from "@/type/orderDataTypes";
 
 export const orderColumnsForCreator: ColumnDef<TOrdersData>[] = [
   {
-    accessorKey: "_id",
-    header: () => <div className="text-center">No.</div>,
+    accessorKey: "hireCreatorId",
+    header: () => <div className="text-center">Order ID</div>,
     cell: ({ row }) => (
-      <div className="capitalize text-center">{row.getValue("_id")}</div>
+      <div className="capitalize text-center">{row.getValue("hireCreatorId")}</div>
     ),
   },
   {
@@ -55,7 +55,7 @@ export const orderColumnsForCreator: ColumnDef<TOrdersData>[] = [
     header: () => <div className="text-center">Action</div>,
     cell: ({ row }) => (
       <div className="flex items-center justify-center gap-2">
-        <Link href={`/creator/all-project/${row.getValue("_id")}`} className="flex items-center justify-center">
+        <Link href={`/creator/all-project/${row.original._id}`} className="flex items-center justify-center">
           <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
         </Link>
         {/* <Link href={`/admin/all-orders/order-actions/${row.getValue("_id")}`} className="flex items-center justify-center">

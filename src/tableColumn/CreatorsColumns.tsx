@@ -6,7 +6,7 @@ import { CreatorDataType } from "@/type/type";
 export const creatorColumns: ColumnDef<CreatorDataType>[] = [
   {
     accessorKey: "_id",
-    header: () => <div className="text-center">No.</div>,
+    header: () => <div className="text-center">Creator ID</div>,
     cell: ({ row }) => (
       <div className="capitalize text-center">{row.getValue("_id")}</div>
     ),

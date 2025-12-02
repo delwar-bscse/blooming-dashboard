@@ -41,6 +41,9 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
 
   const sendRequestToUser = async (selectedIds: (string | number)[]) => {
 
+    console.log("Hire Creator Id : ", hireCreatorId)
+    console.log("Selected Ids : ", selectedIds)
+
     const payload = {
       hirecreatorId: hireCreatorId,
       assignTaskCreatorIds: selectedIds,
@@ -51,6 +54,8 @@ function CustomTableSelectionSuspense<TData extends RowWithId>({ data, columns }
       method: "PATCH",
       body: payload,
     });
+
+    console.log("Res : ", res)
 
     if (res?.data) {
       toast.success("Creators approved successfully!", { id: "requestSend" });

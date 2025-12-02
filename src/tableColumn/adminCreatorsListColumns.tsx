@@ -9,7 +9,7 @@ import { PiEyeBold } from "react-icons/pi";
 export const adminCreatorListColumns: ColumnDef<PartialExceptId<TSingleCreator>>[] = [
   {
     accessorKey: "_id",
-    header: () => <div className="text-center">No.</div>,
+    header: () => <div className="text-center">Creator ID</div>,
     cell: ({ row }) => (
       <div className="capitalize text-center">{row.getValue("_id")}</div>
     ),

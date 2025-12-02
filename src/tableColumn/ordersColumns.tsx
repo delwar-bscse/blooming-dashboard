@@ -7,7 +7,7 @@ import { TOrdersData } from "@/type/orderDataTypes";
 export const orderColumns: ColumnDef<TOrdersData>[] = [
   {
     accessorKey: "_id",
-    header: () => <div className="text-center">No.</div>,
+    header: () => <div className="text-center">Order ID</div>,
     cell: ({ row }) => (
       <div className="capitalize text-center">{row.getValue("_id")}</div>
     ),

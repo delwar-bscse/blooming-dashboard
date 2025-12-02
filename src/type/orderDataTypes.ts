@@ -88,6 +88,7 @@ interface AddOns{
 
 export interface TOrdersData {
   _id: string;
+  hireCreatorId?: string;
   userId: TUserProfile;
   subscriptionId: TSubscription;
   brandInfo: TBrandInfo;

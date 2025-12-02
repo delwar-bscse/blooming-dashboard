@@ -50,7 +50,7 @@ const Sidebar = ({ menu }: { menu?: menuType[] }) => {
             <Link
               href={item?.label}
               key={index}
-              className={`flex gap-2 items-center py-2 px-4 transition-colors duration-300 rounded-md cursor-pointer ${isItemActive ? 'bg-yellow-500 text-white' : 'hover:bg-yellow-300'}`}
+              className={`flex gap-2 items-center py-2 px-4 transition-colors duration-300 rounded-md cursor-pointer ${isItemActive ? 'bg-[#FFECAC]' : 'hover:bg-[#FFECAC]'}`}
             >
               <Image src={item.icon} alt={item.title} />
               <span className='text-bold text-lg'>{item.title}</span>
@@ -59,7 +59,7 @@ const Sidebar = ({ menu }: { menu?: menuType[] }) => {
         })}
         <button
           onClick={handleLogout}
-          className='flex gap-2 items-center py-2 px-4 hover:bg-red-300 transition-colors duration-300 rounded-md cursor-pointer'
+          className='flex gap-2 items-center py-2 px-4 hover:bg-[#FFECAC] transition-colors duration-300 rounded-md cursor-pointer'
         >
           <Image src={logoutImg} alt="logout button" />
           <span className='text-bold text-lg'>Log Out</span>

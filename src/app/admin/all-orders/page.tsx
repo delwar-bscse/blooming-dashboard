@@ -51,6 +51,8 @@ const AllOrdersSuspense = () => {
     const res  = await myFetch(`/hire-creator?status=${filterType}&page=${page}&searchTerm=${query}`,{
       method: "GET",
     });
+
+    console.log("Hire Creator Id : ", res?.data)
     
     if(res?.data){
       toast.success("All Orders fetched successfully!", {id: "fetch"});
