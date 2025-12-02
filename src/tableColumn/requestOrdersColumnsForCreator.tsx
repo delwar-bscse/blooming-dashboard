@@ -36,13 +36,13 @@ export const requestOrderColumnsForCreator: ColumnDef<TOrdersData>[] = [
   //     <div className="text-center">{row.getValue("accountManager")}</div>
   //   ),
   // },
-  {
-    accessorKey: "brandInfo.email",
-    header: () => <div className="text-center">Email</div>,
-    cell: ({ row }) => (
-      <div className="text-center">{row.original?.brandInfo?.email}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "brandInfo.email",
+  //   header: () => <div className="text-center">Email</div>,
+  //   cell: ({ row }) => (
+  //     <div className="text-center">{row.original?.brandInfo?.email}</div>
+  //   ),
+  // },
   {
     accessorKey: "status",
     header: () => <div className="text-center">Status</div>,

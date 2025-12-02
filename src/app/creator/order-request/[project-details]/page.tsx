@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import StarEmogi from "@/assets/common/star.png"
 import LoveEmogi from "@/assets/common/loveEmoji.png"
 import Image from 'next/image';
+import { toTitleWords } from '@/utils/toTitleWords';
 
 
 const ProjectDetailsPageSuspense = () => {
@@ -27,6 +28,7 @@ const ProjectDetailsPageSuspense = () => {
       method: "GET",
     });
     
+    console.log("Order Details : ", res.data)
 
     if (res?.data) {
       toast.success("Request Order Details fetched successfully!", { id: "fetch" });
@@ -89,7 +91,7 @@ const ProjectDetailsPageSuspense = () => {
                 <p className='text-xl font-semibold text-gray-700'>Price ${orderDetails?.price}</p>
                 <Image src={LoveEmogi} alt="package" width={30} height={30} />
               </div>
-              {orderDetails?.brandInfo && <SubComponent title="Project Info" list={orderDetails?.hireCreatorId.brandInfo} />}
+              {orderDetails?.hireCreatorId?.brandInfo && <SubComponent title="Project Info" list={orderDetails?.hireCreatorId.brandInfo} />}
             </div>
             <div className='bg-white rounded-2xl p-8'>
               <SubComponent title="Brand Social" list={orderDetails?.hireCreatorId?.brandSocial} />
@@ -124,9 +126,9 @@ const SubComponent = ({ title, list }: { title: string; list: any }) => {
       <h2 className='text-2xl font-bold mb-4'>{title}</h2>
       <ul className='space-y-1.5'>
         {Object.entries(list)?.map(([key, value], index) => {
-          if (key === "_id") return null;
+          if (key === "" || key === "_id" || key === "email" || key === "phone" || key === "websiteUrl") return null;
           return <li key={index} className="list-disc list-inside pl-4 text-gray-600">
-            <span className="font-semibold text-gray-700 text-lg capitalize">{key ?? ""}:</span><br />
+            <span className="font-semibold text-gray-700 text-lg capitalize">{toTitleWords(key) ?? ""}:</span><br />
             <span className="pl-6">{String(value)}</span>
           </li>
         })}

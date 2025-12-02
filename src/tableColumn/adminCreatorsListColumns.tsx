@@ -66,6 +66,7 @@ export const adminCreatorListColumns: ColumnDef<PartialExceptId<TSingleCreator>>
           checked={table.getIsAllRowsSelected()}
           onCheckedChange={value => table.toggleAllRowsSelected(!!value)}
           aria-label="Select all"
+          className=" border-2 border-gray-400"
         />
       </div>
     ),

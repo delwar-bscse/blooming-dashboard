@@ -9,6 +9,7 @@ import { myFetch } from '@/utils/myFetch';
 import { useParams, useRouter } from 'next/navigation';
 // import { TOrdersData } from '@/type/orderDataTypes';
 import { Button } from '../ui/button';
+import { toTitleWords } from '@/utils/toTitleWords';
 
 
 
@@ -116,9 +117,9 @@ const SubComponent = ({ title, list }: { title: string; list: any }) => {
       <h2 className='text-2xl font-bold mb-4'>{title}</h2>
       <ul className='space-y-1.5'>
         {Object.entries(list)?.map(([key, value], index) => {
-          if (key === "_id") return null;
+          if (key === "" || key === "_id" || key === "email" || key === "phone" || key === "websiteUrl") return null;
           return <li key={index} className="list-disc list-inside pl-4 text-gray-600">
-            <span className="font-semibold text-gray-700 text-lg capitalize">{key ?? ""}:</span><br />
+            <span className="font-semibold text-gray-700 text-lg capitalize">{toTitleWords(key) ?? ""}:</span><br />
             <span className="pl-6">{String(value)}</span>
           </li>
         })}
