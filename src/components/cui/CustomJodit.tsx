@@ -60,17 +60,18 @@ const CustomJodit = () => {
 
 
   const getContent = async () => {
-    toast.loading("Fetching...", { id: "fetch" });
+    // toast.loading("Fetching...", { id: "fetch" });
     const res = await myFetch(`/setting`, {
       method: "GET",
     })
+    // console.log(res)
     
     if (res?.data) {
       if (pathname.endsWith("/terms-and-condition")) setContent(res?.data?.termsOfService);
       if (pathname.endsWith("/privacy-policy")) setContent(res?.data?.privacyPolicy);
-      toast.success("Fetched successfully!", { id: "fetch" });
+      // toast.success("Fetched successfully!", { id: "fetch" });
     }else{
-      toast.error(res?.message || "Failed to fetch!", { id: "fetch" });
+      toast.error(res?.message || "Failed to fetch!",);
     }
   };
 
