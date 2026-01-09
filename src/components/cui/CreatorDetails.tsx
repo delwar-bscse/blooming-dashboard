@@ -12,14 +12,14 @@ import { useRouter } from 'next/navigation';
 const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator>, user?: Record<string, any>, id?: string }) => {
   const router = useRouter();
 
-    const handleApprove = async () => {
+  const handleApprove = async () => {
     toast.loading("Updating creator status...", { id: "approved" });
 
     const res = await myFetch(`/creator/approved-cancel/${id}?status=approved`, {
       method: "PATCH",
       tags: ["creator"],
     });
-    
+
     if (res?.data) {
       toast.success("Creator Approved successfully!", { id: "approved" });
       // getCreator();
@@ -35,7 +35,7 @@ const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator
       method: "PATCH",
       tags: ["creator"],
     });
-    
+
     if (res?.data) {
       toast.success("Creator Declined successfully!", { id: "decline" });
       router.push("/admin/all-creators");
@@ -61,7 +61,7 @@ const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator
         <div className="">
           {/* <h2 className="text-xl font-semibold text-gray-700 mb-4">Personal Information</h2> */}
           <div className="space-y-3">
-            <DetailItem label="Name" value={creator?.accountHolderName ?? ""} />
+            <DetailItem label="Name" value={creator?.fullName ?? ""} />
             <DetailItem label="Email" value={creator?.email ?? ""} />
             <DetailItem label="Phone Number" value={creator?.phone ?? ""} />
             <DetailItem label="Date of Birth" value={creator?.dateOfBirth ?? ""} />
@@ -78,7 +78,7 @@ const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator
       <div className="p-4 rounded-lg">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Creator Details</h2>
         <div className="space-y-3">
-          <DetailItem label="Niche" value={creator?.niche ?? ""} isWide={true} />
+          <DetailItem2 label="Niche" value={creator?.niche ?? []} isWide={true} />
           <DetailItem label="Job Profession" value={creator?.profession ?? ""} isWide={true} />
           <DetailItem label="Ethnicity" value={creator?.ethnicity ?? ""} isWide={true} />
           <DetailItem label="Skin Type" value={creator?.skinType ?? ""} isWide={true} />
@@ -130,13 +130,25 @@ const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator
 }
 
 
-const DetailItem: React.FC<{ label: string; value: string, isWide?: boolean }> = ({ label, value, isWide }) => (
+const DetailItem2: React.FC<{ label: string; value: string[], isWide?: boolean }> = ({ label, value, isWide }) => {
+  return (<div className="flex">
+    <span className={`font-medium text-gray-600 block ${isWide ? 'w-80' : 'w-40'}`}>{label}</span>
+    <div className='flex flex-wrap space-x-2'> : {
+      value?.map((item: any, index: number) => (
+        <span key={index} className="text-gray-800">{item}, </span>
+      ))
+    }</div>
+  </div>)
+};
 
-  <div className="flex">
-    <span className={`font-medium text-gray-600 ${isWide ? 'w-80' : 'w-40'}`}>{label}</span>
-    <span className="text-gray-800">: {value}</span>
-  </div>
-);
+const DetailItem: React.FC<{ label: string; value: string, isWide?: boolean }> = ({ label, value, isWide }) => {
+  return (
+    <div className="flex">
+      <span className={`font-medium text-gray-600 ${isWide ? 'w-80' : 'w-40'}`}>{label}</span>
+      <span className="text-gray-800">: {value}</span>
+    </div>
+  )
+};
 
 const SocialLinkItem: React.FC<{ label: string; value: string; isLink?: boolean }> = ({ label, value, isLink = false }) => (
   <div className="flex">

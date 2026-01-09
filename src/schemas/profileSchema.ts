@@ -9,7 +9,8 @@ export const creatorProfileFormSchema = z.object({
         !file || (file instanceof File && file.type.startsWith("image/")),
       "Please upload a valid image file"
     ),
-  accountHolderName: z.string(),
+  fullName: z.string(),
+  // accountHolderName: z.string(),
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
@@ -23,7 +24,7 @@ export const creatorProfileFormSchema = z.object({
   street: z.string(),
   houseBuildingNo: z.string(),
   //----------------------------//
-  niche: z.string(),
+  niche: z.array(z.string()),
   language: z.string(),
   profession: z.string(),
   //--------------------------//

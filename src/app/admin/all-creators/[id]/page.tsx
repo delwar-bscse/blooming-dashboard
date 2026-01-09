@@ -20,7 +20,9 @@ const CreatorDetailsPage: React.FC = () => {
       method: "GET",
       tags: ["creator"],
     });
-    
+
+    console.log("Creator Details : ", res)
+
     if (res?.data) {
       toast.success("Creator fetched successfully!", { id: "fetch" });
       setCreator(res?.data);

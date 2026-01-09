@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 
@@ -84,9 +85,22 @@ const AllCreatorsSuspense = () => {
       method: "GET",
     });
 
+    console.log("Creators list : ", res?.data)
+
     if (res?.data) {
       toast.success("All creators fetched successfully!", { id: "fetchAllCreators" });
-      setAllCreatorsData(res?.data);
+      const resArray = res?.data?.map((item: any) => {
+        return {
+          id: item?.userId?._id,
+          name: item?.userId?.fullName,
+          contactNo: item?.phone,
+          email: item?.email,
+          country: item?.country,
+          // category: string[]
+          status: item?.status
+        }
+      });
+      setAllCreatorsData(resArray);
       setTotalPage(res?.pagination?.totalPage || 1);
     } else {
       toast.error(res?.message || "Fetching failed!", { id: "fetchAllCreators" });

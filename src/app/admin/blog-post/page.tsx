@@ -48,7 +48,7 @@ const BlogPost = async() => {
         <Link href={`/admin/blog-post/add-blog`} className='bg-yellow-400 font-semibold px-8 py-3 rounded-md'>+ Add</Link>
       </div>
       <div className='maxWidth grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-2'>
-        {blogDatas?.map((data)=>(
+        {blogDatas.length > 0 && blogDatas?.map((data)=>(
           <div key={data?._id} className='parentDiv rounded-lg customShadow2 flex flex-col p-4'>
             <div className='rounded-lg overflow-hidden h-80'>
               <Image src={data?.image} width={500} height={500} alt="content image" className='object-cover w-full childDiv transition-transform duration-500 ease-in-out' />

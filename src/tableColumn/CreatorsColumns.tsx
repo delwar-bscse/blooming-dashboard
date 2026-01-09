@@ -5,24 +5,24 @@ import { CreatorDataType } from "@/type/type";
 
 export const creatorColumns: ColumnDef<CreatorDataType>[] = [
   {
-    accessorKey: "_id",
+    accessorKey: "id",
     header: () => <div className="text-center">Creator ID</div>,
     cell: ({ row }) => (
-      <div className="capitalize text-center">{row.getValue("_id")}</div>
+      <div className="capitalize text-center">{row.getValue("id")}</div>
     ),
   },
   {
-    accessorKey: "accountHolderName",
+    accessorKey: "name",
     header: () => <div className="text-center">Name</div>,
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("accountHolderName")}</div>
+      <div className="text-center">{row.getValue("name")}</div>
     ),
   },
   {
-    accessorKey: "phone",
+    accessorKey: "contactNo",
     header: () => <div className="text-center">Contact No</div>,
     cell: ({ row }) => (
-      <div className="text-center">{row.getValue("phone")}</div>
+      <div className="text-center">{row.getValue("contactNo")}</div>
     ),
   },
   {

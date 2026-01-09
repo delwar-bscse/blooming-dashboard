@@ -12,13 +12,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
-import { bodyTypeSelectOptions, ethnicitySelectOptions, genderSelectOptions, hairTypeSelectOptions, nicheSelectOptions, skinTypeSelectOptions } from "@/constant/creatorFormDatas";
+// import profileInputIcon from "@/assets/common/ProfileInputIcon.png";
+import { bodyTypeSelectOptions, ethnicitySelectOptions, genderSelectOptions, hairTypeSelectOptions, skinTypeSelectOptions } from "@/constant/creatorFormDatas";
 import { TSelectionOptions } from "@/type/creatorDataTypes";
 import { creatorProfileFormSchema } from "@/schemas/profileSchema";
 import VideoViewCard from "../cui/VideoViewCard";
 import { myFetch } from "@/utils/myFetch";
 import { toast } from "sonner";
+
+const nicheItems = ["Fitness & Health", "Beauty & Skin Care", "Fashion", "Home Decor", "Gardening", "Food & Drink", "Travel", "Family & Parenting", "Gaming", "Pets & Animals", "Tech & Gadgets", "Business Money", "Digital Products"]
 
 // Schema
 
@@ -33,7 +35,7 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
 
   const form = useForm<creatorProfileFormValues>({
     resolver: zodResolver(creatorProfileFormSchema),
-    defaultValues: {...myProfile, introductionvideo: null, ugcExampleVideo: [], profile: null},
+    defaultValues: { ...myProfile, introductionvideo: null, ugcExampleVideo: [], profile: null },
     mode: "onChange",
   });
 
@@ -45,12 +47,18 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
 
   async function onSubmit(data: creatorProfileFormValues) {
     toast.loading("Updating Profile...", { id: "updateProfile" });
-    const { profile, ugcExampleVideo, introductionvideo, ...restData } = data;
+    const { profile, ugcExampleVideo, introductionvideo, niche, ...restData } = data;
 
     const formData = new FormData();
     Object.entries(restData).forEach(([key, value]) => {
       formData.append(key, value);
     });
+
+    if (niche && niche.length > 0) {
+      niche.forEach((item: any) => {
+        formData.append("niche", item);
+      })
+    }
 
 
 
@@ -74,7 +82,7 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
       body: formData,
       tags: ["creatorProfile"]
     })
-    
+
     if (res.success) {
       toast.success("Profile updated successfully!", { id: "updateProfile" });
       getMe();
@@ -99,7 +107,7 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
   return (
     <div className="w-full max-w-[700px] mx-auto flex text-center justify-center py-20 px-2">
       <div className="bg-white px-2 sm:px-4 md:px-8 py-6 md:py-8 w-full rounded-4xl">
-        <h2 className="text-2xl md:text-3xl xl:text-4xl font-bold text-white pb-12">Creator Profile</h2>
+        {/* <h2 className="text-2xl md:text-3xl xl:text-4xl font-bold text-gray-600 pb-2">Creator Profile</h2> */}
 
         {isMounted && (
           <div className="relative inline-block">
@@ -107,21 +115,21 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
               <Image
                 src={imgUrl || myProfile?.userId?.profile}
                 alt="content image"
-                className="object-cover w-full"
+                className="object-cover w-full h-full"
                 width={128}
                 height={128}
                 unoptimized
               />
             </div>
 
-            <Image
+            {/* <Image
               onClick={() => document.getElementById("profileImgCtrl")?.click()}
               src={profileInputIcon}
               alt="Upload Icon"
               className="absolute bottom-2 right-1 w-8 h-8 z-10 cursor-pointer hover:scale-110 transition-all duration-300"
               width={32}
               height={32}
-            />
+            /> */}
           </div>
         )}
 
@@ -152,13 +160,13 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
             />
 
             {/* Brand Name */}
-            <TextInputField control={form.control} name="accountHolderName" label="Full Name" />
+            <TextInputField control={form.control} name="fullName" label="Full Name" isDisabled={true} />
 
             {/* Brand Email */}
-            <TextInputField control={form.control} name="email" label="Email" />
+            <TextInputField control={form.control} name="email" label="Email" isDisabled={true} />
 
             {/* Brand Phone */}
-            <TextInputField control={form.control} name="phone" label="Phone Number" />
+            <TextInputField control={form.control} name="phone" label="Phone Number" isDisabled={true} />
 
             {/* Brand DOB */}
             <TextInputField control={form.control} name="dateOfBirth" label="Date of Birth" />
@@ -185,7 +193,43 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
 
             {/*------------------------------------------------------------ */}
             {/* Brand Niche */}
-            <SelectInputField control={form.control} name="niche" label="Select Niche" options={nicheSelectOptions} />
+            {/* <SelectInputField control={form.control} name="niche" label="Select Niche" options={nicheSelectOptions} /> */}
+            <FormField
+              control={form.control}
+              name="niche"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className=" text-lg">
+                    Niche (Select multiple)
+                  </FormLabel>
+
+                  <div className="flex flex-wrap gap-3">
+                    {nicheItems.map((item: string, index: number) => (
+                      <label
+                        key={index}
+                        className="flex items-center gap-2  text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={field.value?.includes(item)}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            field.onChange(
+                              checked
+                                ? [...(field.value || []), item]
+                                : field.value.filter((v: string) => v !== item)
+                            );
+                          }}
+                        />
+                        {item}
+                      </label>
+                    ))}
+                  </div>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Brand Languages */}
             <TextInputField control={form.control} name="language" label="Languages Spoken" />
@@ -309,6 +353,7 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
 
 // Input Fields Components //
 const TextInputField = ({
+  isDisabled,
   control,
   name,
   label,
@@ -316,6 +361,7 @@ const TextInputField = ({
   control: Control<creatorProfileFormValues>;
   name: keyof creatorProfileFormValues;
   label: string;
+  isDisabled?: boolean
 }) => {
   return (
     <FormField
@@ -325,7 +371,7 @@ const TextInputField = ({
         <FormItem>
           <FormLabel className="text-lg">{label}</FormLabel>
           <FormControl>
-            <Input variant="borderblack" placeholder="Enter full name" {...field} />
+            <Input disabled={isDisabled} variant="borderblack" placeholder="Enter full name" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

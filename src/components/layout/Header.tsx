@@ -19,6 +19,7 @@ const Header = () => {
         method: "GET"
       });
       setUser(response?.data);
+      console.log(response?.data)
     };
     getUser();
   }, [pathname]);
@@ -31,7 +32,7 @@ const Header = () => {
       <div className='flex items-center justify-end gap-2'>
         <div className='flex gap-2 items-center'>
           <div className='w-13 h-13 rounded-full overflow-hidden'>
-            <Image src={user?.profile ? formatImagePath(user?.profile) : profileImage01} width={100} height={100} alt="profileImage01" className='' />
+            <Image src={formatImagePath(user?.profile) || profileImage01} width={100} height={100} alt="profileImage01" className='w-full h-full' />
           </div>
           <p className='flex flex-col'>
             <span className='font-semibold text-gray-800'>{user?.fullName}</span>

@@ -14,6 +14,7 @@ export interface TSingleCreator {
   _id: string;
   creatorId?: string;
   userId: TUserId;
+  fullName: string;
   phone: string;
   email: string;
   dateOfBirth: string;
@@ -23,7 +24,7 @@ export interface TSingleCreator {
   city: string;
   street: string;
   houseBuildingNo: string;
-  niche: string;
+  niche: string[];
   language: string;
   profession: string;
   gender: string;

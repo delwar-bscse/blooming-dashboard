@@ -15,10 +15,13 @@ const CreatorProfile = () => {
       const res = await myFetch(`/creator/me`,{
         tags: ["creatorProfile"]
       });
+
+      console.log("My Profile : ", res?.data?.fullName)
       
       if (res?.success) {
         toast.success("Profile fetched successfully!", { id: "fetchProfile" });
         setMyProfile(res?.data);
+        console.log("my profile : ", res?.data)
       } else {
         toast.error(res?.message || "Profile Fetching failed!", { id: "fetchProfile" });
       }
@@ -30,7 +33,7 @@ const CreatorProfile = () => {
 
 
   return (
-    <div>
+    <div className='overflow-y-auto'>
       {myProfile && <CreatorProfileForm myProfile={myProfile} getMe={getMe}/>}
     </div>
   )
