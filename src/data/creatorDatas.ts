@@ -25,6 +25,7 @@ export const singleCreatorDatas: TSingleCreator = {
     _id: "6861fb8ab974cb1274840637",
     profile: "http://10.0.70.163:5002/uploads\\profile\\Media-1751251828059-255743057.jpeg"
   },
+  fullName: "Md. Delwar Hossain",
   phone: "01998847528",
   email: "wetelrdyep@xkxkud.com",
   dateOfBirth: "01.02.1997",
@@ -34,7 +35,7 @@ export const singleCreatorDatas: TSingleCreator = {
   city: "Jatrabari, Dhaka",
   street: "Sonir Akhra",
   houseBuildingNo: "h-2323",
-  niche: "Home Decor",
+  niche: ["Home Decor"],
   language: "English",
   profession: "Engineer",
   gender: "Male",
