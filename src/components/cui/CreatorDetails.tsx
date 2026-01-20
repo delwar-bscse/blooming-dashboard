@@ -83,8 +83,6 @@ const CreatorDetails = ({ creator, user, id }: { creator: Partial<TSingleCreator
           <DetailItem label="Ethnicity" value={creator?.ethnicity ?? ""} isWide={true} />
           <DetailItem label="Skin Type" value={creator?.skinType ?? ""} isWide={true} />
           <DetailItem label="Hair Type" value={creator?.hairType ?? ""} isWide={true} />
-          <DetailItem label="Bank Details" value={creator?.bankName ?? ""} isWide={true} />
-          <DetailItem label="Bank Email" value={creator?.paypalEmail ?? ""} isWide={true} />
         </div>
       </div>
 

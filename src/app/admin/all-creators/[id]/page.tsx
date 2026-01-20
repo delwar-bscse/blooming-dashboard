@@ -15,7 +15,6 @@ const CreatorDetailsPage: React.FC = () => {
   const id = params["id"];
 
   const getCreator = async () => {
-    toast.loading("Fetching creator...", { id: "fetch" });
     const res = await myFetch(`/creator/${id}`, {
       method: "GET",
       tags: ["creator"],
@@ -24,10 +23,9 @@ const CreatorDetailsPage: React.FC = () => {
     console.log("Creator Details : ", res)
 
     if (res?.data) {
-      toast.success("Creator fetched successfully!", { id: "fetch" });
       setCreator(res?.data);
     } else {
-      toast.error(res?.message || "Fetching failed!", { id: "fetch" });
+      toast.error(res?.message || "Failed to fetch creator!");
     }
   }
 

@@ -78,6 +78,7 @@ export interface menuType {
 // Creator Data type
 export type CreatorDataType = {
   id: string
+  creatorId?: string
   name: string
   contactNo: string
   email: string

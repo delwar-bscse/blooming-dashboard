@@ -52,7 +52,7 @@ const AllUsersSuspense = () => {
       method: "GET",
     });
 
-    console.log("All users and sub_admins Data : ", res?.data)
+    // console.log("All users and sub_admins Data : ", res?.data)
 
     if (res?.data) {
       toast.success("All users fetched successfully!", { id: "fetchAllUsers" });

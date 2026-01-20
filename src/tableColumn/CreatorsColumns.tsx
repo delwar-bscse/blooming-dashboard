@@ -59,7 +59,7 @@ export const creatorColumns: ColumnDef<CreatorDataType>[] = [
     id: "action",
     header: () => <div className="text-center">Action</div>,
     cell: ({ row }) => (
-      <Link href={`/admin/all-creators/${row.getValue("_id")}`} className="flex items-center justify-center">
+      <Link href={`/admin/all-creators/${row.original?.creatorId}`} className="flex items-center justify-center">
         <PiEyeBold className="text-2xl font-bold text-green-500 hover:text-green-600 transition-colors duration-300" />
       </Link>
     ),

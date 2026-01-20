@@ -32,13 +32,13 @@ export const userColumns: ColumnDef<UserDataType>[] = [
       <div className="text-center">{row.getValue("fullName")}</div>
     ),
   },
-  {
-    accessorKey: "phone",
-    header: () => <div className="text-center">Contact No</div>,
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("phone")}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "phone",
+  //   header: () => <div className="text-center">Contact No</div>,
+  //   cell: ({ row }) => (
+  //     <div className="text-center">{row.getValue("phone")}</div>
+  //   ),
+  // },
   {
     accessorKey: "email",
     header: () => <div className="text-center">Email</div>,
