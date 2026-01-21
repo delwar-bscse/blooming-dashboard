@@ -100,15 +100,16 @@ const OrderActionsSuspense = () => {
       }
     });
     const res = await myFetch(url);
+    console.log("Get Creators : ", res?.data);
 
     if (res?.data) {
       const modifyDatas = res?.data?.map((item: any) => {
         return {
           _id: item?._id,
           creatorId: item?._id,
-          accountHolderName: item?.accountHolderName,
-          email: item?.email,
-          phone: item?.phone,
+          accountHolderName: item?.userId?.fullName,
+          email: item?.userId?.email,
+          phone: item?.userId?.phone,
           country: item?.country,
           status: item?.status
         }
