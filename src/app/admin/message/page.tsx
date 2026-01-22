@@ -8,7 +8,6 @@ import { LuSquareArrowOutUpRight } from "react-icons/lu";
 import { TbChecks } from "react-icons/tb";
 import ProfileImg from "@/assets/common/profileImage02.png"
 import { useRouter, useSearchParams } from 'next/navigation';
-// import { io } from "socket.io-client";
 import { myFetch } from '@/utils/myFetch';
 import dayjs from 'dayjs';
 import { CustomSearchBar } from '@/components/cui/CustomSearchBar';
@@ -71,10 +70,10 @@ const MessageSuspense = () => {
        <CustomSearchBar />
       </div>
       <div className='space-y-4'>
-        {adminMessage?.map((msg) => (
+        {adminMessage.length > 0 && adminMessage?.map((msg) => (
           <div onClick={() => router.push(`/admin/message/${msg.id}`)} key={msg.id} className='bg-white flex items-center gap-4 py-3 px-4 rounded-md hover:bg-yellow-50 transition-colors duration-300 cursor-pointer'>
             <div className='w-12 h-12 rounded-full overflow-hidden'>
-              <Image src={msg?.profile || ProfileImg} alt="profile" width={50} height={50} />
+              <Image src={msg?.profile || ProfileImg} alt="profile" width={50} height={50} className='w-[50px] h-[50px] object-cover'/>
             </div>
             <div className='flex-1 space-y-2'>
 
