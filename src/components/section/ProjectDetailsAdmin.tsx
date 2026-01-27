@@ -102,6 +102,9 @@ const ProjectDetailsAdmin = () => {
       <div className='bg-white rounded-2xl p-8'>
         <SubComponent title="Add-Ons" list={orderDetails.addOns} />
       </div>
+      <div className='bg-white rounded-2xl p-8'>
+        <SubComponent title="Package Info" list={orderDetails?.subscriptionId?.packageId} />
+      </div>
 
       {orderDetails.status === "pending" && <div className='flex items-center justify-end space-x-4'>
         <Button onClick={handleApprove}>Approve</Button>

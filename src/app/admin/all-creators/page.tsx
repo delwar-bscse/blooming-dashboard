@@ -85,7 +85,7 @@ const AllCreatorsSuspense = () => {
       method: "GET",
     });
 
-    // console.log("Creators list : ", res?.data)
+    console.log("Creators list : ", res?.data)
 
     if (res?.data) {
       toast.success("All creators fetched successfully!", { id: "fetchAllCreators" });

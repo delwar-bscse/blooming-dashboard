@@ -1,4 +1,4 @@
- import { overviewImg, blogPostImg, brandsImg, changePasswordImg, contactSupportImg, creatorsImg, messageImg, packageImg, privacyPolicyImg, profileImg, subscriptionImg, termsConditionImg, uploadImg, review } from "@/assets/assets";
+ import { overviewImg, blogPostImg, brandsImg, changePasswordImg, contactSupportImg, creatorsImg, messageImg, packageImg, privacyPolicyImg, profileImg, termsConditionImg, uploadImg, review } from "@/assets/assets";
 import { menuType } from "@/type/type";
 
 
@@ -28,11 +28,11 @@ export const adminMenu: menuType[] = [
     title: "Package",
     label: "/admin/packages",
   },
-  {
-    icon: subscriptionImg,
-    title: "Subscription",
-    label: "/admin/subscriptions",
-  },
+  // {
+  //   icon: subscriptionImg,
+  //   title: "Subscription",
+  //   label: "/admin/subscriptions",
+  // },
   {
     icon: uploadImg,
     title: "Upload Video",

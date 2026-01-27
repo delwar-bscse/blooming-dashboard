@@ -84,7 +84,7 @@ const OrderActionsSuspense = () => {
     const queryParams = [
       { key: 'page', value: page },
       { key: 'searchTerm', value: query },
-      { key: 'status', value: status },
+      // { key: 'status', value: status },
       { key: 'language', value: language },
       { key: 'gender', value: gender },
       { key: 'niche', value: niche },
@@ -99,6 +99,7 @@ const OrderActionsSuspense = () => {
         url += `&${param.key}=${param.value}`;
       }
     });
+    console.log("filter url : ", url)
     const res = await myFetch(url);
     console.log("Get Creators : ", res?.data);
 
