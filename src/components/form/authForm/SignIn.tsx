@@ -69,14 +69,15 @@ const SignIn = () => {
 
       if (res?.success) {
         setCookie("bloom_accessToken", res?.data?.accessToken);
-        toast.success("Login Success", { id: "login" });
 
         if (res?.data?.user?.role === "admin" || res?.data?.user?.role === "sub_admin") {
           router.push("/admin");
-        }
-
-        if (res?.data?.user?.role === "creator") {
+          toast.success("Login Success", { id: "login" });
+        }else if (res?.data?.user?.role === "creator") {
           router.push("/creator/all-project");
+          toast.success("Login Success", { id: "login" });
+        }else{
+          toast.error("You do not have access to this dashboard", { id: "login" });
         }
 
       } else {
