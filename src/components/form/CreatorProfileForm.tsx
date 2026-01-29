@@ -19,6 +19,7 @@ import { creatorProfileFormSchema } from "@/schemas/profileSchema";
 import VideoViewCard from "../cui/VideoViewCard";
 import { myFetch } from "@/utils/myFetch";
 import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
 const nicheItems = ["Fitness & Health", "Beauty & Skin Care", "Fashion", "Home Decor", "Gardening", "Food & Drink", "Travel", "Family & Parenting", "Gaming", "Pets & Animals", "Tech & Gadgets", "Business Money", "Digital Products"]
 
@@ -39,6 +40,7 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
     mode: "onChange",
   });
 
+  console.log("My Profile : ", myProfile)
 
 
   useEffect(() => {
@@ -100,6 +102,22 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
       reader.readAsDataURL(file);
     } else {
       setImgUrl(null);
+    }
+  };
+
+  const handleDelete = async ({creatorId, videoId}: {creatorId: string, videoId: string}) => {
+    toast.loading("Deleting video...", { id: "deleteVideo" });
+    const res = await myFetch(`/creator/video-delete/${creatorId}`, {
+      method: "DELETE",
+      body: {
+        videoId: videoId
+      },
+    });
+    if (res.success) {
+      getMe();
+      toast.success("Video deleted successfully!", { id: "deleteVideo" });
+    } else {
+      toast.error(res.message || "Delete failed!", { id: "deleteVideo" });
     }
   };
 
@@ -287,12 +305,12 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
               name="ugcExampleVideo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg">UGC Example Videos (Upload Only 6 videos)</FormLabel>
+                  <FormLabel className="text-lg">UGC Example Videos (Upload up to 6 videos)</FormLabel>
                   <FormControl>
                     <Input
                       variant="borderwhiteVideo"
                       type="file"
-                      accept="video/*"
+                      accept="video/mp4"
                       multiple
                       onChange={(e) => {
                         const files = Array.from(e.target.files ?? []);
@@ -306,7 +324,23 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
             />
             <div className="grid grid-cols-2 gap-4">
               {myProfile?.ugcExampleVideo?.map((item: any) => (
-                <VideoViewCard key={item?.key} videoUrl={item?.url} />
+                // <VideoViewCard key={item?.key} videoUrl={item?.url} />
+                <div key={item?.key} className="relative bg-gray-200 w-60 h-40 aspect-video flex items-center justify-center">
+                  {/* <p>{videoUrl}</p> */}
+                  <video width="480" height="320" controls className='h-full object-cover'>
+                    <source src={item?.url ?? ""} type="video/mp4" />
+                    <track
+                      src="/path/to/captions.vtt"
+                      kind="subtitles"
+                      srcLang="en"
+                      label="English"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                  <p onClick={() => handleDelete({creatorId:myProfile?._id, videoId: item?._id})} className="absolute top-2 left-2 text-lg text-red-500 bg-gray-100 rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-300 p-1">
+                    <Trash2 className="size-4 hover:text-red-600 transition-colors duration-300"/>
+                  </p>
+                </div>
               ))
               }
             </div>
