@@ -20,7 +20,7 @@ const CreatorDetailsPage: React.FC = () => {
       tags: ["creator"],
     });
 
-    console.log("Creator Details : ", res)
+    //console.log("Creator Details : ", res)
 
     if (res?.data) {
       setCreator(res?.data);

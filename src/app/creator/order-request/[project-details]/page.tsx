@@ -28,7 +28,7 @@ const ProjectDetailsPageSuspense = () => {
       method: "GET",
     });
     
-    console.log("Order Details : ", res.data)
+    //console.log("Order Details : ", res.data)
 
     if (res?.data) {
       toast.success("Request Order Details fetched successfully!", { id: "fetch" });

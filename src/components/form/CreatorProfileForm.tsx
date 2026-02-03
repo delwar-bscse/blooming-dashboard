@@ -40,7 +40,7 @@ const CreatorProfileForm = ({ myProfile, getMe }: { myProfile: any, getMe: any }
     mode: "onChange",
   });
 
-  console.log("My Profile : ", myProfile)
+  //console.log("My Profile : ", myProfile)
 
 
   useEffect(() => {

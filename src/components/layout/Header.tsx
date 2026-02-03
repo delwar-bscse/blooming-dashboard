@@ -19,7 +19,7 @@ const Header = () => {
         method: "GET"
       });
       setUser(response?.data);
-      console.log(response?.data)
+      //console.log(response?.data)
     };
     getUser();
   }, [pathname]);

@@ -7,7 +7,7 @@ import { myFetch } from "@/utils/myFetch";
 import { toast } from "sonner";
 
 const makePayment = async (creatorId: string) => {
-  console.log("Make Payment to : ", creatorId);
+  //console.log("Make Payment to : ", creatorId);
   const res = await myFetch(`/assign-task-creator/creator-payment-by-admin/${creatorId}`, { method: 'PATCH' });
   if (res?.success) {
     toast.success("Payment successful");

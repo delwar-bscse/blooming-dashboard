@@ -114,7 +114,7 @@ const AddBlogPostSuspense = () => {
 
   async function onSubmit(data: ContactUsFormValues) {
     toast.loading("Uploading blog...", { id: "upload" });
-    console.log("Details Text Editor : ", content);
+    //console.log("Details Text Editor : ", content);
 
     const formData = new FormData();
     formData.append("title", data.title);
@@ -132,7 +132,7 @@ const AddBlogPostSuspense = () => {
       body: formData,
     });
 
-    console.log("Create blog res : ", res)
+    //console.log("Create blog res : ", res)
 
     if (res.success) {
       toast.success(`Blog ${editId ? "updated" : "created"} successfully!`, { id: "upload" });
@@ -159,12 +159,12 @@ const AddBlogPostSuspense = () => {
   };
 
   const fetchExistPost = async () => {
-    console.log("Add Blog ---- Blog Details id : ", id)
+    //console.log("Add Blog ---- Blog Details id : ", id)
 
     const response = await myFetch(`/blog/admin/${id}`, {
       method: "GET",
     });
-    console.log("Add Blog ---- Blog Details : ", response)
+    //console.log("Add Blog ---- Blog Details : ", response)
     if (response?.data) {
       form.setValue("title", response?.data?.title);
       form.setValue("details", response?.data?.details);

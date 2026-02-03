@@ -16,12 +16,12 @@ const CreatorProfile = () => {
         tags: ["creatorProfile"]
       });
 
-      console.log("My Profile : ", res?.data?.fullName)
+      //console.log("My Profile : ", res?.data?.fullName)
       
       if (res?.success) {
         toast.success("Profile fetched successfully!", { id: "fetchProfile" });
         setMyProfile(res?.data);
-        console.log("my profile : ", res?.data)
+        //console.log("my profile : ", res?.data)
       } else {
         toast.error(res?.message || "Profile Fetching failed!", { id: "fetchProfile" });
       }

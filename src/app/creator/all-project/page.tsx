@@ -29,18 +29,19 @@ const AllOrdersSuspense = () => {
   const searchParams = useSearchParams();
   const filterType = searchParams.get("filter") || "approved";
   const page = searchParams.get("page") || "1";
+  const query = searchParams.get("query") || "";
 
   // const data = orderDatas.slice(0, 9) as TOrdersData[];
 
   const getAllOrders = async () => {
     // toast.loading("Fetching Orders...", { id: "fetch" });
     const res = await myFetch(
-      `/assign-task-creator/assign?page=${page}${filterType ? `&status=${filterType}` : ""}`,
+      `/assign-task-creator/assign?page=${page}${filterType ? `&status=${filterType}` : ""}${query ? `&searchTerm=${query}` : ""}`,
       {
         method: "GET",
       }
     );
-    console.log("Hrecreator Id : ", res?.data)
+    // console.log("Assign task projects : ", res?.data)
     
     if (res?.data) {
       // toast.success("All Orders fetched successfully!", { id: "fetch" });
@@ -54,7 +55,7 @@ const AllOrdersSuspense = () => {
           status:item?.status,
         }
       })
-      console.log("Modified Order list : ", modifyDatas)
+      //console.log("Modified Order list : ", modifyDatas)
       
       setAllCreatorsData(modifyDatas);
       setTotalPage(res?.pagination?.totalPage || 1);
@@ -66,13 +67,13 @@ const AllOrdersSuspense = () => {
   useEffect(() => {
     getAllOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterType, page])
+  }, [filterType, page, query]);
 
   return (
     <div className="pt-8">
       <div className="flex items-center gap-2">
         <div className="w-full max-w-[600px]">
-          <CustomSearchBar />
+          <CustomSearchBar placeholder="Search by Order ID" />
         </div>
         <div>
           <CustomModalFilter

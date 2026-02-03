@@ -52,7 +52,7 @@ const AllOrdersSuspense = () => {
       method: "GET",
     });
 
-    console.log("Hire Creator Id : ", res?.data)
+    // console.log("Hire Creator Id : ", res?.data)
     
     if(res?.data){
       toast.success("All Orders fetched successfully!", {id: "fetch"});
@@ -75,7 +75,7 @@ const AllOrdersSuspense = () => {
       </div> */}
       <div className="flex items-center gap-2">
         <div className="w-full max-w-[600px]">
-          <CustomSearchBar  placeholder="Search by Email, Brand, Product Name"/>
+          <CustomSearchBar  placeholder="Search by Order Id, Email, Brand, Product Name"/>
         </div>
         <div>
           <CustomModalFilter

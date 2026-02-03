@@ -20,7 +20,7 @@ const CreatorScript = () => {
       method: "GET",
     });
 
-    console.log("Script : ", res);
+    //console.log("Script : ", res);
 
     if (res.success) {
       setStatus(res?.data?.status)

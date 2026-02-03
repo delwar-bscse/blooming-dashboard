@@ -99,9 +99,9 @@ const OrderActionsSuspense = () => {
         url += `&${param.key}=${param.value}`;
       }
     });
-    console.log("filter url : ", url)
+    //console.log("filter url : ", url)
     const res = await myFetch(url);
-    console.log("Get Creators : ", res?.data);
+    //console.log("Get Creators : ", res?.data);
 
     if (res?.data) {
       const modifyDatas = res?.data?.map((item: any) => {

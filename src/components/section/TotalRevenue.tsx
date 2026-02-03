@@ -20,7 +20,7 @@ const TotalRevenue = () => {
       method: "GET",
     });
 
-    console.log("Brand Engagement Data:", response);
+    //console.log("Brand Engagement Data:", response);
 
     if (response?.success) {
       // setOverviewDatas(response?.data);
